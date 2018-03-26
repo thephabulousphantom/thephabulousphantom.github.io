@@ -7,8 +7,4 @@ kb-smartdie-icon-72.png
 kb-smartdie-icon-57.png
 kb-smartdie-icon-32.png
 kb-smartdie-icon-16.png
-js/kB.SmartDie.js
-js/kB.SmartDie.Version.js
-js/kB.SmartDie.Add.js
-js/kB.SmartDie.Multiply.js
-js/kB.SmartDie.Cards.js
+kB.SmartDie.js
