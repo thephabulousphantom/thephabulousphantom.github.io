@@ -1,0 +1,9 @@
+{
+    "name": "Conferor",
+    "start_url": "index.html",
+    "scope": ".",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "background_color": "#2F88FF",
+    "theme_color": "#2F88FF"
+}
