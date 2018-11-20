@@ -1,0 +1,157 @@
+
+/* specijalni tipovi slova */
+
+@font-face {
+
+    font-family: RobotoLight;
+    src: url('../fonts/Roboto/Roboto-Light.ttf');
+}
+
+@font-face {
+
+    font-family: Roboto;
+    src: url('../fonts/Roboto/Roboto-Regular.ttf');
+}
+
+@font-face {
+
+    font-family: RobotoMedium;
+    src: url('../fonts/Roboto/Roboto-Medium.ttf');
+}
+
+@font-face {
+
+    font-family: RobotoMonoLight;
+    src: url('../fonts/RobotoMono/RobotoMono-Light.ttf');
+}
+
+@font-face {
+
+    font-family: RobotoMono;
+    src: url('../fonts/RobotoMono/RobotoMono-Regular.ttf');
+}
+
+@font-face {
+
+    font-family: RobotoMonoMedium;
+    src: url('../fonts/RobotoMono/RobotoMono-Medium.ttf');
+}
+
+
+/* prilagođeni izgled uobičajenih HTML elemenata */
+
+body {
+
+	margin: 0px;
+	padding: 0px;
+	font-family: Roboto, Monospace;
+	font-size: 14px;
+}
+
+h1, h2, h3, h4, h5 {
+
+	font-family: RobotoLight, Monospace;
+}
+
+a {
+
+	color: inherit;
+	text-decoration: none;
+}
+
+a:hover {
+
+	text-decoration: underline;
+}
+
+
+
+/* boje */
+
+.zaglavlje a:hover, .podnožje a:hover {
+
+	text-decoration: none;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.osnovna-boja, .zaglavlje {
+
+	color: #666666;
+	background-color: #f8f8f8;
+}
+
+.rezervna-boja, .podnožje {
+
+	color: #666666;
+	color: #888888;
+	background-color: #f0f0f0;
+}
+
+.pozadinska-boja, body, .sadržaj {
+
+	color: #000;
+	background-color: #f0f0f0;
+}
+
+
+
+/* osnovna struktura stranice */
+
+.zaglavlje {
+
+	position: fixed;
+	z-index: 10000;
+	display: inline-block;
+	width:100%;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.sadržaj {
+
+	padding: 16px;
+	padding-top: 48px;
+	padding-bottom: 48px;
+}
+
+.podnožje {
+	
+	position: fixed;
+	width: 100%;
+	bottom: 0px;
+}
+
+
+
+/* prilagođeni izgled */
+
+.zaglavlje ul, .podnožje ul {
+
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+	display: block;
+}
+
+.zaglavlje li, .podnožje li {
+
+	display: inline-block;
+	margin: 0px;
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
+.zaglavlje a, .podnožje a {
+
+	padding: 16px;
+}
+
+.sadržaj ul {
+
+	list-style-type: square;
+}
+
+.sadržaj li, .sadržaj a {
+
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
