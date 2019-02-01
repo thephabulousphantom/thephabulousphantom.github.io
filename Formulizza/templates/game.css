@@ -1,0 +1,36 @@
+#gameContainer {
+
+    /*background-color: rgba(128, 192, 0, 1);*/
+}
+
+#gameContainer #race {
+
+    display: block;
+    height: 30%;
+}
+
+#gameContainer #race #track {
+
+    position: absolute;
+}
+
+#gameContainer #controllers {
+    
+    display: block;
+    height: 70%;
+    overflow: hidden;
+}
+
+#gameContainer #controllers #left {
+    
+    width: 50%;
+    height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
+    vertical-align: top;
+}
+
+#gameContainer #controllers #right {
+    
+    width: 50%;
+    height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
+    vertical-align: top;
+}

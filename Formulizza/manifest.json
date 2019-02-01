@@ -1,0 +1,26 @@
+{
+    "name": "Smart Racers",
+    "icons": [
+        {
+            "src": "icons/smart-racers-icon.png",
+            "type": "image/png",
+            "sizes": "512x512 256x256"
+        },
+        {
+            "src": "icons/smart-racers-icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "icons/smart-racers-icon-32.png",
+            "type": "image/png",
+            "sizes": "32x32 16x16"
+        }
+    ],
+    "start_url": "./index.html",
+    "scope": ".",
+    "display": "fullscreen",
+    "orientation": "landscape",
+    "background_color": "rgba(80,128,0,1)",
+    "theme_color": "rgba(160,255,0,1)"
+}

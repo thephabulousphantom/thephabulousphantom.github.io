@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Smart Racers</title>
+
+        <!-- mobile app meta data -->
+        <link rel="manifest" href="manifest.json">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="theme-color" content="rgba(160,255,0,1)">
+        <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        
+        <!-- icons -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="icons/smart-racers-icon-144.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="icons/smart-racers-icon-144.png" />       
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="icons/smart-racers-icon-114.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="icons/smart-racers-icon-114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="icons/smart-racers-icon-72.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="icons/smart-racers-icon-72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="54x54" href="icons/smart-racers-icon-54.png" />
+        <link rel="apple-touch-icon" sizes="54x54" href="icons/smart-racers-icon-54.png" />
+        <link rel="icon" type="image/png" href="icons/smart-racers-icon.png" sizes="512x512 256x256" />
+        <link rel="icon" type="image/png" href="icons/smart-racers-icon-192.png" sizes="192x192" />
+        <link rel="icon" type="image/png" href="icons/smart-racers-icon-32.png" sizes="32x32 16x16" />
+
+        <!-- third party libraries -->
+        <script type="text/javascript" language="javascript" src="polyfills.js"></script>
+        <script type="text/javascript" language="javascript" src="lib/handlebars/handlebars.min-v4.0.12.js"></script>
+        <script type="text/javascript" language="javascript" src="lib/handlebars/handlebars-intl.min.js"></script>
+        <script type="text/javascript" language="javascript" src="lib/jquery/jquery-3.3.1.min.js"></script> 
+                
+        <!-- application -->
+        <script type="text/javascript" language="javascript" src="./smart-racers.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-strings.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-log.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-utility.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-gfx.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-gfx-screen.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-gfx-control.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-keyboard.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-pointer.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-player.js"></script>
+        <script type="text/javascript" language="javascript" src="./smart-racers-questions.js"></script>
+
+        <!-- generic styles -->
+        <link type="text/css" rel="stylesheet" href="./smart-racers.css">
+
+        <!-- screens & controls -->
+        <script id="splashView" type="x-tmpl-handlebars" src="./templates/splash.handlebars"></script>
+        <link type="text/css" rel="stylesheet" href="./templates/splash.css">
+        <script type="text/javascript" language="javascript" src="./templates/splash.js"></script>
+
+        <script id="menuView" type="x-tmpl-handlebars" src="./templates/menu.handlebars"></script>
+        <link type="text/css" rel="stylesheet" href="./templates/menu.css">
+        <script type="text/javascript" language="javascript" src="./templates/menu.js"></script>
+
+        <script id="gameView" type="x-tmpl-handlebars" src="./templates/game.handlebars"></script>
+        <link type="text/css" rel="stylesheet" href="./templates/game.css">
+        <script type="text/javascript" language="javascript" src="./templates/game.js"></script>
+
+        <script id="controllerView" type="x-tmpl-handlebars" src="./templates/controller.handlebars"></script>
+        <link type="text/css" rel="stylesheet" href="./templates/controller.css">
+        <script type="text/javascript" language="javascript" src="./templates/controller.js"></script>
+
+        <script type="text/javascript" language="javascript">
+
+            $('script[type="x-tmpl-handlebars"]').each(function(idx, templateSource) {
+
+                $.holdReady(true);
+
+                $.get(templateSource.src, function(template) {
+
+                    templateSource.text = template;
+                    $.holdReady(false);
+                });
+            });
+            
+        </script>
+
+    </head>
+    <body>
+    </body>
+</html>
