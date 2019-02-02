@@ -199,7 +199,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         
         if (((this.progress % 1000) | 0) == 0) {
 
-            this.speed += 0.5;
+            this.speed += 1;
             for (var i = 0; i < app.players.length; i++) {
 
                 app.players[i].controller.updateModeDurations(this.speed);
