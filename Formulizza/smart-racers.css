@@ -161,3 +161,8 @@ div {
 
     border-radius: 32px;
 }
+
+.radius-max {
+
+    border-radius: 1024px;
+}

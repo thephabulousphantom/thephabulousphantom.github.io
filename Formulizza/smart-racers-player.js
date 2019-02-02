@@ -1,6 +1,10 @@
 app.Player = function Player(color, tile_x, tile_y, tile_width, tile_height, questions, random) {
 
     this.color = color;
+
+    this.freezeBy = null;
+
+    this.score = null;
     
     this.tile = {
         x: tile_x,

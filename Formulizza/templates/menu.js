@@ -45,7 +45,6 @@ app.gfx.screens.menu = new app.gfx.Screen("menu", {
 
         if (key.char == " " || key.code == 13) {
 
-            app.gfx.screens.menu.start();
         }
     },
 

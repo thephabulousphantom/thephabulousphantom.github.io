@@ -3,7 +3,8 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
     modes: {
         question: 0,
         questionAnswers: 1,
-        none: 2
+        none: 2,
+        freeze: 3
     },
 
     modeDuration: [
@@ -14,11 +15,18 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
     speedChange: {
         correct: 0.5,
-        incorrect: -2.5,
-        none: -1
+        incorrect: -0.75,
+        none: -0.5
     },
 
     onload: function onload(instance) {
+
+        instance.modeDuration = [
+
+            this.modeDuration[0],
+            this.modeDuration[1],
+            this.modeDuration[2]
+        ];
 
         instance.setColor = function setColor(color) {
 
@@ -96,7 +104,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
                     element.removeClass("answers-shown");
                 }
             }
-            else if (mode == app.gfx.controls.controller.modes.none) {
+            else if (mode == app.gfx.controls.controller.modes.none ||app.gfx.controls.controller.modes.freeze) {
 
                 instance.container.style.display = "none";
             }
@@ -124,6 +132,14 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
             e.preventDefault();
         }
 
+        instance.updateModeDurations = function updateModeDurations(speed) {
+
+            for (var i = 0; i < this.modeDuration.length; i++) {
+                
+                instance.modeDuration[i] = this.modeDuration[i] / (1 + 0.02 * (speed - 1));
+            }
+        }
+
         app.pointer.onpress(instance.answers[0], instance.onAnswerClick.bind(instance.answers[0]));
         app.pointer.onpress(instance.answers[1], instance.onAnswerClick.bind(instance.answers[1]));
         app.pointer.onpress(instance.answers[2], instance.onAnswerClick.bind(instance.answers[2]));
@@ -142,10 +158,29 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
             return;
         }
 
+        if (instance.player.freezeBy) {
+
+            if (instance.mode != app.gfx.controls.controller.modes.freeze) {
+
+                instance.updateMode(app.gfx.controls.controller.modes.freeze);
+            }
+        }
+
         switch (instance.mode) {
 
+            case app.gfx.controls.controller.modes.freeze:
+
+                if (!instance.player.freezeBy) {
+
+                    instance.updateQuestionAndAnswers(instance.player.questions, instance.player.random);
+
+                    instance.modeStartTime = time;
+                    instance.updateMode(app.gfx.controls.controller.modes.question);
+                }
+                break;
+
             case app.gfx.controls.controller.modes.none:
-                if (time - instance.modeStartTime > app.gfx.controls.controller.modeDuration[app.gfx.controls.controller.modes.none]) {
+                if (time - instance.modeStartTime > instance.modeDuration[app.gfx.controls.controller.modes.none]) {
 
                     instance.updateQuestionAndAnswers(instance.player.questions, instance.player.random);
 
@@ -155,7 +190,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
                 break;
 
             case app.gfx.controls.controller.modes.question:
-                if (time - instance.modeStartTime > app.gfx.controls.controller.modeDuration[app.gfx.controls.controller.modes.question]) {
+                if (time - instance.modeStartTime > instance.modeDuration[app.gfx.controls.controller.modes.question]) {
 
                     instance.modeStartTime = time;
                     instance.answer = null;
@@ -164,7 +199,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
                 break;
 
             case app.gfx.controls.controller.modes.questionAnswers:
-                if (time - instance.modeStartTime > app.gfx.controls.controller.modeDuration[app.gfx.controls.controller.modes.questionAnswers]) {
+                if (time - instance.modeStartTime > instance.modeDuration[app.gfx.controls.controller.modes.questionAnswers]) {
 
                     instance.speed += app.gfx.controls.controller.speedChange.none / instance.level;
 

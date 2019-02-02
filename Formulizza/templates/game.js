@@ -1,6 +1,6 @@
 app.gfx.screens.game = new app.gfx.Screen("game", {
 
-    speed: 2,
+    speed: 1,
 
     progress: 0,
 
@@ -41,13 +41,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         this.controllers.style.backgroundSize = width;
 
-        app.players[0].car.style.width = (app.players[0].tile.width * height / this.tiles.track.height) + "px";
-        app.players[0].car.style.height = (app.players[0].tile.height * height / this.tiles.track.height) + "px";
-        app.players[0].car.style.top = (68 * height / this.tiles.track.height) + "px";
+        for (var i = 0; i < app.players.length; i++) {
 
-        app.players[1].car.style.width = (app.players[1].tile.width * height / this.tiles.track.height) + "px";
-        app.players[1].car.style.height = (app.players[1].tile.height * height / this.tiles.track.height) + "px";
-        app.players[1].car.style.top = (300 * height / this.tiles.track.height) + "px";
+            app.players[i].car.style.width = (app.players[i].tile.width * height / this.tiles.track.height) + "px";
+            app.players[i].car.style.height = (app.players[i].tile.height * height / this.tiles.track.height) + "px";
+            app.players[i].car.style.top = ((i == 0 ? 68 : 300) * height / this.tiles.track.height) + "px";
+        }
 
         this.updateCarPositions();
     },
@@ -66,15 +65,41 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         app.players[1].car.style.left = (zero + zeroCenter1 + app.players[1].position * positionScale1) + "px";
     },
 
+    updateScores: function updateScores() {
+
+        var end = false;
+        for (var i = 0; i < app.players.length; i++) {
+
+            $(this.scores[i]).text(app.players[i].score);
+
+            if (app.players[i].score == 0 || app.players[i].score == 10) {
+
+                end = true;
+            }
+        }
+
+        if (end) {
+
+            app.gfx.screens.menu.load();
+        }
+    },
+
     onload: function onload(questions, random) {
 
+        app.players[0].score = app.players[1].score = 5;
         app.players[0].questions = app.players[1].questions = questions;
         app.players[0].random = app.players[1].random = random;
 
+        this.speed = 1;
         this.race = document.querySelector("#gameContainer #race");
         this.track = document.querySelector("#gameContainer #track");
         this.trackContext = this.track.getContext("2d");
         this.controllers = document.querySelector("#gameContainer #controllers");
+        this.startTime = 0;
+        this.scores = [
+            document.querySelector("#gameContainer #leftScore"),
+            document.querySelector("#gameContainer #rightScore")
+        ];
         
         this.controllers.style.backgroundImage = "url(" + app.gfx.getTileSrc(this.tiles.road.x, this.tiles.road.y, this.tiles.road.width, this.tiles.road.height) + ")";
 
@@ -110,31 +135,106 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         this.race.appendChild(app.players[0].car);
         this.race.appendChild(app.players[1].car);
 
+        this.updateScores();
+
         window.onresize = this.updateSize.bind(this);
         setTimeout(this.updateSize.bind(this), 1000);
         this.updateSize();
     },
 
+    onPlayerGained: function onPlayerGained(player, time) {
+
+        player.position = 1000;
+        player.controller.speed = 0;
+        player.score++;
+        player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+        this.updateScores();
+    },
+
+    onPlayerLost: function onPlayerLost(player, time) {
+
+        player.position = -1000;
+        player.controller.speed = 0;
+        player.score--;
+        player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+        this.updateScores();
+    },
+
+    checkForGainsOrLosses: function checkForGainsOrLosses(time) {
+
+        for (var i = 0; i < app.players.length; i++) {
+
+            if (app.players[i].position > 1000) {
+
+                this.onPlayerGained(app.players[i], time);
+            }
+            else if (app.players[i].position < -1000) {
+
+                this.onPlayerLost(app.players[i], time);
+            }
+            else if (app.players[i].freezeBy && app.players[i].freezeBy < time) {
+
+                if (app.players[i].position == 0) {
+
+                    app.players[i].freezeBy = null;
+                    app.players[i].car.style.display = "";
+                }
+                else {
+                    
+                    app.players[i].position = 0
+                    app.players[i].freezeBy = time + app.players[i].controller.control.modeDuration[0] / 2;
+                }
+            }
+        }
+    },
+
     onrenderframe: function onrenderframe(frame, duration, time) {
 
+        if (!this.startTime) {
+
+            this.startTime = time;
+        }
+
         this.progress += duration * 0.2 + this.speed;
+        
+        if (((this.progress % 1000) | 0) == 0) {
+
+            this.speed += 0.5;
+            for (var i = 0; i < app.players.length; i++) {
+
+                app.players[i].controller.updateModeDurations(this.speed);
+            }
+        }
+
         var offset = this.progress % (this.track.height * 2);
         this.track.style.left = -offset + "px";
 
-        app.players[0].position += app.players[0].controller.speed; 
-        app.players[1].position += app.players[1].controller.speed;
-        
+        for (var i = 0; i < app.players.length; i++) {
+
+            app.players[i].position += app.players[i].controller.speed;
+
+            if (app.players[i].freezeBy) {
+
+                var timeLeft = app.players[i].freezeBy - time;
+                var playerVisible = !!(((timeLeft / 100) % 2) | 0);
+
+                if (playerVisible) {
+
+                    if (app.players[i].car.style.display == "none") {
+
+                        app.players[i].car.style.display = "";
+                    }
+                }
+                else if (app.players[i].car.style.display != "none") {
+
+                    app.players[i].car.style.display = "none";
+                }
+            }
+        }
+
         this.updateCarPositions();
 
-        if (Math.abs(app.players[0].position) > 1000) {
-
-            app.gfx.screens.menu.load();
-        }
-
-        if (Math.abs(app.players[1].position) > 1000) {
-            
-            app.gfx.screens.menu.load();
-        }
+        this.checkForGainsOrLosses(time);
     },
 
     onkeypress: function onKeyPressed(key) {
