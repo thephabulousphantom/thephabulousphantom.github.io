@@ -1,4 +1,4 @@
-var CACHE_NAME = 'smart-racers-cache-v1.3';
+var CACHE_NAME = 'smart-racers-cache-v1.4';
 var urlsToCache = [
     './',
     './smart-racers.css',
