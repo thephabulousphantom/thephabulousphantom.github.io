@@ -197,9 +197,10 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         this.progress += duration * 0.2 + this.speed;
         
-        if (((this.progress % 500) | 0) == 0) {
+        if (((frame % 60) | 0) == 0) {
 
-            this.speed += 1;
+            this.speed = 1 + (time - this.startTime) / 10000;
+            console.log("Speed: " + this.speed);
             for (var i = 0; i < app.players.length; i++) {
 
                 app.players[i].controller.updateModeDurations(this.speed);

@@ -136,7 +136,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
             for (var i = 0; i < this.modeDuration.length; i++) {
                 
-                instance.modeDuration[i] = this.modeDuration[i] / (1 + 0.75 * (speed - 1));
+                instance.modeDuration[i] = this.modeDuration[i] / ((1 - 1 / 300) + (speed / 300));
             }
         }
 

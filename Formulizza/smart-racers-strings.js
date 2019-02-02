@@ -1,6 +1,6 @@
 app.strings = {
-    SplashMessage: "Mudri Trkači!",
+    SplashMessage: "Formulizza!",
     StartAddButton: "sabiranje",
     StartMultiplyButton: "množenje",
-    StartFixedButton: "varanje"
+    StartFixedButton: "test"
 };
