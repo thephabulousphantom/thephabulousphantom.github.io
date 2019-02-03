@@ -1,6 +1,16 @@
 app.pointer = new (function keyboard() {
 
+    var modPlayer = null;
+
+
     this.onpress = function(element, handler) {
+
+        if (!modPlayer) {
+
+            modPlayer = new Modplayer();
+            modPlayer.autostart = true;
+            modPlayer.load("./lib/jhalme/mods/Mantronix_and_Tip/mod.overload");
+        }
 
         $(element).tclick(handler);
     };
