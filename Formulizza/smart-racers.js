@@ -1,5 +1,6 @@
 var app = new (function App() {
 
+
     this.controllerModeDurations = {
 
     };
@@ -10,6 +11,7 @@ var app = new (function App() {
 
         app.utility.init();
         app.gfx.init();
+        app.music.init();
         app.keyboard.init();
         app.pointer.init();
         app.players.push(new app.Player("red", 640, 568, 256, 144, app.questions.add, true));

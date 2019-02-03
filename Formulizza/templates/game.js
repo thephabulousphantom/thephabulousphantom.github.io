@@ -85,7 +85,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     },
 
     onload: function onload(questions, random) {
-        
+      
         app.players[0].score = app.players[1].score = 5;
         app.players[0].questions = app.players[1].questions = questions;
         app.players[0].random = app.players[1].random = random;

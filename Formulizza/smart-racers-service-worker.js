@@ -1,4 +1,4 @@
-var CACHE_NAME = 'smart-racers-cache-v1.4';
+var CACHE_NAME = 'smart-racers-cache-v1.5';
 var urlsToCache = [
     './',
     './smart-racers.css',
@@ -47,7 +47,15 @@ var urlsToCache = [
     './lib/jquery/images/ui-icons_777620_256x240.png',
     './lib/jquery/images/ui-icons_777777_256x240.png',
     './lib/jquery/images/ui-icons_cc0000_256x240.png',
-    './lib/jquery/images/ui-icons_ffffff_256x240.png'];
+    './lib/jquery/images/ui-icons_ffffff_256x240.png'
+
+    ,'./lib/jhalme/js/ft2.js',
+    './lib/jhalme/js/player.js',
+    './lib/jhalme/js/pt.js',
+    './lib/jhalme/js/st3.js',
+    './lib/jhalme/js/utils.js',
+    './lib/jhalme/mods/overload.mod'
+];
 
 self.addEventListener('install', function(event) {
 

@@ -1,7 +1,5 @@
 app.pointer = new (function keyboard() {
 
-    var modPlayer = null;
-
     this.onpress = function(element, handler) {
 
         $(element).tclick(handler);
@@ -16,26 +14,12 @@ app.pointer = new (function keyboard() {
 
                 this.bind("touchstart", function (e) { 
 
-                    if (!modPlayer) {
-
-                        modPlayer = new Modplayer();
-                        modPlayer.autostart = true;
-                        modPlayer.load("./lib/jhalme/mods/Mantronix_and_Tip/mod.overload");
-                    }
-
                     onclick.call(this, e); 
                     e.stopPropagation(); 
                     e.preventDefault(); 
                 });
 
                 this.bind("click", function (e) { 
-
-                    if (!modPlayer) {
-
-                        modPlayer = new Modplayer();
-                        modPlayer.autostart = true;
-                        modPlayer.load("./lib/jhalme/mods/Mantronix_and_Tip/mod.overload");
-                    }
 
                     onclick.call(this, e);  //substitute mousedown event for exact same result as touchstart         
                 });   

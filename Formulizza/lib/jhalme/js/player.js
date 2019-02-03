@@ -56,7 +56,6 @@ function Modplayer()
 }
 
 
-
 // load module from url into local buffer
 Modplayer.prototype.load = function(url)
 {
@@ -163,6 +162,7 @@ Modplayer.prototype.play = function()
     this.onPlay();
 
     this.player.delayfirst=this.bufferstodelay;
+
     return true;
   } else {
     return false;
@@ -383,12 +383,12 @@ Modplayer.prototype.currentpattlen = function()
 Modplayer.prototype.createContext = function()
 {
   if ( typeof AudioContext !== 'undefined') {
-    this.context = new AudioContext();
+    this.context = new AudioContext({ sampleRate: this.samplerate });
   } else {
-    this.context = new webkitAudioContext();
+    this.context = new webkitAudioContext({ sampleRate: this.samplerate });
   }
   this.samplerate=this.context.sampleRate;
-  this.bufferlen=(this.samplerate > 44100) ? 4096 : 2048;
+  this.bufferlen=((this.samplerate > 44100) ? 4096 : 2048) * 4;
 
   // Amiga 500 fixed filter at 6kHz. WebAudio lowpass is 12dB/oct, whereas
   // older Amigas had a 6dB/oct filter at 4900Hz.
@@ -412,8 +412,13 @@ Modplayer.prototype.createContext = function()
   this.mixerNode.module=this;
   this.mixerNode.onaudioprocess=Modplayer.prototype.mix;
 
+  this.gainNode = this.context.createGain();
+  this.gainNode.gain.setValueAtTime(0, this.context.currentTime);
+
   // patch up some cables :)
-  this.mixerNode.connect(this.filterNode);
+  this.mixerNode.connect(this.gainNode);
+  this.gainNode.connect(this.filterNode);
+  //this.mixerNode.connect(this.filterNode);
   this.filterNode.connect(this.lowpassNode);
   this.lowpassNode.connect(this.context.destination);
 }
@@ -430,7 +435,8 @@ Modplayer.prototype.mix = function(ape) {
     mod=this.module;
   }
 
-  if (mod.player && mod.delayfirst==0) {
+  if (mod.player && mod.delayfirst == 0) {
+
     mod.player.repeat=mod.repeat;
 
     var bufs=new Array(ape.outputBuffer.getChannelData(0), ape.outputBuffer.getChannelData(1));
