@@ -127,6 +127,17 @@ app.gfx = new (function Gfx() {
 
                 this.element.style.transform = "";
             }
+        },
+
+        jump: {
+            animate: function(percent) {
+
+                this.element.style.transform = "scale(" + (1 + 0.20 * Math.sin(Math.PI * percent)) + ")";
+            },
+            done: function() {
+
+                this.element.style.transform = "";
+            }
         }
     }
 
@@ -136,7 +147,19 @@ app.gfx = new (function Gfx() {
             type: animationTypes.press,
             context: app.gfx.screens.current,
             startTime: timers.currentFrame,
-            duration: 100,
+            duration: 10 * (1000 / 60),
+            element: element,
+            callback: callback
+        });
+    };
+
+    this.jump = function jump(element, callback) {
+
+        animations.push({
+            type: animationTypes.jump,
+            context: app.gfx.screens.current,
+            startTime: timers.currentFrame,
+            duration: 20 * (1000 / 60),
             element: element,
             callback: callback
         });

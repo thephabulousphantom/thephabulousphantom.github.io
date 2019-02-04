@@ -14,9 +14,9 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
     ],
 
     speedChange: {
-        correct: 0.5,
-        incorrect: -0.75,
-        none: -0.5
+        correct: 3,
+        incorrect: -3,
+        none: -1
     },
 
     onload: function onload(instance) {
@@ -201,7 +201,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
             case app.gfx.controls.controller.modes.questionAnswers:
                 if (time - instance.modeStartTime > instance.modeDuration[app.gfx.controls.controller.modes.questionAnswers]) {
 
-                    instance.speed += app.gfx.controls.controller.speedChange.none / instance.level;
+                    instance.speed += app.gfx.controls.controller.speedChange.none;
 
                     instance.modeStartTime = time;
                     instance.updateMode(app.gfx.controls.controller.modes.none);
@@ -210,11 +210,12 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
                     if (instance.answer == instance.correctAnswer) {
 
-                        instance.speed += app.gfx.controls.controller.speedChange.correct * instance.level;
+                        instance.speed += app.gfx.screens.current.speed * app.gfx.controls.controller.speedChange.correct;
+                        app.gfx.jump(instance.player.car);
                     }
                     else {
 
-                        instance.speed += app.gfx.controls.controller.speedChange.incorrect / instance.level;
+                        instance.speed += app.gfx.controls.controller.speedChange.incorrect / app.gfx.screens.current.speed;
                     }
 
                     instance.modeStartTime = time;

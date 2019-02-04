@@ -3,26 +3,6 @@
     /*background-color: rgba(128, 192, 0, 1);*/
 }
 
-#gameContainer #leftScore, #gameContainer #rightScore {
-
-    position: fixed;
-    bottom: 0;
-    z-index: 20000;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-#gameContainer #leftScore {
-
-    left: 0;
-    color: rgba(255, 0, 0, 1);
-}
-
-#gameContainer #rightScore {
-
-    right: 0;
-    color: rgba(0, 0, 255, 1);
-}
-
 #gameContainer #race {
 
     display: block;
@@ -43,14 +23,43 @@
 
 #gameContainer #controllers #left {
     
-    width: 50%;
+    width: 40%;
     height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
     vertical-align: top;
 }
 
 #gameContainer #controllers #right {
     
-    width: 50%;
+    width: 40%;
     height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
     vertical-align: top;
+}
+
+#gameContainer #scores {
+
+    width: 20%;
+    height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
+    vertical-align: top;
+}
+
+#gameContainer #leftScore, #gameContainer #rightScore {
+
+    width: calc(50% - 24px);
+    top: 0;
+    z-index: 20000;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#gameContainer #leftScore {
+
+    /*left: 0;*/
+    text-align: center;
+    color: rgba(255, 0, 0, 1);
+}
+
+#gameContainer #rightScore {
+
+    /*right: 0;*/
+    text-align: center;
+    color: rgba(0, 0, 255, 1);
 }

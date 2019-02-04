@@ -30,13 +30,13 @@
 
 .question-only .question {
     
-    width: calc(100% - 32px); /* 32px = margin fix*/
+    width: calc(100% - 24px); /* 24px = margin fix*/
     height: 100%;
 }
 
 .question-answers .question {
 
-    width: calc(100% - 32px); /* 32px = margin fix*/
+    width: calc(100% - 24px); /* 24px = margin fix*/
     height: 30%;
 }
 
@@ -76,8 +76,8 @@
 
 .question-answers .answers .answer-row .answer {
 
-    width: calc(50% - 8px); /* fix due to margin-tiny which adds 2x 4px*/
-    height: calc(100% - 8px); /* fix due to margin-tiny which adds 2x 4px*/
+    width: calc(50% - 4px); /* fix due to margin-tiny which adds 2x 4px*/
+    height: calc(100% - 4px); /* fix due to margin-tiny which adds 2x 4px*/
 }
 
 /* if answers-shown class applied to container,

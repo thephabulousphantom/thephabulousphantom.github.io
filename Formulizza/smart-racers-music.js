@@ -71,7 +71,7 @@ app.music = new (function Music() {
             _modPlayer.play();
         };
 
-        _modPlayer.load("./lib/jhalme/mods/overload.mod");
+        //_modPlayer.load("./lib/jhalme/mods/overload.mod");
 
         window.removeEventListener("click", initializeAudio);
     }

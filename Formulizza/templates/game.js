@@ -145,18 +145,24 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     onPlayerGained: function onPlayerGained(player, time) {
 
         player.position = 1000;
-        player.controller.speed = 0;
+        //player.controller.speed = 0;
         player.score++;
-        player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+        //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+
+        player.controller.speed = -Math.abs(this.speed, player.controller.speed / 2);
+
         this.updateScores();
     },
 
     onPlayerLost: function onPlayerLost(player, time) {
 
         player.position = -1000;
-        player.controller.speed = 0;
+        //player.controller.speed = 0;
         player.score--;
-        player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+        //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+
+        player.controller.speed = Math.min(this.speed * 2, Math.abs(player.controller.speed));
+
         this.updateScores();
     },
 
@@ -197,10 +203,17 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         this.progress += duration * 0.2 + this.speed;
         
+        if (((frame % 10) | 0) == 0) {
+
+            for (var i = 0; i < app.players.length; i++) {
+
+                app.players[i].controller.speed -= this.speed / 10;
+            }
+        }
+
         if (((frame % 60) | 0) == 0) {
 
             this.speed = 1 + (time - this.startTime) / 10000;
-            console.log("Speed: " + this.speed);
             for (var i = 0; i < app.players.length; i++) {
 
                 app.players[i].controller.updateModeDurations(this.speed);
