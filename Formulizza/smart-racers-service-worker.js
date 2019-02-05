@@ -1,4 +1,4 @@
-var CACHE_NAME = 'smart-racers-cache-v1.5';
+var CACHE_NAME = 'smart-racers-cache-v1.6';
 var urlsToCache = [
     './',
     './smart-racers.css',
@@ -17,6 +17,7 @@ var urlsToCache = [
     './smart-racers-gfx.js',
     './smart-racers-keyboard.js',
     './smart-racers-log.js',
+    './smart-racers-music.js',
     './smart-racers-player.js',
     './smart-racers-pointer.js',
     './smart-racers-questions.js',

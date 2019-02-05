@@ -69,7 +69,6 @@ app.utility = new (function Utility() {
 
                 app.log.info("Install platforms: " + e.platforms ? JSON.stringify(e.platforms) : "");
 
-                /*
                 try {
 
                     e.prompt();
@@ -78,7 +77,6 @@ app.utility = new (function Utility() {
 
                     app.log.warn("Couldn't prompt user to add to home screen: " + ex.toString());
                 }
-                */
 
                 // handle user's response
                 e.userChoice.then(
