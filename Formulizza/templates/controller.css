@@ -41,18 +41,46 @@
 }
 
 .blue .question-only .question,
-.blue .question-answers .question,
-.blue .question-answers .answers .answer-row .answer {
+.blue .question-answers .question {
 
-    border-color: rgba(0, 0, 128, 1);
+    border-color: rgba(0, 0, 192, 1);
     background-color: rgba(0, 0, 255, 0.66);
 }
 
+.blue .question-answers .answers .answer-row .answer {
+
+    border-color: rgba(96, 96, 96, 1);
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #000;
+}
+
 .red .question-only .question,
-.red .question-answers .question,
+.red .question-answers .question {
+
+    border-color: rgba(192, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 0.66);
+}
+
 .red .question-answers .answers .answer-row .answer {
 
-    border-color: rgba(128, 0, 0, 1);
+    border-color: rgba(96, 96, 96, 1);
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #000;
+}
+
+.red .question-answers .answers .answer-row .answer.correct,
+.blue .question-answers .answers .answer-row .answer.correct {
+
+    color: rgba(0, 128, 0, 1);
+    border-color: rgba(0, 192, 0, 1);
+    background-color: rgba(0, 255, 0, 0.66);
+}
+
+.red .question-answers .answers .answer-row .answer.incorrect,
+.blue .question-answers .answers .answer-row .answer.incorrect {
+
+    color: rgba(128, 0, 0, 1);
+    border-color: rgba(192, 0, 0, 1);
     background-color: rgba(255, 0, 0, 0.66);
 }
 

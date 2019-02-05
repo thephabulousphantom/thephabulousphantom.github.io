@@ -123,9 +123,14 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
         instance.onAnswerClick = function(e) {
 
+            ;
+
+            $(this).addClass(instance.correctAnswer == $(this).text() ? "correct" : "incorrect");
+            
             app.gfx.press(this, (function() {
 
                 instance.answer = $(this).text();
+                $(this).removeClass("correct").removeClass("incorrect");
 
             }).bind(this));
 

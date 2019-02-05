@@ -91,6 +91,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         app.players[0].random = app.players[1].random = random;
 
         this.speed = 1;
+        this.speedLabel = document.querySelector("#gameContainer #speedLabel");
+        $(this.speedLabel).text(Math.round(this.speed));
+
         this.race = document.querySelector("#gameContainer #race");
         this.track = document.querySelector("#gameContainer #track");
         this.trackContext = this.track.getContext("2d");
@@ -145,7 +148,6 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     onPlayerGained: function onPlayerGained(player, time) {
 
         player.position = 1000;
-        //player.controller.speed = 0;
         player.score++;
         //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
 
@@ -157,7 +159,6 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     onPlayerLost: function onPlayerLost(player, time) {
 
         player.position = -1000;
-        //player.controller.speed = 0;
         player.score--;
         //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
 
@@ -214,6 +215,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         if (((frame % 60) | 0) == 0) {
 
             this.speed = 1 + (time - this.startTime) / 10000;
+            $(this.speedLabel).text(Math.round(this.speed));
+
             for (var i = 0; i < app.players.length; i++) {
 
                 app.players[i].controller.updateModeDurations(this.speed);
@@ -257,10 +260,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             case "+":
                 this.speed++;
+                $(this.speedLabel).text(Math.round(this.speed));
                 break;
 
             case "-":
                 this.speed--;
+                $(this.speedLabel).text(Math.round(this.speed));
                 break;
         }
     },
