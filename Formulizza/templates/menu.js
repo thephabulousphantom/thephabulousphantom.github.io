@@ -5,6 +5,7 @@ app.gfx.screens.menu = new app.gfx.Screen("menu", {
         this.startAddButton = document.querySelector("#menuContainer #menu #startAddButton");
         this.startMultiplyButton = document.querySelector("#menuContainer #menu #startMultiplyButton");
         this.startFixedButton = document.querySelector("#menuContainer #menu #startFixedButton");
+        this.gameOverButton = document.querySelector("#menuContainer #menu #gameOverButton");
 
         this.startAdd = function () {
 
@@ -36,9 +37,18 @@ app.gfx.screens.menu = new app.gfx.Screen("menu", {
             );
         };
 
+        this.gameOver = function() {
+
+            app.gfx.press(
+                app.gfx.screens.menu.gameOverButton,
+                app.gfx.screens.gameOver.load
+            );
+        };
+
         app.pointer.onpress(this.startAddButton, this.startAdd);
         app.pointer.onpress(this.startMultiplyButton, this.startMultiply);
         app.pointer.onpress(this.startFixedButton, this.startFixed);
+        app.pointer.onpress(this.gameOverButton, this.gameOver);
     },
 
     onkeypress: function onkeypress(key) {

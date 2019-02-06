@@ -80,7 +80,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         if (end) {
 
-            app.gfx.screens.menu.load();
+            app.gfx.screens.gameOver.load();
         }
     },
 
@@ -151,7 +151,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         player.score++;
         //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
 
-        player.controller.speed = -Math.abs(this.speed, player.controller.speed / 2);
+        player.controller.speed = -Math.min(this.speed / 2, player.controller.speed / 3);
 
         this.updateScores();
     },
@@ -162,7 +162,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         player.score--;
         //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
 
-        player.controller.speed = Math.min(this.speed * 2, Math.abs(player.controller.speed));
+        player.controller.speed = Math.min(this.speed, Math.abs(player.controller.speed));
 
         this.updateScores();
     },
@@ -202,9 +202,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
             this.startTime = time;
         }
 
-        this.progress += duration * 0.2 + this.speed;
+        this.progress += duration * 0.1 * this.speed;
         
-        if (((frame % 10) | 0) == 0) {
+        if (((frame % 30) | 0) == 0) {
 
             for (var i = 0; i < app.players.length; i++) {
 
@@ -214,7 +214,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         if (((frame % 60) | 0) == 0) {
 
-            this.speed = 1 + (time - this.startTime) / 10000;
+            this.speed = Math.min(1 + (time - this.startTime) / 10000, 6);
+
             $(this.speedLabel).text(Math.round(this.speed));
 
             for (var i = 0; i < app.players.length; i++) {

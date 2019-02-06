@@ -8,13 +8,13 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
     },
 
     modeDuration: [
-        2000,
         3000,
+        4000,
         1000
     ],
 
     speedChange: {
-        correct: 3,
+        correct: 3.5,
         incorrect: -3,
         none: -1
     },
@@ -123,8 +123,6 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
         instance.onAnswerClick = function(e) {
 
-            ;
-
             $(this).addClass(instance.correctAnswer == $(this).text() ? "correct" : "incorrect");
             
             app.gfx.press(this, (function() {
@@ -141,7 +139,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
             for (var i = 0; i < this.modeDuration.length; i++) {
                 
-                instance.modeDuration[i] = this.modeDuration[i] / ((1 - 1 / 300) + (speed / 300));
+                instance.modeDuration[i] = this.modeDuration[i] / ((1 - 1 / 200) + (speed / 200));
             }
         }
 
@@ -206,7 +204,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
             case app.gfx.controls.controller.modes.questionAnswers:
                 if (time - instance.modeStartTime > instance.modeDuration[app.gfx.controls.controller.modes.questionAnswers]) {
 
-                    instance.speed += app.gfx.controls.controller.speedChange.none;
+                    instance.speed += app.gfx.controls.controller.speedChange.none * ((1 - 1 / 5) + app.gfx.screens.current.speed / 5);
 
                     instance.modeStartTime = time;
                     instance.updateMode(app.gfx.controls.controller.modes.none);
@@ -215,12 +213,12 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
                     if (instance.answer == instance.correctAnswer) {
 
-                        instance.speed += app.gfx.screens.current.speed * app.gfx.controls.controller.speedChange.correct;
+                        instance.speed += ((1 - 1 / 5) + app.gfx.screens.current.speed / 5) * app.gfx.controls.controller.speedChange.correct;
                         app.gfx.jump(instance.player.car);
                     }
                     else {
 
-                        instance.speed += app.gfx.controls.controller.speedChange.incorrect / app.gfx.screens.current.speed;
+                        instance.speed += app.gfx.controls.controller.speedChange.incorrect / ((1 - 1 / 5) + app.gfx.screens.current.speed / 5);
                     }
 
                     instance.modeStartTime = time;

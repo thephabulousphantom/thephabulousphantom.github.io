@@ -1,14 +1,16 @@
-var CACHE_NAME = 'smart-racers-cache-v1.6';
+var CACHE_NAME = 'smart-racers-cache-v1.7';
 var urlsToCache = [
     './',
     './smart-racers.css',
     './lib/jquery/jquery-ui.min.css',
     './templates/controller.css',
     './templates/game.css',
+    './templates/gameOver.css',
     './templates/menu.css',
     './templates/splash.css',
     './templates/controller.handlebars',
     './templates/game.handlebars',
+    './templates/gameOver.handlebars',
     './templates/menu.handlebars',
     './templates/splash.handlebars',
     './polyfills.js',
@@ -31,6 +33,7 @@ var urlsToCache = [
     './lib/jquery/jquery-ui.min.js',
     './templates/controller.js',
     './templates/game.js',
+    './templates/gameOver.js',
     './templates/menu.js',
     './templates/splash.js',
     './index.html',

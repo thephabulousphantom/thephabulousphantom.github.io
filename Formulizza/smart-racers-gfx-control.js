@@ -68,7 +68,7 @@ app.gfx.Control = function Control(name, options) {
                 }
                 catch (ex) {
 
-                    app.log.error("An error ocurred while unloading " + control.name + " control " + instance.id + ": " + ex.toSstring());
+                    app.log.error("An error ocurred while unloading " + control.name + " control " + instance.id + ": " + ex.toString());
                 }
             }
             
@@ -80,7 +80,7 @@ app.gfx.Control = function Control(name, options) {
                 }
                 catch (ex) {
 
-                    app.log.error("An error ocurred while unloading " + control.name + " control " + instance.id + ": " + ex.toSstring());
+                    app.log.error("An error ocurred while unloading " + control.name + " control " + instance.id + ": " + ex.toString());
                 }
             }
 

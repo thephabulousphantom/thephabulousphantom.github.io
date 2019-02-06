@@ -4,7 +4,7 @@ app.Player = function Player(color, tile_x, tile_y, tile_width, tile_height, que
 
     this.freezeBy = null;
 
-    this.score = null;
+    this.score = 0;
     
     this.tile = {
         x: tile_x,

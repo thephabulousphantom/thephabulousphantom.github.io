@@ -22,7 +22,7 @@ app.gfx.Screen = function Screen(name, options) {
                 }
                 catch (ex) {
 
-                    app.log.error("An error ocurred while unloading " + app.gfx.screens.current.name + " screen: " + ex.toSstring());
+                    app.log.error("An error ocurred while unloading " + app.gfx.screens.current.name + " screen: " + ex.toString());
                 }
             }
 

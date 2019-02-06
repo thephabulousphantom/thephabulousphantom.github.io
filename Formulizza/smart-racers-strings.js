@@ -1,8 +1,12 @@
 app.strings = {
-    SplashMessage: "Formulizza!",
+    SplashMessage: "Formulica!",
     StartAddButton: "sabiranje",
     StartMultiplyButton: "množenje",
     StartFixedButton: "test",
     Scores: "bodova:",
-    Speed: "brzina:"
+    Speed: "brzina:",
+    GameOver: "rezultat",
+    Winner: "pobednik",
+    Loser: "gubitnik", 
+    Points: "poena" 
 };
