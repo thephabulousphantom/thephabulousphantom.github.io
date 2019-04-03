@@ -69,6 +69,7 @@
     height: 32px;
     border-bottom: solid 1px #000;
     border-right: solid 1px #000;
+    font-size: 12px;
 }
 
 #gameContainer #content .heading.row {
@@ -78,7 +79,8 @@
 
 #gameContainer #content .cell {
 
-    display: inline-block;
+    display:flex;
+    align-items: center;
     width: 12.5%;
     height: 32px;
     border-top: solid 1px #000;
