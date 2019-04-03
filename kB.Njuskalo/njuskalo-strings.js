@@ -1,0 +1,3 @@
+app.strings = {
+    SplashMessage: "Njuškalo"
+};

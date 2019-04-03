@@ -1,0 +1,26 @@
+{
+    "name": "Njuškalo",
+    "icons": [
+        {
+            "src": "icons/njuskalo-icon.png",
+            "type": "image/png",
+            "sizes": "512x512 256x256"
+        },
+        {
+            "src": "icons/njuskalo-icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "icons/njuskalo-icon-32.png",
+            "type": "image/png",
+            "sizes": "32x32 16x16"
+        }
+    ],
+    "start_url": "./index.html",
+    "scope": ".",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "background_color": "rgba(80,128,0,1)",
+    "theme_color": "rgba(160,255,0,1)"
+}

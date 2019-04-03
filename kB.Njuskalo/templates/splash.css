@@ -1,0 +1,22 @@
+#splashContainer #message {
+
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 10%;
+}
+
+#splashContainer #message #center-box {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    background-image: url("../icons/njuskalo-icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
