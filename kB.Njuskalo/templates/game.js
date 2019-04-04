@@ -10,6 +10,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             this.makeClickable(this.clickableCells[i]);
         }
+
+        this.iconCells = document.querySelectorAll("#gameContainer #content .double.cell");
+        for (var i = 0; i < this.iconCells.length; i++) {
+
+            this.addIcon(this.iconCells[i], i);
+        }
     },
 
     makeClickable: function makeClickable(cell) {
@@ -18,11 +24,21 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         icon.className = "icon icon0";
         cell.appendChild(icon);
         cell.icon = icon;
-        app.pointer.onpress(cell, this.onCellClicked);
+        cell.onclick = this.onCellClicked;
+    },
+
+    iconOrder: [9,10,11,12,13,14,15,16,17,18,19,20,0,1,2,3,4,5,6,7,8],
+
+    addIcon: function addIcon(cell, position) {
+
+        var icon = document.createElement("div");
+        icon.className = "icon";
+        icon.style.backgroundPosition = "" + (-32 * this.iconOrder[position]) + "px -32px";
+        icon.style.marginTop = "-10px";
+        cell.appendChild(icon);
     },
 
     onrenderframe: function onrenderframe(frame, duration, time) {
-
     },
 
     onCellClicked: function onCellClicked(e) {
