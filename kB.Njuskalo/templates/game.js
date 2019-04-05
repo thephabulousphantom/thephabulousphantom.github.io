@@ -33,7 +33,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         var icon = document.createElement("div");
         icon.className = "icon";
-        icon.style.backgroundPosition = "" + (-48 * this.iconOrder[position]) + "px -48px";
+        icon.style.backgroundPosition = "" + (-40 * this.iconOrder[position]) + "px -40px";
         cell.appendChild(icon);
     },
 
@@ -47,8 +47,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             case "icon icon0": cell.icon.className = "icon icon1"; break;
             case "icon icon1": cell.icon.className = "icon icon2"; break;
-            case "icon icon2": cell.icon.className = "icon icon3"; break;
-            case "icon icon3": cell.icon.className = "icon icon0"; break;
+            case "icon icon2": cell.icon.className = "icon icon0"; break;
+            /*case "icon icon3": cell.icon.className = "icon icon0"; break;*/
         }
     },
 
