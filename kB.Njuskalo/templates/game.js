@@ -33,8 +33,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         var icon = document.createElement("div");
         icon.className = "icon";
-        icon.style.backgroundPosition = "" + (-32 * this.iconOrder[position]) + "px -32px";
-        icon.style.marginTop = "-10px";
+        icon.style.backgroundPosition = "" + (-48 * this.iconOrder[position]) + "px -48px";
         cell.appendChild(icon);
     },
 
