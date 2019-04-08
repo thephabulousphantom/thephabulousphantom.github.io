@@ -146,9 +146,7 @@ app.gfx = new (function Gfx() {
 
         app.log.info("Initializing graphics...");
 
-        app.mainContainer = document.createElement("div");
-        app.mainContainer.id = "mainContainer";
-        document.body.appendChild(app.mainContainer);
+        app.mainContainer = document.getElementById("mainContainer");
 
         app.tiles = document.getElementById("tiles");
 

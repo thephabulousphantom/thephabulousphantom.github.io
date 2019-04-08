@@ -75,11 +75,28 @@ app.gfx.Screen = function Screen(name, options) {
         app.gfx.screens.current = null;
     }
 
+    this.reload = function reload() {
+
+        me.load();
+    }
+
     if (options) {
 
         for (var option in options) {
 
             me[option] = options[option];
         }
+    }
+
+    try {
+
+        if (me.oninit) {
+
+            me.oninit.apply(me, arguments);
+        }
+    }
+    catch (e) {
+
+        app.log.error("An error ocurred while initializing " + me.name + " screen: " + ex.toString());
     }
 };

@@ -43,6 +43,11 @@
         <script type="text/javascript" language="javascript" src="./njuskalo-keyboard.js"></script>
         <script type="text/javascript" language="javascript" src="./njuskalo-pointer.js"></script>
 
+        <!-- Material Design Lite library -->
+        <link rel="stylesheet" type="text/css" href="lib/material-design-icons/material-icons.css"></link>
+        <link rel="stylesheet" type="text/css" href="lib/mdl/material.min.css"></link>
+        <script type="text/javascript" src="lib/mdl/material.min.js"></script>
+
         <!-- generic styles -->
         <link type="text/css" rel="stylesheet" href="./njuskalo.css">
 
@@ -72,5 +77,79 @@
 
     </head>
     <body>
+
+        <!-- container for the screen layout, navigation etc -->
+        <div class="njuskalo-layout mdl-layout mdl-js-layout">
+
+            <!-- app header with title and menu button -->
+            <header class="mdl-layout__header mdl-layout__header--transparent">
+                <div class="mdl-layout__header-row">
+                    <span class="mdl-layout-title"></span>
+                    <div class="mdl-layout-spacer"></div>
+                    
+                    <!-- <nav class="mdl-navigation">
+                        <a class="mdl-navigation__link" href="./admin/index.html">Console</a>
+                    </nav> -->
+                </div>
+            </header>
+
+            <!-- left slide-out menu -->
+            <div class="njuskalo-drawer mdl-layout__drawer">
+                <header class="njuskalo-drawer-header">
+                    <img src="./icons/njuskalo-icon-192.png"/><span></span>
+                </header>
+                <nav class="mdl-navigation">
+                    <div class="mdl-layout-spacer"></div>
+                    <a class="mdl-navigation__link" href="#">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-fred">
+                            <input type="checkbox" id="switch-fred" class="mdl-switch__input" checked>
+                            <span class="mdl-switch__label">Fred Mrki</span>
+                        </label>
+                    </a>
+                    <a class="mdl-navigation__link" href="#">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-kurt">
+                            <input type="checkbox" id="switch-kurt" class="mdl-switch__input" checked>
+                            <span class="mdl-switch__label">Kurt Kobaja</span>
+                        </label>
+                    </a>
+                    <a class="mdl-navigation__link" href="#">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-dolores">
+                            <input type="checkbox" id="switch-dolores" class="mdl-switch__input" checked>
+                            <span class="mdl-switch__label">Dolores O'Jorgan</span>
+                        </label>
+                    </a>
+                    <a class="mdl-navigation__link" href="#">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-dejvid">
+                            <input type="checkbox" id="switch-dejvid" class="mdl-switch__input" checked>
+                            <span class="mdl-switch__label">Dejvid Buvi</span>
+                        </label>
+                    </a>
+                    <a class="mdl-navigation__link" href="#">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-ejmi">
+                            <input type="checkbox" id="switch-ejmi" class="mdl-switch__input" checked>
+                            <span class="mdl-switch__label">Ejmi Doghouse</span>
+                        </label>
+                    </a>
+                    <a class="mdl-navigation__link" href="#">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-dzenis">
+                            <input type="checkbox" id="switch-dzenis" class="mdl-switch__input" checked>
+                            <span class="mdl-switch__label">Dženis Džin</span>
+                        </label>
+                    </a>
+                    <div class="mdl-layout-spacer"></div>
+                    <div id="menuDevices"></div>
+                </nav>
+            </div>
+
+            <!-- main content container --> 
+            <main class="mdl-layout__content conferor" id="mainContainer">
+                <div id="mainContainer"></div>
+
+                <!-- <button id="logoLink" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="javascript:document.location.href = '/'">
+                    <i class="material-icons">crop_free</i>
+                </button> -->
+            </main>
+
+        </div>
     </body>
 </html>

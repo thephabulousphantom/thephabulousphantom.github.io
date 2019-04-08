@@ -1,12 +1,50 @@
-<div id="header">
-    <div id="mainMenu">
-        Njuškalo!
-    </div>
-</div>
+<style id="columnStyle" type="text/css">
+
+    #gameContainer #content .row {
+
+        height: {{screen.dimensions.icon.height}}px;
+    }
+
+    #gameContainer #content .cell {
+
+        width: {{screen.dimensions.column.standard}}px;
+        height: {{screen.dimensions.icon.height}}px;
+    }
+
+    #gameContainer #content .cell .icon {
+
+        width: {{screen.dimensions.icon.width}}px;
+        height: {{screen.dimensions.icon.height}}px;
+        background-size: {{screen.dimensions.tileset.width}}px {{screen.dimensions.tileset.height}}px;
+    }
+
+    #gameContainer #content .clickable.cell .icon.icon1 {
+        
+        background-position: -{{screen.dimensions.icon.width}}px 0px;
+    }
+
+    #gameContainer #content .clickable.cell .icon.icon2 {
+        
+        background-position: -{{screen.dimensions.icon.width2}}px 0px;
+    }
+
+    #gameContainer #content .clickable.cell .icon.icon3 {
+        
+        background-position: -{{screen.dimensions.icon.width3}}px 0px;
+    }
+
+    #gameContainer #content .double.cell {
+
+        width: {{screen.dimensions.column.first}}px;
+    }
+    
+</style>
+
 <div id="content">
-
-    <div class="label">Likovi:</div>
-    <div class="card">
+<div id="header">
+    Njuškalo
+</div>
+    <div class="section">
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
@@ -15,8 +53,7 @@
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
     </div>
 
-    <div class="label">Predmeti:</div>
-    <div class="card">
+    <div class="section">
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
@@ -25,8 +62,7 @@
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
     </div>
 
-    <div class="label">Lokacije:</div>
-    <div class="card">
+    <div class="section">
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>
         <div class="row"><div class="double cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div><div class="clickable cell"></div></div>

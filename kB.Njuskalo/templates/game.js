@@ -1,5 +1,60 @@
 app.gfx.screens.game = new app.gfx.Screen("game", {
 
+    dimensions: {
+
+        tileset: {
+            width: 840,
+            height: 80
+        },
+        icon: {
+            width: 40,
+            height: 40,
+            width2: 80,
+            width3: 120
+        },
+        column: {
+            standard: (100 / 7)
+        }
+    },
+
+    oninit: function() {
+
+        window.onresize = (function onWindowResized() {
+
+            var windowDimensions = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            };
+
+            var iconSize = Math.floor((windowDimensions.width - (2 * 20)) / 7) - 4;
+
+            this.dimensions = {
+
+                tileset: {
+                    width: iconSize * 21,
+                    height: iconSize * 2
+                },
+                icon: {
+                    width: iconSize,
+                    height: iconSize,
+                    width2: iconSize * 2,
+                    width3: iconSize * 3
+                },
+                column: {
+                    standard: Math.floor((windowDimensions.width - (2 * 20)) / 7) - 4
+                }
+            };
+
+            if (app.gfx.screens.current == this) {
+
+                this.reload();
+            }
+
+        }).bind(this);
+
+        window.onresize();
+    },
+
     onload: function onload() {
 
         this.header = document.getElementById("#gameContainer #header");
@@ -33,7 +88,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         var icon = document.createElement("div");
         icon.className = "icon";
-        icon.style.backgroundPosition = "" + (-40 * this.iconOrder[position]) + "px -40px";
+        icon.style.backgroundPosition = "" + (-this.dimensions.icon.width * this.iconOrder[position]) + "px -" + this.dimensions.icon.width + "px";
         cell.appendChild(icon);
     },
 
