@@ -87,6 +87,52 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         }
     },
 
+    saveState: function () {
+
+        var state = {
+            columns: [],
+            cells: []
+        };
+
+        for (var i = 0; i < this.playerCheckBoxes.length; i++) {
+
+            state.columns.push(this.playerCheckBoxes[i].checked);
+        }
+
+        for (var i = 0; i < this.clickableCells.length; i++) {
+
+            state.cells.push(this.clickableCells[i].icon.className);
+        }
+
+        localStorage.setItem("gameState", JSON.stringify(state));
+    },
+
+    loadState: function() {
+
+        try {
+
+            var state = JSON.parse(localStorage.getItem("gameState"));
+            for (var i = 0; i < state.columns.length; i++) {
+
+                if (!this.playerCheckBoxes[i].checked && state.columns[i]) {
+
+                    this.playerCheckBoxes[i].parentElement.MaterialSwitch.on();
+                }
+                else if (this.playerCheckBoxes[i].checked && !state.columns[i]) {
+
+                    this.playerCheckBoxes[i].parentElement.MaterialSwitch.off();
+                }
+            }
+
+            for (var i = 0; i < state.cells.length; i++) {
+
+                this.clickableCells[i].icon.className = state.cells[i];
+            }
+        }
+        catch (ex) {
+        }
+    },
+
     oninit: function() {
 
         window.onresize = this.updateLayout.bind(this);
@@ -95,14 +141,19 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     onload: function onload() {
 
         this.updateLayout();
-
+        
         this.header = document.getElementById("#gameContainer #header");
         this.mainMenu = document.getElementById("#gameContainer #mainMenu");
 
-        var playerCheckBoxes = document.querySelectorAll(".mdl-switch__input");
-        for (var i = 0; i < playerCheckBoxes.length; i++) {
+        this.playerCheckBoxes = document.querySelectorAll(".mdl-switch__input");
+        for (var i = 0; i < this.playerCheckBoxes.length; i++) {
 
-            playerCheckBoxes[i].onchange = this.updateLayout.bind(this);
+            this.playerCheckBoxes[i].onchange = (function () {
+
+                this.updateLayout();;
+                this.saveState();
+
+            }).bind(this);
         }
 
         this.clickableCells = document.querySelectorAll("#gameContainer #content .clickable.cell");
@@ -116,6 +167,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             this.addIcon(this.iconCells[i], i);
         }
+
+        this.loadState();
+        this.updateLayout();
     },
 
     makeClickable: function makeClickable(cell) {
@@ -124,7 +178,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         icon.className = "icon icon0";
         cell.appendChild(icon);
         cell.icon = icon;
-        cell.onclick = this.onCellClicked;
+        cell.onclick = this.onCellClicked.bind(this);
     },
 
     iconOrder: [9,10,11,12,13,14,15,16,17,18,19,20,0,1,2,3,4,5,6,7,8],
@@ -148,9 +202,11 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             case "icon icon0": cell.icon.className = "icon icon1"; break;
             case "icon icon1": cell.icon.className = "icon icon2"; break;
-            case "icon icon2": cell.icon.className = "icon icon0"; break;
-            /*case "icon icon3": cell.icon.className = "icon icon0"; break;*/
+            case "icon icon2": cell.icon.className = "icon icon3"; break;
+            case "icon icon3": cell.icon.className = "icon icon0"; break;
         }
+
+        this.saveState();
     },
 
     onunload: function onunload() {
