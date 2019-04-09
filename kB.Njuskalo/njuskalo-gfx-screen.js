@@ -95,7 +95,7 @@ app.gfx.Screen = function Screen(name, options) {
             me.oninit.apply(me, arguments);
         }
     }
-    catch (e) {
+    catch (ex) {
 
         app.log.error("An error ocurred while initializing " + me.name + " screen: " + ex.toString());
     }

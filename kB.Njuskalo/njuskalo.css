@@ -7,7 +7,7 @@ body {
 
 body, body * {
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 div {
@@ -161,6 +161,12 @@ div {
     border-radius: 32px;
 }
 
+.njuskalo-layout .mdl-layout__drawer-button {
+
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 48px;
+}
+
 .njuskalo-layout .mdl-layout__drawer-button i {
 
     color: #000;
@@ -175,4 +181,10 @@ div {
 
     width: 144px;
     height: 144px;
+}
+
+.njuskalo-layout .mdl-layout__drawer .mdl-navigation .mdl-navigation__link {
+
+    padding-left: 24px;
+    padding-right: 24px;
 }
