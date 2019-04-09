@@ -7,7 +7,7 @@
 
     padding-top: 6px;
     padding-left: 60px;
-    font-size: 32px;
+    font-size: 16px;
     height: 48px;
     color: #000;
 }
@@ -52,15 +52,15 @@
 #gameContainer #content .label {
 
     display: block;
-    padding-top: 16px;
-    font-size: 24px;
+    padding-top: 8px;
+    font-size: 16px;
     color: #666;
 }
 
 #gameContainer #content .section {
 
     display: block;
-    margin: 16px 0px 16px 0px;
+    margin: 8px 0px 8px 0px;
     padding: 4px;
 }
 
