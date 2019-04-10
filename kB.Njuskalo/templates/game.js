@@ -144,6 +144,18 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         
         this.header = document.getElementById("#gameContainer #header");
         this.mainMenu = document.getElementById("#gameContainer #mainMenu");
+        this.dialog = document.querySelector("#gameContainer #content #specialDialog");
+
+        if (!this.dialog.showModal) {
+
+            dialogPolyfill.registerDialog(this.dialog);
+        }
+
+        this.dialog.querySelector(".close").addEventListener("click", (function() {
+
+            this.dialog.close();
+
+        }).bind(this));;
 
         this.playerCheckBoxes = document.querySelectorAll(".mdl-switch__input");
         for (var i = 0; i < this.playerCheckBoxes.length; i++) {
@@ -178,7 +190,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         icon.className = "icon icon0";
         cell.appendChild(icon);
         cell.icon = icon;
-        cell.onclick = this.onCellClicked.bind(this);
+        app.pointer.onpress(cell, this.onCellClicked.bind(this));
+        app.pointer.onlongpress(cell, function() {
+
+            //this.dialog.showModal();
+            this.icon.className = "icon icon3";
+        });
     },
 
     iconOrder: [9,10,11,12,13,14,15,16,17,18,19,20,0,1,2,3,4,5,6,7,8],
@@ -202,7 +219,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             case "icon icon0": cell.icon.className = "icon icon1"; break;
             case "icon icon1": cell.icon.className = "icon icon2"; break;
-            case "icon icon2": cell.icon.className = "icon icon3"; break;
+            case "icon icon2": cell.icon.className = "icon icon0"; break;
             case "icon icon3": cell.icon.className = "icon icon0"; break;
         }
 
