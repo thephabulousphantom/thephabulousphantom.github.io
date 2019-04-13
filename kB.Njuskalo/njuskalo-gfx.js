@@ -121,7 +121,7 @@ app.gfx = new (function Gfx() {
         press: {
             animate: function(percent) {
 
-                this.element.style.transform = "scale(" + (1 - 0.10 * Math.sin(Math.PI * percent)) + ")";
+                this.element.style.transform = "scale(" + (1 - ((typeof(this.depth) != "undefined" ? this.depth : 0.10)) * Math.sin(Math.PI * percent)) + ")";
             },
             done: function() {
 
@@ -130,7 +130,7 @@ app.gfx = new (function Gfx() {
         }
     }
 
-    this.press = function press(element, callback) {
+    this.press = function press(element, callback, depth) {
 
         animations.push({
             type: animationTypes.press,
@@ -138,6 +138,7 @@ app.gfx = new (function Gfx() {
             startTime: timers.currentFrame,
             duration: 100,
             element: element,
+            depth: depth,
             callback: callback
         });
     }

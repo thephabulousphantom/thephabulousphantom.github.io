@@ -1,82 +1,52 @@
 app.pointer = new (function keyboard() {
 
-    this.onpress = function(element, handler) {
+    this.onpress = function(element, handler, longHandler) {
 
-        $(element).tclick(handler);
+        $(element).tclick(handler, longHandler);
     };
-
-    this.onlongpress = function (element, handler) {
-
-        $(element).tlongclick(handler);
-    }
 
     this.init = function init() {
 
         app.log.info("Initializing pointer...");
 
         (function ($) {
-            $.fn.tclick = function (onclick) {
+            $.fn.tclick = function (onclick, onlongclick) {
 
-                this.bind("touchstart", function (e) { 
-                    
+                /*this.bind("touchstart", function (e) { 
+
+                    this.pressTime = new Date().getTime();
+
                     onclick.call(this, e); 
                     e.stopPropagation(); 
                     e.preventDefault(); 
+                });*/
+
+                this.bind("contextmenu", function(e) {
+
+                    e.preventDefault();
+                    onlongclick.call(this, e); 
+                    return false;
                 });
 
                 this.bind("mousedown", function (e) { 
 
-                    onclick.call(this, e);  //substitute mousedown event for exact same result as touchstart
+                    this.pressTime = new Date().getTime();
+                });
+
+                this.bind("click", function (e) { 
+
+                    if (onlongclick && (new Date().getTime() - this.pressTime) > 1000) {
+
+                        onlongclick.call(this, e); 
+                    }
+                    else {
+
+                        onclick.call(this, e);  //substitute mousedown event for exact same result as touchstart
+                    }
+
                     e.stopPropagation(); 
                     e.preventDefault(); 
                 });   
-
-                return this;
-            };
-        })(jQuery);
-
-        (function ($) {
-            $.fn.tlongclick = function (onlongclick) {
-
-                var downHandler = function (e) { 
-
-                    if (this.dataset.longClickTimerId) {
-
-                        clearTimeout(this.dataset.longClickTimerId);
-                        delete this.dataset.longClickTimerId;
-                    }
-
-                    this.dataset.longClickTimerId = setTimeout(
-                        (function() {
-                            
-                            delete this.dataset.longClickTimerId;
-                            onlongclick.call(this, e);
-
-                        }).bind(this),
-                        1000
-                    );
-
-                    e.stopPropagation(); 
-                    e.preventDefault(); 
-                }
-
-                this.bind("touchstart", downHandler);
-                this.bind("mousedown", downHandler);
-
-                var upHandler = function (e) { 
-
-                    if (this.dataset.longClickTimerId) {
-
-                        clearTimeout(this.dataset.longClickTimerId);
-                        delete this.dataset.longClickTimerId;
-                    }
-
-                    e.stopPropagation(); 
-                    e.preventDefault(); 
-                };
-
-                this.bind("touchend", upHandler);
-                this.bind("mouseup", upHandler);
 
                 return this;
             };

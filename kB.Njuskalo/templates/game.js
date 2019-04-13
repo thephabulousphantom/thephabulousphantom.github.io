@@ -162,11 +162,23 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             this.playerCheckBoxes[i].onchange = (function () {
 
-                this.updateLayout();;
+                this.updateLayout();
                 this.saveState();
 
             }).bind(this);
         }
+
+        $("#ClearAllMenuItem").click((function() {
+
+            var state = JSON.parse(localStorage.getItem("gameState"));
+            for (var i = 0; i < state.cells.length; i++) {
+
+                state.cells[i] = "icon icon0";
+            }
+            localStorage.setItem("gameState", JSON.stringify(state));
+            this.loadState();            
+            this.updateLayout();
+        }).bind(this));
 
         this.clickableCells = document.querySelectorAll("#gameContainer #content .clickable.cell");
         for (var i = 0; i < this.clickableCells.length; i++) {
@@ -190,12 +202,11 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         icon.className = "icon icon0";
         cell.appendChild(icon);
         cell.icon = icon;
-        app.pointer.onpress(cell, this.onCellClicked.bind(this));
-        app.pointer.onlongpress(cell, function() {
-
-            //this.dialog.showModal();
-            this.icon.className = "icon icon3";
-        });
+        app.pointer.onpress(
+            cell,
+            this.onCellClicked.bind(this),
+            this.onCellLongclicked.bind(this, icon, cell)
+        );
     },
 
     iconOrder: [9,10,11,12,13,14,15,16,17,18,19,20,0,1,2,3,4,5,6,7,8],
@@ -215,6 +226,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     onCellClicked: function onCellClicked(e) {
 
         var cell = e.currentTarget;
+        app.gfx.press(cell,null,0.20);
         switch (cell.icon.className) {
 
             case "icon icon0": cell.icon.className = "icon icon1"; break;
@@ -224,6 +236,22 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         }
 
         this.saveState();
+    },
+
+    onCellLongclicked: function(icon, cell) {
+
+        //this.dialog.showModal();
+        
+        app.gfx.press(cell,null,0.20);
+
+        if (icon.className == "icon icon3") {
+
+            icon.className = "icon icon0";
+        }
+        else {
+            
+            icon.className = "icon icon3";
+        }
     },
 
     onunload: function onunload() {
