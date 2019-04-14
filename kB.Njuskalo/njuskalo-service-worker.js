@@ -1,4 +1,4 @@
-var CACHE_NAME = "njuskalo-cache-v1.3.1";
+var CACHE_NAME = "njuskalo-cache-v1.3.2";
 var urlsToCache = [
     "/",
     "/fonts/Bangers/Bangers-Regular.ttf",
