@@ -12,25 +12,22 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         var windowDimensions = {
             width: window.innerWidth,
-            height: window.innerHeight,
+            height: window.innerHeight
         };
 
-        var columnCount = 1;
-        
-        var playerCheckBoxes = document.querySelectorAll(".mdl-switch__input");
+        var columnCount = 1;   
         var playerCss = "";
-        for (var i = 0; i < playerCheckBoxes.length; i++) {
+        for (var i = 0; i < app.state.columns.length; i++) {
 
-            var checkBox = playerCheckBoxes[i];
-            if (checkBox.checked) {
+            if (app.state.columns[i].checked) {
 
                 columnCount++;
             }
             else {
 
-                playerCss += "#gameContainer #content .cell." + checkBox.id.substring("switch-".length, 100) + " { display: none }";
+                playerCss += "#gameContainer #content .cell." + app.state.columns[i].id + " { display: none }";
             }
-        }        
+        }  
 
         var iconSize = Math.floor((windowDimensions.width - (2 * 20)) / columnCount) - 4;
 
@@ -89,47 +86,22 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
     saveState: function () {
 
-        var state = {
-            columns: [],
-            cells: []
-        };
-
-        for (var i = 0; i < this.playerCheckBoxes.length; i++) {
-
-            state.columns.push(this.playerCheckBoxes[i].checked);
-        }
-
+        app.state.cells = [];
         for (var i = 0; i < this.clickableCells.length; i++) {
 
-            state.cells.push(this.clickableCells[i].icon.className);
+            app.state.cells.push(this.clickableCells[i].icon.className);
         }
-
-        localStorage.setItem("gameState", JSON.stringify(state));
+       
+        app.saveState();
     },
 
     loadState: function() {
 
-        try {
+        app.loadState();
 
-            var state = JSON.parse(localStorage.getItem("gameState"));
-            for (var i = 0; i < state.columns.length; i++) {
+        for (var i = 0; i < app.state.cells.length; i++) {
 
-                if (!this.playerCheckBoxes[i].checked && state.columns[i]) {
-
-                    this.playerCheckBoxes[i].parentElement.MaterialSwitch.on();
-                }
-                else if (this.playerCheckBoxes[i].checked && !state.columns[i]) {
-
-                    this.playerCheckBoxes[i].parentElement.MaterialSwitch.off();
-                }
-            }
-
-            for (var i = 0; i < state.cells.length; i++) {
-
-                this.clickableCells[i].icon.className = state.cells[i];
-            }
-        }
-        catch (ex) {
+            this.clickableCells[i].icon.className = app.state.cells[i];
         }
     },
 
@@ -144,45 +116,26 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         
         this.header = document.getElementById("#gameContainer #header");
         this.mainMenu = document.getElementById("#gameContainer #mainMenu");
-        this.dialog = document.querySelector("#gameContainer #content #specialDialog");
 
-        if (!this.dialog.showModal) {
+        this.onColumnChange = (function () {
 
-            dialogPolyfill.registerDialog(this.dialog);
-        }
-
-        this.dialog.querySelector(".close").addEventListener("click", (function() {
-
-            this.dialog.close();
-
-        }).bind(this));;
+            this.updateLayout();
+        }).bind(this);
 
         this.playerCheckBoxes = document.querySelectorAll(".mdl-switch__input");
         for (var i = 0; i < this.playerCheckBoxes.length; i++) {
 
-            this.playerCheckBoxes[i].onchange = (function () {
-
-                this.updateLayout();
-                this.saveState();
-
-            }).bind(this);
+            $(this.playerCheckBoxes[i]).bind("change", this.onColumnChange);
         }
 
-        $("#ClearAllMenuItem").click((function() {
+        this.clearAllMenuItemHandler = (function() {
 
-            var state = JSON.parse(localStorage.getItem("gameState"));
-            for (var i = 0; i < state.cells.length; i++) {
-
-                state.cells[i] = "icon icon0";
-            }
-            localStorage.setItem("gameState", JSON.stringify(state));
-            this.loadState();            
+            this.loadState();
             this.updateLayout();
-
-            $(".mdl-layout__obfuscator").removeClass("is-visible");
-            $(".njuskalo-drawer").removeClass("is-visible");
             
-        }).bind(this));
+        }).bind(this);
+
+        $("#ClearAllMenuItem").bind("click", this.clearAllMenuItemHandler);
 
         this.clickableCells = document.querySelectorAll("#gameContainer #content .clickable.cell");
         for (var i = 0; i < this.clickableCells.length; i++) {
@@ -244,8 +197,6 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
     onCellLongclicked: function(icon, cell) {
 
-        //this.dialog.showModal();
-        
         app.gfx.press(cell,null,0.20);
 
         if (icon.className == "icon icon3") {
@@ -259,5 +210,13 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     },
 
     onunload: function onunload() {
+
+        this.playerCheckBoxes = document.querySelectorAll(".mdl-switch__input");
+        for (var i = 0; i < this.playerCheckBoxes.length; i++) {
+
+            $(this.playerCheckBoxes[i]).unbind("change", this.onColumnChange);
+        }
+
+        $("#ClearAllMenuItem").unbind("click", this.clearAllMenuItemHandler);
     }
 });

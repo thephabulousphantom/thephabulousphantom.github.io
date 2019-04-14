@@ -1,4 +1,4 @@
-var CACHE_NAME = "njuskalo-cache-v1.2";
+var CACHE_NAME = "njuskalo-cache-v1.3";
 var urlsToCache = [
     "/",
     "/fonts/Bangers/Bangers-Regular.ttf",
@@ -19,10 +19,13 @@ var urlsToCache = [
     "/lib/mdl/material.min.js",
     "/lib/mdl/material.min.css",
     "/templates/game.js",
+    "/templates/manual.js",
     "/templates/splash.js",
     "/templates/game.css",
+    "/templates/manual.css",
     "/templates/splash.css",
     "/templates/game.handlebars",
+    "/templates/manual.handlebars",
     "/templates/splash.handlebars",
     "/index.html",
     "/njuskalo-gfx-control.js",
