@@ -1,6 +1,8 @@
 var CACHE_NAME = "njuskalo-cache-v1.2";
 var urlsToCache = [
     "/",
+    "/fonts/Bangers/Bangers-Regular.ttf",
+    "/fonts/PatrickHand/PatrickHand-Regular.ttf",
     "/gfx/njuskalo-tiles.png",
     "/icons/njuskalo-icon.png",
     "/icons/njuskalo-icon-192.png",

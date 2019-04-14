@@ -7,7 +7,8 @@ body {
 
 body, body * {
 
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    /*"Comic Sans MS", */
+    font-family: "Njuskalo", cursive, sans-serif;
 }
 
 div {
@@ -234,4 +235,18 @@ dialog.fixed {
     background:#999;
     margin-top:10px;
     margin-bottom:10px;
+}
+
+@font-face {
+    font-family: "Njuskalo";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Njuskalo Regular"), local("Njuskalo-Regular"), url(fonts/PatrickHand/PatrickHand-Regular.ttf);
+}
+
+@font-face {
+    font-family: "NjuskaloJak";
+    font-style: normal;
+    font-weight: 400;
+    src: local("NjuskaloJak Regular"), local("NjuskaloJak-Regular"), url(fonts/Bangers/Bangers-Regular.ttf);
 }

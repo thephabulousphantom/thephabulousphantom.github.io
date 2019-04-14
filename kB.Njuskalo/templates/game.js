@@ -178,6 +178,10 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
             localStorage.setItem("gameState", JSON.stringify(state));
             this.loadState();            
             this.updateLayout();
+
+            $(".mdl-layout__obfuscator").removeClass("is-visible");
+            $(".njuskalo-drawer").removeClass("is-visible");
+            
         }).bind(this));
 
         this.clickableCells = document.querySelectorAll("#gameContainer #content .clickable.cell");
