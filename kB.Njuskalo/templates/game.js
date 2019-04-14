@@ -17,9 +17,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         var columnCount = 1;   
         var playerCss = "";
-        for (var i = 0; i < app.state.columns.length; i++) {
+        for (var i = 0; i < 6; i++) {
 
-            if (app.state.columns[i].checked) {
+            if ((i >= app.state.columns.length) || app.state.columns[i].checked) {
 
                 columnCount++;
             }
@@ -99,9 +99,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         app.loadState();
 
-        for (var i = 0; i < app.state.cells.length; i++) {
+        if (this.clickableCells && this.clickableCells.length >= app.state.cells.length) {
 
-            this.clickableCells[i].icon.className = app.state.cells[i];
+            for (var i = 0; i < app.state.cells.length; i++) {
+
+                this.clickableCells[i].icon.className = app.state.cells[i];
+            }
         }
     },
 
@@ -112,8 +115,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
     onload: function onload() {
 
+        this.loadState();
         this.updateLayout();
-        
+
         this.header = document.getElementById("#gameContainer #header");
         this.mainMenu = document.getElementById("#gameContainer #mainMenu");
 
@@ -148,9 +152,6 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             this.addIcon(this.iconCells[i], i);
         }
-
-        this.loadState();
-        this.updateLayout();
     },
 
     makeClickable: function makeClickable(cell) {
