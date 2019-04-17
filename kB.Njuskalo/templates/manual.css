@@ -3,6 +3,15 @@
     box-sizing: border-box;    
 }
 
+#manualContainer .section h1, .section #manualContainer h2 {
+
+    font-family: "NjuskaloJak";
+}
+
+#manualContainer .section h1 {
+
+    font-size: 20px;
+}
 
 #manualContainer #header {
 
