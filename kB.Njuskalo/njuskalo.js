@@ -99,17 +99,17 @@ var app = new (function App() {
 
         $("#ClearAllMenuItem").click((function() {
 
-            for (var i = 0; i < app.state.cells.length; i++) {
+            if (app.state && app.state.cells) {
 
-                app.state.cells[i] = "icon icon0";
+                for (var i = 0; i < app.state.cells.length; i++) {
+
+                    app.state.cells[i] = "icon icon0";
+                }
             }
 
             this.saveState();
-
-            if (app.gfx.screens.current != app.gfx.screens.game) {
-
-                app.gfx.screens.game.load();
-            }
+            
+            app.gfx.screens.game.load();
 
             $(".mdl-layout__obfuscator").removeClass("is-visible");
             $(".njuskalo-drawer").removeClass("is-visible");

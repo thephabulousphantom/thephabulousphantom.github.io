@@ -14,6 +14,11 @@ app.gfx.Screen = function Screen(name, options) {
 
         if (app.gfx.screens.current) {
         
+            if (app.gfx.screens.current === me) {
+
+                return;
+            }
+
             if (app.gfx.screens.current.onunload) {
 
                 try {

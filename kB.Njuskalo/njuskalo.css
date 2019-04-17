@@ -37,22 +37,32 @@ div {
     transform: translate(-50%, -50%);
 }
 
-.font-tiny {
+.font-normal, .font-normal p, .font-normal span {
+
+    font-family: "Njuskalo", cursive, sans-serif;
+}
+
+.font-strong, .font-strong p, .font-strong span {
+
+    font-family: "NjuskaloJak", cursive, sans-serif;
+}
+
+.font-tiny, .font-tiny p, .font-tiny span {
 
     font-size: 8px;
 }
 
-.font-small {
+.font-small, .font-small p, .font-small span {
 
     font-size: 16px;
 }
 
-.font-medium {
+.font-medium, .font-medium p, .font-medium span {
 
     font-size: 24px;
 }
 
-.font-large {
+.font-large, .font-large p, .font-large span {
 
     font-size: 48px;
 }

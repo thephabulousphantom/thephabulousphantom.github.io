@@ -3,22 +3,10 @@
     box-sizing: border-box;    
 }
 
-#manualContainer .section h1, .section #manualContainer h2 {
-
-    font-family: "NjuskaloJak";
-}
-
-#manualContainer .section h1 {
-
-    font-size: 20px;
-}
-
 #manualContainer #header {
 
     padding-top: 6px;
     padding-left: 60px;
-    font-family: "NjuskaloJak";
-    font-size: 24px;
     height: 48px;
     color: #000;
 }
@@ -44,14 +32,6 @@
     padding-right: 16px;
     overflow-x: wrap;
     overflow-y: auto;
-}
-
-#manualContainer #content .heading {
-
-    display: block;
-    padding-top: 8px;
-    font-size: 24px;
-    color: #666;
 }
 
 #manualContainer #content .section {
