@@ -1,0 +1,122 @@
+#gameContainer .controllerContainer {
+
+    width: 100%;
+    height: 100%;
+}
+
+#gameContainer .controllerContainer > div {
+
+    width: 100%;
+    height: 100%;
+}
+
+.question-only *, .question-answers * {
+
+    color: rgba(255,255,255,0.75);
+}
+
+/*  by default, show questions only */
+.question-only {
+
+    display: block;
+    height: 100%;
+}
+
+.question-answers {
+
+    display: none;
+    height: 100%;
+}
+
+.question-only .question {
+    
+    width: calc(100% - 24px); /* 24px = margin fix*/
+    height: 100%;
+}
+
+.question-answers .question {
+
+    width: calc(100% - 24px); /* 24px = margin fix*/
+    height: 30%;
+}
+
+.blue .question-only .question,
+.blue .question-answers .question {
+
+    border-color: rgba(0, 0, 192, 1);
+    background-color: rgba(0, 0, 255, 0.66);
+}
+
+.blue .question-answers .answers .answer-row .answer {
+
+    border-color: rgba(96, 96, 96, 1);
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #000;
+}
+
+.red .question-only .question,
+.red .question-answers .question {
+
+    border-color: rgba(192, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 0.66);
+}
+
+.red .question-answers .answers .answer-row .answer {
+
+    border-color: rgba(96, 96, 96, 1);
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #000;
+}
+
+.red .question-answers .answers .answer-row .answer.correct,
+.blue .question-answers .answers .answer-row .answer.correct {
+
+    color: rgba(0, 128, 0, 1);
+    border-color: rgba(0, 192, 0, 1);
+    background-color: rgba(0, 255, 0, 0.66);
+}
+
+.red .question-answers .answers .answer-row .answer.incorrect,
+.blue .question-answers .answers .answer-row .answer.incorrect {
+
+    color: rgba(128, 0, 0, 1);
+    border-color: rgba(192, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 0.66);
+}
+
+.question-answers .answers {
+
+    display: block;
+    height: 70%;
+}
+
+.question-answers .answers div {
+
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.question-answers .answers .answer-row {
+
+    display: block;
+    height: 50%;
+}
+
+.question-answers .answers .answer-row .answer {
+
+    width: calc(50% - 4px); /* fix due to margin-tiny which adds 2x 4px*/
+    height: calc(100% - 4px); /* fix due to margin-tiny which adds 2x 4px*/
+}
+
+/* if answers-shown class applied to container,
+   show questions with answers */
+.answers-shown .question-only {
+
+    display: none;
+}
+
+.answers-shown .question-answers {
+
+    display: block;
+}
+

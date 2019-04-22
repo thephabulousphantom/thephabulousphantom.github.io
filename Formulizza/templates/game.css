@@ -1,0 +1,84 @@
+#gameContainer {
+
+    /*background-color: rgba(128, 192, 0, 1);*/
+}
+
+#gameContainer #race {
+
+    display: block;
+    height: 30%;
+}
+
+#gameContainer #race #track {
+
+    position: absolute;
+}
+
+#gameContainer #controllers {
+    
+    display: block;
+    height: 70%;
+    overflow: hidden;
+}
+
+#gameContainer #controllers #left {
+    
+    width: 40%;
+    height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
+    vertical-align: top;
+}
+
+#gameContainer #controllers #right {
+    
+    width: 40%;
+    height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
+    vertical-align: top;
+}
+
+#gameContainer #scores {
+
+    position: relative;
+    width: 20%;
+    height: calc(100% - 32px); /* fix due to margin-medium which adds 2x 16px*/
+    vertical-align: top;
+}
+
+#gameContainer .label {
+
+    padding-top: 16px;
+    width: 100%;
+    text-align: center;
+    color: rgba(0,0,0,0.5);
+}
+
+#gameContainer #leftScore, #gameContainer #rightScore {
+
+    width: calc(50% - 12px);
+    top: 0;
+    z-index: 20000;
+}
+
+#gameContainer #leftScore {
+
+    text-align: center;
+    color: rgba(255, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 0.25);
+}
+
+#gameContainer #rightScore {
+
+    text-align: center;
+    color: rgba(0, 0, 255, 1);
+    background-color: rgba(0, 0, 255, 0.25);
+}
+
+#gameContainer #speedLabel {
+
+    width: calc(100% - 12px);
+    top: 0;
+    z-index: 20000;
+    color: rgba(0, 0, 0, 0.5);
+    border-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
