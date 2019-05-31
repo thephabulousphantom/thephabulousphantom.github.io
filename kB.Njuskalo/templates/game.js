@@ -85,11 +85,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         // Update player icons
         var icons = document.querySelectorAll(".double.cell .icon");
-        for (var i = 1; i < icons.length; i++) {
+        for (var i = 1; i < icons.length + 1; i++) {
 
             var icon = icons[i - 1];
             var position = icon.dataset.position | 0;
-            icon.style.backgroundPosition = "" + (-this.dimensions.icon.width * this.iconOrder[position]) + "px -" + this.dimensions.icon.width + "px";
+            icon.style.backgroundPosition =
+                "" + (-this.dimensions.icon.width * this.iconOrder[position]) + "px -" + this.dimensions.icon.width + "px";
         }
 
         this.loadState();
