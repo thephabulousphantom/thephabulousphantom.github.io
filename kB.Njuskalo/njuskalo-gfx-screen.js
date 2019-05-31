@@ -51,6 +51,8 @@ app.gfx.Screen = function Screen(name, options) {
             + compiledTemplateHtml
             + "</div>";
 
+        componentHandler.upgradeDom();
+
         app.gfx.screens.current = me;
 
         if (me.onload) {

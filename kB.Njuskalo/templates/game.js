@@ -75,33 +75,50 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
             "#gameContainer #content .double.cell {" +
             "   width: " + this.dimensions.column.first + "px;" +
             "}" +   
+            "#gameContainer #content .section #headerRow .header.cell {" +
+            "   line-height: " + this.dimensions.icon.height + "px;" +
+            "   background-color: inherit;" +
+            "   white-space: nowrap;" +
+            "   overflow: hidden;" +
+            "}" +
             playerCss;
 
         // Update player icons
         var icons = document.querySelectorAll(".double.cell .icon");
-        for (var i = 0; i < icons.length; i++) {
+        for (var i = 1; i < icons.length; i++) {
 
-            var icon = icons[i];
+            var icon = icons[i - 1];
             var position = icon.dataset.position | 0;
             icon.style.backgroundPosition = "" + (-this.dimensions.icon.width * this.iconOrder[position]) + "px -" + this.dimensions.icon.width + "px";
         }
 
-        // Update checked icons
-        if (this.clickableCells && app.state.cells) {
-
-            for (var i = 0; i < app.state.cells.length; i++) {
-
-                if (this.clickableCells.length > i) {
-
-                    this.clickableCells[i].icon.className = "" + app.state.cells[i];
-                }
-            }
-        }
+        this.loadState();
     },
 
     onColumnChange: function () {
 
         this.updateView();
+    },
+
+    onHeaderClicked: function onHeaderClicked(e) {
+
+        var cell = e.currentTarget;
+
+        this.playerNameTextBox.parentElement.MaterialTextfield.change(cell.innerText);
+        this.playerNameDialog.showModal();
+        this.playerNameDialog.changingCell = cell;
+    },
+
+    onPlayerNameChange: function onPlayerNameChange() {
+
+        this.playerNameDialog.close();
+        this.playerNameDialog.changingCell.innerText = this.playerNameTextBox.value;
+        this.saveState();
+    },
+
+    onPlayerNameClose: function onPlayerNameClose() {
+        
+        this.playerNameDialog.close();
     },
 
     onCellClicked: function onCellClicked(e) {
@@ -155,6 +172,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             app.state.cells.push(this.clickableCells[i].icon.className);
         }
+
+        app.state.names = [];
+        for (var i = 0; i < this.headerCells.length; i++) {
+
+            app.state.names.push(this.headerCells[i].innerText);
+        }
        
         app.saveState();
     },
@@ -162,6 +185,29 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
     loadState: function() {
 
         app.loadState();
+
+        // Update checked icons
+        if (this.clickableCells && app.state.cells) {
+
+            for (var i = 0; i < app.state.cells.length; i++) {
+
+                if (this.clickableCells.length > i) {
+
+                    this.clickableCells[i].icon.className = "" + app.state.cells[i];
+                }
+            }
+        }
+
+        if (this.headerCells && app.state.names) {
+
+            for (var i = 0; i < app.state.names.length; i++) {
+
+                if (this.headerCells.length > i) {
+
+                    this.headerCells[i].innerText = "" + app.state.names[i];
+                }
+            }
+        }
     },
 
     oninit: function() {
@@ -174,16 +220,57 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         this.loadState();
         this.updateView();
 
-        this.header = document.getElementById("#gameContainer #header");
-        this.mainMenu = document.getElementById("#gameContainer #mainMenu");
+        this.playerNameDialog = document.getElementById("playerNameDialog");
+        this.playerNameDialogOk = document.querySelectorAll("#playerNameDialog .rename")[0];
+        this.playerNameDialogCancel = document.querySelectorAll("#playerNameDialog .close")[0];
         this.playerCheckBoxes = document.querySelectorAll(".mdl-switch__input");
+        this.playerNameTextBox = document.getElementById("playerNameTextBox");
 
+        this.playerNameTextBox.onkeydown = (function(e) {
+
+            if (e.keyCode == 13) {
+
+                this.playerNameDialogOk.click();
+            }
+
+        }).bind(this);
+
+        if (!this.playerNameDialog.showModal) {
+
+            dialogPolyfill.registerDialog(this.playerNameDialog);
+        }
+
+        app.pointer.onpress(
+            this.playerNameDialogOk,
+            this.onPlayerNameChange.bind(this)
+        );
+
+        app.pointer.onpress(
+            this.playerNameDialogCancel,
+            this.onPlayerNameClose.bind(this)
+        );
+        
         for (var i = 0; i < this.playerCheckBoxes.length; i++) {
 
             $(this.playerCheckBoxes[i]).bind("change.gameScreen", this.onColumnChange.bind(this));
         }
 
         $("#ClearAllMenuItem").bind("click.gameScreen", this.clearAllMenuItemHandler.bind(this));
+
+        this.headerCells = document.querySelectorAll("#gameContainer #content .header.cell");
+        for (var i = 0; i < this.headerCells.length; i++) {
+
+            var cell = this.headerCells[i];
+            if (app.state && app.state.names && app.state.names.length > i) {
+
+                cell.innerText = "" + app.state.names[i];
+            }
+
+            app.pointer.onpress(
+                cell,
+                this.onHeaderClicked.bind(this)
+            );
+        }
 
         this.clickableCells = document.querySelectorAll("#gameContainer #content .clickable.cell");
         for (var i = 0; i < this.clickableCells.length; i++) {
@@ -204,9 +291,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         }
 
         this.iconCells = document.querySelectorAll("#gameContainer #content .double.cell");
-        for (var i = 0; i < this.iconCells.length; i++) {
+        for (var i = 1; i < this.iconCells.length; i++) {
 
-            this.addIcon(this.iconCells[i], i);
+            this.addIcon(this.iconCells[i], i - 1);
         }
     },
 
@@ -217,6 +304,16 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             $(this.playerCheckBoxes[i]).unbind(".gameScreen");
         }
+
+        this.playerNameDialog = 
+        this.playerNameDialogOk = 
+        this.playerNameDialogCancel = 
+        this.playerCheckBoxes = 
+        this.playerNameTextBox = 
+        this.headerCells =
+        this.clickableCells = 
+        this.iconCells =
+            null;
 
         $("#ClearAllMenuItem").unbind(".gameScreen");
     },

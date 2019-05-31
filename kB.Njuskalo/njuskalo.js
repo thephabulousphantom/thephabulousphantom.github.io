@@ -3,6 +3,7 @@ var app = new (function App() {
     var me = this;
 
     this.state = {
+        names: [],
         columns: [],
         cells: []
     };
@@ -12,7 +13,7 @@ var app = new (function App() {
         try {
 
             me.state = JSON.parse(localStorage.getItem("gameState"));
-            if (!me.state || !me.state.columns || !me.state.cells) {
+            if (!me.state || !me.state.names || !me.state.columns || !me.state.cells) {
 
                 throw "State not initialized."
             }
@@ -20,13 +21,14 @@ var app = new (function App() {
         catch (ex) {
 
             me.state = {
+                names: [],
                 columns: [],
                 cells: []
             };
         }
 
         try {
-
+            
             var playerCheckBoxes = document.querySelectorAll(".njuskalo-drawer .mdl-navigation .mdl-switch__input");
             for (var i = 0; i < me.state.columns.length; i++) {
 

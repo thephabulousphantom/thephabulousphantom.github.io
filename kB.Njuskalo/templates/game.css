@@ -101,6 +101,11 @@
     background-position: 0px 0px;
 }
 
+#gameContainer #content .header.cell {
+
+    transform: rotate(-45deg);
+}
+
 #gameContainer #content .cell:nth-child(2) {
 
     background-color: rgba(255, 171, 171, 0.5);
