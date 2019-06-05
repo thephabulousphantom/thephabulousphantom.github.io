@@ -14,8 +14,8 @@ var app = new (function App() {
         app.music.init();
         app.keyboard.init();
         app.pointer.init();
-        app.players.push(new app.Player("red", 640, 568, 256, 144, app.questions.add, true));
-        app.players.push(new app.Player("blue", 640, 824, 256, 144, app.questions.add, true));
+        app.players.push(new app.Player("red", 512, 512, 512, 256, app.questions.add, true, 2));
+        app.players.push(new app.Player("blue", 512, 768, 512, 256, app.questions.add, true, 2));
         
         app.gfx.screens.splash.load();
     }

@@ -45,7 +45,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             app.players[i].car.style.width = (app.players[i].tile.width * height / this.tiles.track.height) + "px";
             app.players[i].car.style.height = (app.players[i].tile.height * height / this.tiles.track.height) + "px";
-            app.players[i].car.style.top = ((i == 0 ? 68 : 300) * height / this.tiles.track.height) + "px";
+            app.players[i].car.style.top = ((i == 0 ? 32 : 220) * height / this.tiles.track.height) + "px";
         }
 
         this.updateCarPositions();
