@@ -41,10 +41,13 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         this.controllers.style.backgroundSize = width;
 
+        var playerWidth = 400; // app.players[i].tile.width;
+        var playerHeight = 400; // app.players[i].tile.height;
+
         for (var i = 0; i < app.players.length; i++) {
 
-            app.players[i].car.width(/*app.players[i].tile.width*/400 * height / this.tiles.track.height);
-            app.players[i].car.height(/*app.players[i].tile.height*/400 * height / this.tiles.track.height);
+            app.players[i].car.width(playerWidth * height / this.tiles.track.height);
+            app.players[i].car.height(playerHeight * height / this.tiles.track.height);
             app.players[i].car.y((i == 0 ? -16 : 104) * height / this.tiles.track.height);
         }
 
@@ -55,11 +58,13 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         var height = this.race.offsetHeight;
         var zero = this.race.offsetWidth / 2;
+        var playerWidth = 400; //app.players[0].tile.width;
+        var playerHeight = 400; //app.players[0].tile.height;
 
-        var zeroCenter0 = - (app.players[0].tile.width * height / this.tiles.track.height) / 2;
-        var zeroCenter1 = - (app.players[0].tile.width * height / this.tiles.track.height) / 2;
-        var positionScale0 = ((this.race.offsetWidth - (app.players[0].tile.width * height / this.tiles.track.height) - (app.players[1].tile.width * height / this.tiles.track.height))/ 2 - zeroCenter0) / 1000;
-        var positionScale1 = ((this.race.offsetWidth - (app.players[0].tile.width * height / this.tiles.track.height) - (app.players[1].tile.width * height / this.tiles.track.height)) / 2 - zeroCenter1) / 1000;
+        var zeroCenter0 = - (playerWidth * height / this.tiles.track.height) / 2;
+        var zeroCenter1 = - (playerWidth * height / this.tiles.track.height) / 2;
+        var positionScale0 = ((this.race.offsetWidth - (playerWidth * height / this.tiles.track.height) - (playerWidth * height / this.tiles.track.height))/ 2 - zeroCenter0) / 1000;
+        var positionScale1 = ((this.race.offsetWidth - (playerWidth * height / this.tiles.track.height) - (playerWidth * height / this.tiles.track.height)) / 2 - zeroCenter1) / 1000;
 
         app.players[0].car.x(zero + zeroCenter0 + app.players[0].position * positionScale0);
         app.players[1].car.x(zero + zeroCenter1 + app.players[1].position * positionScale1);
@@ -95,8 +100,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         if ($(this.speedLabel).text() != Math.round(this.speed)) {
 
-                    app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
-                    app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                    app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
+                    app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
         }
 
         $(this.speedLabel).text(Math.round(this.speed));
@@ -144,8 +149,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         app.players[0].car.show();
         app.players[1].car.show();
-        app.players[0].car.animate(10);
-        app.players[1].car.animate(10);
+        app.players[0].car.animate(5);
+        app.players[1].car.animate(5);
 
         this.updateScores();
 
@@ -227,8 +232,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             if ($(this.speedLabel).text() != Math.round(this.speed)) {
 
-                app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
-                app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
+                app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
             }
 
             $(this.speedLabel).text(Math.round(this.speed));
@@ -279,8 +284,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
                 if ($(this.speedLabel).text() != Math.round(this.speed)) {
 
-                    app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
-                    app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                    app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
+                    app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
                 }
 
                 $(this.speedLabel).text(Math.round(this.speed));
@@ -291,8 +296,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
                 if ($(this.speedLabel).text() != Math.round(this.speed)) {
 
-                    app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
-                    app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                    app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
+                    app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
                 }
 
                 $(this.speedLabel).text(Math.round(this.speed));
