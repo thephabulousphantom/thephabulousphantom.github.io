@@ -43,9 +43,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         for (var i = 0; i < app.players.length; i++) {
 
-            app.players[i].car.style.width = (app.players[i].tile.width * height / this.tiles.track.height) + "px";
-            app.players[i].car.style.height = (app.players[i].tile.height * height / this.tiles.track.height) + "px";
-            app.players[i].car.style.top = ((i == 0 ? 32 : 220) * height / this.tiles.track.height) + "px";
+            app.players[i].car.width(app.players[i].tile.width * height / this.tiles.track.height);
+            app.players[i].car.height(app.players[i].tile.height * height / this.tiles.track.height);
+            app.players[i].car.y((i == 0 ? 32 : 220) * height / this.tiles.track.height);
         }
 
         this.updateCarPositions();
@@ -61,8 +61,8 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         var positionScale0 = ((this.race.offsetWidth - (app.players[0].tile.width * height / this.tiles.track.height) - (app.players[1].tile.width * height / this.tiles.track.height))/ 2 - zeroCenter0) / 1000;
         var positionScale1 = ((this.race.offsetWidth - (app.players[0].tile.width * height / this.tiles.track.height) - (app.players[1].tile.width * height / this.tiles.track.height)) / 2 - zeroCenter1) / 1000;
 
-        app.players[0].car.style.left = (zero + zeroCenter0 + app.players[0].position * positionScale0) + "px";
-        app.players[1].car.style.left = (zero + zeroCenter1 + app.players[1].position * positionScale1) + "px";
+        app.players[0].car.x(zero + zeroCenter0 + app.players[0].position * positionScale0);
+        app.players[1].car.x(zero + zeroCenter1 + app.players[1].position * positionScale1);
     },
 
     updateScores: function updateScores() {
@@ -92,6 +92,13 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         this.speed = 1;
         this.speedLabel = document.querySelector("#gameContainer #speedLabel");
+
+        if ($(this.speedLabel).text() != Math.round(this.speed)) {
+
+                    app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                    app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+        }
+
         $(this.speedLabel).text(Math.round(this.speed));
 
         this.race = document.querySelector("#gameContainer #race");
@@ -135,8 +142,10 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         this.roadImage = app.gfx.getTile(this.tiles.track.x, this.tiles.track.y, this.tiles.track.width, this.tiles.track.height, this.updateSize.bind(this));
 
-        this.race.appendChild(app.players[0].car);
-        this.race.appendChild(app.players[1].car);
+        app.players[0].car.show();
+        app.players[1].car.show();
+        app.players[0].car.animate(10);
+        app.players[1].car.animate(10);
 
         this.updateScores();
 
@@ -184,7 +193,7 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
                 if (app.players[i].position == 0) {
 
                     app.players[i].freezeBy = null;
-                    app.players[i].car.style.display = "";
+                    app.players[i].car.show();
                 }
                 else {
                     
@@ -216,6 +225,12 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             this.speed = Math.min(1 + (time - this.startTime) / 10000, 6);
 
+            if ($(this.speedLabel).text() != Math.round(this.speed)) {
+
+                app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+            }
+
             $(this.speedLabel).text(Math.round(this.speed));
 
             for (var i = 0; i < app.players.length; i++) {
@@ -238,14 +253,14 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
                 if (playerVisible) {
 
-                    if (app.players[i].car.style.display == "none") {
+                    if (!app.players[i].car.visible()) {
 
-                        app.players[i].car.style.display = "";
+                        app.players[i].car.style.show();;
                     }
                 }
-                else if (app.players[i].car.style.display != "none") {
+                else if (app.players[i].car.visible()) {
 
-                    app.players[i].car.style.display = "none";
+                    app.players[i].car.hide();
                 }
             }
         }
@@ -261,11 +276,25 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
             case "+":
                 this.speed++;
+
+                if ($(this.speedLabel).text() != Math.round(this.speed)) {
+
+                    app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                    app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                }
+
                 $(this.speedLabel).text(Math.round(this.speed));
                 break;
 
             case "-":
                 this.speed--;
+
+                if ($(this.speedLabel).text() != Math.round(this.speed)) {
+
+                    app.players[0].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                    app.players[1].car.animate(10 + 50 * Math.round((this.speed - 1) / 5));
+                }
+
                 $(this.speedLabel).text(Math.round(this.speed));
                 break;
         }
@@ -275,5 +304,10 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         app.players[0].controller = null;
         app.players[1].controller = null;
-    }
+
+        app.players[0].car.animate();
+        app.players[1].car.animate();
+        app.players[0].car.hide();
+        app.players[1].car.hide();
+ }
 });

@@ -14,23 +14,12 @@ app.Player = function Player(color, tile_x, tile_y, tile_width, tile_height, que
     this.tile = {
         x: tile_x,
         y: tile_y,
-        width: tile_width / frames,
+        width: tile_width,
         height: tile_height
     };
 
-    this.frames = [];
-
-    for (var f = frames; f > 0; f--) {
-
-        this.car = app.gfx.getTile(tile_x + (f - 1) * (tile_width / frames), tile_y, tile_width / frames, tile_height);
-        this.car.style.position = "fixed";
-        if (f != 1) {
-
-            this.car.style.display = "none";
-        }
-
-        this.frames.push(this.car);
-    }
+    this.car = new app.gfx.sprite(tile_x, tile_y, tile_width, tile_height, 2);
+    //this.car.style.position = "fixed";
 
     this.questions = questions;
     this.random = random;
