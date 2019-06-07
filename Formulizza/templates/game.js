@@ -43,9 +43,9 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         for (var i = 0; i < app.players.length; i++) {
 
-            app.players[i].car.width(app.players[i].tile.width * height / this.tiles.track.height);
-            app.players[i].car.height(app.players[i].tile.height * height / this.tiles.track.height);
-            app.players[i].car.y((i == 0 ? 32 : 220) * height / this.tiles.track.height);
+            app.players[i].car.width(/*app.players[i].tile.width*/400 * height / this.tiles.track.height);
+            app.players[i].car.height(/*app.players[i].tile.height*/400 * height / this.tiles.track.height);
+            app.players[i].car.y((i == 0 ? -16 : 104) * height / this.tiles.track.height);
         }
 
         this.updateCarPositions();
