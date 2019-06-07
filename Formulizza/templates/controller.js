@@ -214,7 +214,7 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
                     if (instance.answer == instance.correctAnswer) {
 
                         instance.speed += ((1 - 1 / 5) + app.gfx.screens.current.speed / 5) * app.gfx.controls.controller.speedChange.correct;
-                        app.gfx.jump(instance.player.car);
+                        app.gfx.jump(instance.player.car.el());
                     }
                     else {
 
