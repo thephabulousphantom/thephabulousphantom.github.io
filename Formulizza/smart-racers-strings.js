@@ -6,7 +6,5 @@ app.strings = {
     Scores: "bodova:",
     Speed: "brzina:",
     GameOver: "rezultat",
-    Winner: "pobednik",
-    Loser: "gubitnik", 
-    Points: "poena" 
+    Winner: "pobednik!"
 };

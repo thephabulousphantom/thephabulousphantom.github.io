@@ -70,52 +70,37 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         app.players[1].car.x(zero + zeroCenter1 + app.players[1].position * positionScale1);
     },
 
-    updateScores: function updateScores() {
+    checkForGameOver: function checkForGameOver() {
 
-        var end = false;
         for (var i = 0; i < app.players.length; i++) {
 
-            $(this.scores[i]).text(app.players[i].score);
+            if (app.players[i].score == 0 || app.players[i].score == 10 || app.players[i].score == 5) {
 
-            if (app.players[i].score == 0 || app.players[i].score == 10) {
-
-                end = true;
+                app.gfx.screens.gameOver.load();
+                return;
             }
         }
+    },
 
-        if (end) {
+    updateAnimationSpeed: function updateAnimationSpeed() {
 
-            app.gfx.screens.gameOver.load();
-        }
+        app.players[0].car.animate(5 + 10 * Math.round((this.speed - 1) / 5));
+        app.players[1].car.animate(5 + 10 * Math.round((this.speed - 1) / 5));
     },
 
     onload: function onload(questions, random) {
       
-        app.players[0].score = app.players[1].score = 5;
+        app.players[0].score = app.players[1].score = null;
         app.players[0].questions = app.players[1].questions = questions;
         app.players[0].random = app.players[1].random = random;
 
         this.speed = 1;
-        this.speedLabel = document.querySelector("#gameContainer #speedLabel");
-
-        if ($(this.speedLabel).text() != Math.round(this.speed)) {
-
-                    app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
-                    app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
-        }
-
-        $(this.speedLabel).text(Math.round(this.speed));
 
         this.race = document.querySelector("#gameContainer #race");
         this.track = document.querySelector("#gameContainer #track");
         this.trackContext = this.track.getContext("2d");
         this.controllers = document.querySelector("#gameContainer #controllers");
         this.startTime = 0;
-        this.scores = [
-            document.querySelector("#gameContainer #leftScore"),
-            document.querySelector("#gameContainer #rightScore")
-        ];
-        
         this.controllers.style.backgroundImage = "url(" + app.gfx.getTileSrc(this.tiles.road.x, this.tiles.road.y, this.tiles.road.width, this.tiles.road.height) + ")";
 
         app.players[0].position = 0;
@@ -149,62 +134,60 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         app.players[0].car.show();
         app.players[1].car.show();
-        app.players[0].car.animate(5);
-        app.players[1].car.animate(5);
+        this.updateAnimationSpeed();
 
-        this.updateScores();
+        this.checkForGameOver();
 
         window.onresize = this.updateSize.bind(this);
         setTimeout(this.updateSize.bind(this), 1000);
         this.updateSize();
     },
 
-    onPlayerGained: function onPlayerGained(player, time) {
+    onPlayerWon: function onPlayerWon(player, time) {
 
-        player.position = 1000;
-        player.score++;
-        //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+        if (app.players[0] == player) {
 
-        player.controller.speed = -Math.min(this.speed / 2, player.controller.speed / 3);
 
-        this.updateScores();
+            app.players[0].score = 10;
+            app.players[1].score = 0;
+
+        } else {
+
+            app.players[1].score = 10;
+            app.players[0].score = 0;
+        }
+
+        this.checkForGameOver();
     },
 
     onPlayerLost: function onPlayerLost(player, time) {
 
-        player.position = -1000;
-        player.score--;
-        //player.freezeBy = time += player.controller.control.modeDuration[0] / 2;
+        if (app.players[0] == player) {
 
-        player.controller.speed = Math.min(this.speed, Math.abs(player.controller.speed));
 
-        this.updateScores();
+            app.players[0].score = 0;
+            app.players[1].score = 5;
+
+        } else {
+
+            app.players[1].score = 0;
+            app.players[0].score = 5;
+        }
+
+        this.checkForGameOver();
     },
 
-    checkForGainsOrLosses: function checkForGainsOrLosses(time) {
+    checkForWinOrLoss: function checkForWinOrLoss(time) {
 
         for (var i = 0; i < app.players.length; i++) {
 
-            if (app.players[i].position > 1000) {
+            if (app.players[i].position >= 1000) {
 
-                this.onPlayerGained(app.players[i], time);
+                this.onPlayerWon(app.players[i], time);
             }
-            else if (app.players[i].position < -1000) {
+            else if (app.players[i].position <= -1000) {
 
                 this.onPlayerLost(app.players[i], time);
-            }
-            else if (app.players[i].freezeBy && app.players[i].freezeBy < time) {
-
-                if (app.players[i].position == 0) {
-
-                    app.players[i].freezeBy = null;
-                    app.players[i].car.show();
-                }
-                else {
-                    
-                    app.players[i].position = 0
-                    app.players[i].freezeBy = time + app.players[i].controller.control.modeDuration[0] / 2;
-                }
             }
         }
     },
@@ -218,25 +201,22 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         this.progress += duration * 0.1 * this.speed;
         
-        if (((frame % 30) | 0) == 0) {
+        /*if (((frame % 30) | 0) == 0) {
 
             for (var i = 0; i < app.players.length; i++) {
 
                 app.players[i].controller.speed -= this.speed / 10;
             }
-        }
+        }*/
 
         if (((frame % 60) | 0) == 0) {
 
+            var startingSpeed = Math.round(this.speed);
             this.speed = Math.min(1 + (time - this.startTime) / 10000, 6);
+            if (startingSpeed != Math.round(this.speed)) {
 
-            if ($(this.speedLabel).text() != Math.round(this.speed)) {
-
-                app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
-                app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
+                this.updateAnimationSpeed();
             }
-
-            $(this.speedLabel).text(Math.round(this.speed));
 
             for (var i = 0; i < app.players.length; i++) {
 
@@ -249,30 +229,19 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
 
         for (var i = 0; i < app.players.length; i++) {
 
-            app.players[i].position += app.players[i].controller.speed;
+            var targetPosition = 100 * app.players[i].controller.speed;
+            if (Math.abs(app.players[i].position - targetPosition) < 1) {
 
-            if (app.players[i].freezeBy) {
+                app.players[i].position = targetPosition;
+            }
+            else {
 
-                var timeLeft = app.players[i].freezeBy - time;
-                var playerVisible = !!(((timeLeft / 100) % 2) | 0);
-
-                if (playerVisible) {
-
-                    if (!app.players[i].car.visible()) {
-
-                        app.players[i].car.style.show();;
-                    }
-                }
-                else if (app.players[i].car.visible()) {
-
-                    app.players[i].car.hide();
-                }
+                app.players[i].position += (targetPosition - app.players[i].position) / ((7 - this.speed) * 15);
             }
         }
 
         this.updateCarPositions();
-
-        this.checkForGainsOrLosses(time);
+        this.checkForWinOrLoss(time);
     },
 
     onkeypress: function onKeyPressed(key) {
@@ -280,27 +249,11 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
         switch (key.char) {
 
             case "+":
-                this.speed++;
-
-                if ($(this.speedLabel).text() != Math.round(this.speed)) {
-
-                    app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
-                    app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
-                }
-
-                $(this.speedLabel).text(Math.round(this.speed));
+                //this.speed++;
                 break;
 
             case "-":
-                this.speed--;
-
-                if ($(this.speedLabel).text() != Math.round(this.speed)) {
-
-                    app.players[0].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
-                    app.players[1].car.animate(5 + 40 * Math.round((this.speed - 1) / 5));
-                }
-
-                $(this.speedLabel).text(Math.round(this.speed));
+                //this.speed--;
                 break;
         }
     },

@@ -1,17 +1,23 @@
 #menuContainer {
+
+    background-color: rgba(131, 190, 14, 1);
 }
 
 #menuContainer #menu {
 
-    background-color: rgba(0, 255, 0, 0.1);
+    background-color: rgba(119, 119, 132, 1);
+    border-top: none;
+    border-bottom: none;
+    border-left-color: #000;
+    border-right-color: #000;
     overflow: auto;
 }
 
 #menuContainer #menu button {
     
-    color: #0f0;
-    border-color: #0f0;
-    background-color: rgba(0, 255, 0, 0.2);
+    color:#fff;
+    border-color: rgba(255, 255, 255, 0.10);
+    background-color: rgba(119, 119, 132, 1);
     display: block;
     margin-left: auto;
     margin-right: auto;
