@@ -19,7 +19,37 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
         none: -1
     },
 
+    tiles: {
+        taster: {
+            off: {
+                x: 0,
+                y: 512,
+                width: 256,
+                height: 256,
+                url: null
+            },
+            ne: {
+                x: 0,
+                y: 768,
+                width: 256,
+                height: 256,
+                url: null
+            },
+            da: {
+                x: 256,
+                y: 768,
+                width: 256,
+                height: 256,
+                url: null
+            }
+        }
+    },
+
     onload: function onload(instance) {
+
+        this.tiles.taster.off.url = "url(" + app.gfx.getTileSrc(this.tiles.taster.off.x, this.tiles.taster.off.y, this.tiles.taster.off.width, this.tiles.taster.off.height) + ")";
+        this.tiles.taster.ne.url = "url(" + app.gfx.getTileSrc(this.tiles.taster.ne.x, this.tiles.taster.ne.y, this.tiles.taster.ne.width, this.tiles.taster.ne.height) + ")";
+        this.tiles.taster.da.url = "url(" + app.gfx.getTileSrc(this.tiles.taster.da.x, this.tiles.taster.da.y, this.tiles.taster.da.width, this.tiles.taster.da.height) + ")";
 
         instance.modeDuration = [
 
@@ -74,10 +104,10 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
             instance.level = questions[questionNumber].level + 1;
 
             $(instance.container).find(".question>div").text(question);
-            $(instance.container).find(".answer-1").text(answers[0]);
-            $(instance.container).find(".answer-2").text(answers[1]);
-            $(instance.container).find(".answer-3").text(answers[2]);
-            $(instance.container).find(".answer-4").text(answers[3]);
+            $(instance.container).find(".answer-1").text(answers[0]).css("background-image",instance.control.tiles.taster.off.url);
+            $(instance.container).find(".answer-2").text(answers[1]).css("background-image",instance.control.tiles.taster.off.url);
+            $(instance.container).find(".answer-3").text(answers[2]).css("background-image",instance.control.tiles.taster.off.url);
+            $(instance.container).find(".answer-4").text(answers[3]).css("background-image",instance.control.tiles.taster.off.url);
         };
 
         instance.mode = null;
@@ -123,12 +153,21 @@ app.gfx.controls.controller = new app.gfx.Control("controller",  {
 
         instance.onAnswerClick = function(e) {
 
-            $(this).addClass(instance.correctAnswer == $(this).text() ? "correct" : "incorrect");
+            var correct = instance.correctAnswer == $(this).text();
+            $(this)
+                .addClass(correct ? "correct" : "incorrect")
+                .css(
+                    "background-image",
+                    (correct ? instance.control.tiles.taster.da : instance.control.tiles.taster.ne).url
+                );            
             
             app.gfx.press(this, (function() {
 
                 instance.answer = $(this).text();
-                $(this).removeClass("correct").removeClass("incorrect");
+                $(this)
+                    .removeClass("correct")
+                    .removeClass("incorrect")
+                    .css("background-image", "none");
 
             }).bind(this));
 

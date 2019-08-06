@@ -12,10 +12,10 @@ app.gfx.screens.game = new app.gfx.Screen("game", {
             height: 512
         },
         road: {
-            x: 0,
+            x: 256,
             y: 512,
-            width: 512,
-            height: 512
+            width: 256,
+            height: 256
         }
     },
 
