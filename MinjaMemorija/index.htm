@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Picasa Memory Game</title>
+    <script id="JQueryJavascriptLibrary" language="javascript" type="text/javascript" src='jquery-1.4.2.js'></script>
+    <script id="JQueryCookiePlugin" language="javascript" type="text/javascript" src='jquery.cookie.js'></script>
+    <script id="GoogleApiPatchScript" language="javascript" type="text/javascript" src='googleApiPatch.js'></script>
+    <style type="text/css">
+        body {
+        	background-color: #cd7fb1;
+        	color: #884444;
+        	font-family: Calibri, Verdana, Arial;
+        }
+        #UserTextBox 
+        {
+        	border:none;
+        	background-color: #cd7fb1;
+        }
+        #AccountArea, #TileSizeArea, h1, body {
+        	text-align: center;
+        	overflow: hidden;
+        }
+        .Card 
+        {
+        	font-size: small;
+        	border: solid 4px #cd7fb1;
+        	background: #cd7fb1;
+        	display: inline;
+        	cursor: pointer;
+        	padding: 2px;
+        }
+        .Selected {
+        	background-color: #ff9edb;
+        }
+        #Size32 {
+        	width: 32; height: 32;
+        }
+        #Size48 {
+        	width: 48; height: 48;
+        }
+        #Size64 {
+        	width: 64; height: 64;
+        }
+        #Size96 {
+        	width: 96; height: 96;
+        }
+        #Size128 {
+        	width: 128; height: 128;
+        }
+        #Size192 {
+        	width: 192; height: 192;
+        }
+        #Size224 {
+        	width: 224; height: 224;
+        }
+        #Size256 {
+        	width: 256; height: 256;
+        }
+        #Size320 {
+        	width: 320; height: 320;
+        }
+        
+        #AlbumsArea {
+        	display: inline-block;
+        	width: 190;
+        	height: 467;
+        	margin-top: 50px;
+        }
+        #AlbumImagePlaceholder img {
+        	border:none;
+        	position: relative;
+        	left: -7px;
+        	top: -467px;
+        	z-index: -1;
+        }
+        #MinjaImage {
+        	cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minjina igra memorije</h1>
+    <p id="AccountArea">
+        Picasa korisnicki nalog: <input id="UserTextBox" type="text" value="" />
+    </p>
+    <div id="TileSizeArea">
+        <div id="Size32" class="Card" style="height:256">32</div>
+        <div id="Size48" class="Card">48</div>
+        <div id="Size64" class="Card">64</div>
+        <div id="Size96" class="Card">96</div>
+        <div id="Size128" class="Card">128</div>
+        <div id="Size192" class="Card Selected">192</div>
+        <div id="Size224" class="Card">224</div>
+        <div id="Size256" class="Card">256</div>
+        <div id="Size320" class="Card">320</div>
+    </div>
+    <div id="AlbumsArea">
+        <img id="MinjaImage" src="gfx/bira.png" width="190" height="467" style="display:none" />
+        <div id="AlbumImagePlaceholder"></div>
+    </div>
+        
+    <script type="text/javascript" language="javascript">
+
+        var g_autoloadThreadId = null;
+        var g_currentAlbum = 0;
+        
+        function loadAlbums() {
+            g_autoloadThreadId = null;
+            $("body").append("<scr" + "ipt src='http://picasaweb.google.com/data/feed/api/user/" + $("#UserTextBox").val() + "?alt=json&callback=onAlbumsLoaded&v=1'></scr" + "ipt>");
+        }
+
+        function showAlbum(albumId) {
+            $.cookie("MinjaMemoryPicasaAccount", $("#UserTextBox").val(), { path: '/', expires: 60 });
+            window.location = "game.htm?uid=" + $("#UserTextBox").val() + "&aid=a" + albumId + "&size=" + $(".Selected").text();
+        };
+
+        function showCurrentAlbum() {
+            $("#AlbumImagePlaceholder a").hide();
+            $($("#AlbumImagePlaceholder a")[g_currentAlbum]).show();
+        }
+
+        function onAlbumsLoaded(albumsInfo) {
+            $("#AlbumImagePlaceholder").html("");
+            $.each(albumsInfo.feed.entry, function(i, album) {
+                $("#AlbumImagePlaceholder").append($("<a href='#' onclick='showAlbum(\"" + album.gphoto$id.$t + "\")'><img src='" + album.media$group.media$thumbnail[0].url + "' alt='" + album.title.$t + "' width='80' height='80'></img></a>"));
+            });
+            g_currentAlbum = 0;
+            $("#MinjaImage").show();
+            showCurrentAlbum();
+        }
+
+        $("#MinjaImage").mousedown(function(evt) {
+            var offsetX = evt.offsetX ? evt.offsetX : evt.clientX - $("#MinjaImage")[0].offsetLeft;
+            var offsetY = evt.offsetY ? evt.offsetY : evt.clientY - $("#MinjaImage")[0].offsetTop;
+            if (offsetX >= 47 && offsetX <= 127 && offsetY >= 0 && offsetY <= 80) {
+                $($("#AlbumImagePlaceholder a")[g_currentAlbum]).click();
+                return false;
+            }
+            g_currentAlbum = (g_currentAlbum + 1) % $("#AlbumImagePlaceholder a").length;
+            showCurrentAlbum();
+            return false;
+        });
+        
+        $("#UserTextBox").keypress(function() {
+            if (g_autoloadThreadId != null) {
+                clearTimeout(g_autoloadThreadId);
+            }
+            g_autoloadThreadId = setTimeout(loadAlbums, 1000);
+        });
+
+        $(".Card").mousedown(function() {
+            $(".Card").removeClass("Selected");
+            $(this).addClass("Selected");
+            $.cookie("MinjaMemorySize", $(this).text(), { path: '/', expires: 60 });
+            return false;
+        });
+
+        if ($.cookie("MinjaMemorySize")) {
+            $("#Size" + $.cookie("MinjaMemorySize")).click();
+        }
+
+        if ($.cookie("MinjaMemoryPicasaAccount")) {
+            $("#UserTextBox").val($.cookie("MinjaMemoryPicasaAccount"));
+            loadAlbums();
+        }
+
+        document.oncontextmenu = function() { return false; }
+        $("#UserTextBox").focus();
+        
+    </script>
+</body>
+</html>

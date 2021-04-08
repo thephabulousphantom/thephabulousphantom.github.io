@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>МИЊИНА игра меморије</title>
+    <script id="JQueryJavascriptLibrary" language="javascript" type="text/javascript" src='jquery-1.3.2.js'></script>
+    <script id="QueryJQueryPlugin" language="javascript" type="text/javascript" src='jquery.query-2.1.7.js'></script>
+    <script id="GoogleApiPatchScript" language="javascript" type="text/javascript" src='googleApiPatch.js'></script>
+    <style type="text/css">
+        body {
+		    text-align: center;
+        	background-color: #cd7fb1;
+        	color: #995f84;
+        	font-family: Calibri, Verdana, Arial;
+        	overflow: hidden;
+        }
+        .Card {
+        	border: solid 1px #663f58;
+        	display: inline-block;
+        	overflow: hidden;
+        }
+        .Card img {
+        	position:relative;
+        	z-index: -10;
+        }
+        .CardHider  {
+        	background-color:#ff9edb;
+        	z-index: 100;
+        }
+        #GameArea {
+        	text-align: center;
+        	display: inline-block;
+        }
+        #PlayArea {
+            overflow: hidden;
+            text-align: center;
+            margin: auto;
+            display: inline-block;
+        }
+        #MinjaArea {
+        	background-image: url(gfx/igra.png);
+        	width: 205px;
+        	height: 398px;
+        	display: inline-block;
+        }
+        a, a:link, a:visited, a:active {
+	        color: #995f84;
+        }
+        a:hover {
+	        color: #ff9edb;
+        }
+        .FinishedOnly {
+        	display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="FinishedOnly">БРАВО, МАЈСТОРЕ!</h1>
+    <div id="GameArea">
+        <div id="PlayArea">
+        </div>
+        <div id="MinjaArea">
+        </div>
+    </div>
+    <a class="FinishedOnly" href="index.htm">Хоћу друге сличице!</a>
+   
+    <script type="text/javascript" language="javascript">
+    
+    function getUsername() {
+        return $.query.get("uid");
+    }
+    function getAlbum() {
+        return $.query.get("aid").substr(1);
+    }
+    function getImageSize() {
+        return $.query.get("size");
+    }
+    
+    var g_cardsLeft = -1;
+    var g_cards = new Array();
+    var g_visibleCards = new Array();
+    var g_blockClicks = false;
+    
+    function checkForMatch() {
+        var card1 = $("#Card" + g_visibleCards[0]);
+        var card2 = $("#Card" + g_visibleCards[1]);
+        var cardHider1 = $("#CardHider" + g_visibleCards[0]);
+        var cardHider2 = $("#CardHider" + g_visibleCards[1]);
+        if (card1.attr("name") == card2.attr("name")) {
+            g_blockClicks = true;
+            setTimeout(function() {
+                card1.css("border-color", "#cd7fb1").html("");
+                card2.css("border-color", "#cd7fb1").html("");
+                g_visibleCards.splice(0, 2);
+                g_cardsLeft = g_cardsLeft - 2;
+                if (g_cardsLeft == 0) {
+                    $("#PlayArea").css("display", "none");
+                    $(".FinishedOnly").css("display", "block");
+                    clearInterval(g_animationThread);
+                    g_animationThread = setInterval(onAnimateFinished, 200);
+                    $("#MinjaArea").css("cursor", "pointer").mousedown(function() { window.location = window.location; return false; });
+                }
+                g_blockClicks = false;
+            }, 1000);
+        }
+        else {
+            g_blockClicks = true;
+            setTimeout( function () {
+                cardHider1.css("display","inline-block");
+                cardHider2.css("display", "inline-block");
+                g_visibleCards.splice(0,2);
+                g_blockClicks = false;
+            }, 1000 );
+        }
+    }
+    
+    function onCardClicked(evt) {
+        if (g_blockClicks) {
+            return false;
+        }
+        var elementId = (evt.target.tagName == "DIV") ? $(evt.target).attr("id") : $(evt.target.parentElement).attr("id");
+        var cardNumber = elementId.indexOf("CardHider") == 0 ? elementId.substr(9) : elementId.substr(4);
+        var cardHider = $("#CardHider" + cardNumber);
+        if (cardHider.css("display") == "inline-block") {
+            cardHider.css("display", "none");
+            g_visibleCards.push(cardNumber);
+        }
+        else {
+            cardHider.css("display", "inline-block");
+            $.each(g_visibleCards, function(i, number) {
+                if (number == cardNumber) {
+                    g_visibleCards.splice(i, 1);
+                }
+            });
+        }
+        
+        if (g_visibleCards.length == 2) {
+            checkForMatch();
+        }
+        return false;
+    }
+
+    function onAlbumLoaded(albumInfo) {
+        document.title = albumInfo.feed.title.$t;
+        $("#PlayArea").css("width", getImageSize() * 4 + 16).css("height", getImageSize() * 4 + 16);
+        $("#GameArea").css("width", getImageSize() * 4 + 16 + 220);
+
+        var cardIndexes = new Array();
+        for (i = 0; i < albumInfo.feed.entry.length; i++) {
+            cardIndexes.push(i);
+        }
+        
+        var shuffledCardIndexes = new Array();
+        while (cardIndexes.length && shuffledCardIndexes.length < 16) {
+            var index = cardIndexes.length == 1 ? 0 : Math.round(Math.random() * cardIndexes.length);
+            if (index >= cardIndexes.length) {
+                index = cardIndexes.length - 1;
+            }
+            shuffledCardIndexes.push(cardIndexes[index]);
+            cardIndexes.splice(index, 1);
+        }
+
+        var cardId=1;
+        for (i = 0; i < 8; i++) {
+            var thisEntry = albumInfo.feed.entry[shuffledCardIndexes[i]];
+            var imageWidth = thisEntry.gphoto$width.$t;
+            var imageHeight = thisEntry.gphoto$height.$t;
+            var targetWidth, targetHeight, targetLeft, targetTop;
+            if (imageWidth > imageHeight) {
+                targetHeight = getImageSize();
+                targetWidth = imageWidth / (imageHeight / getImageSize());
+                targetTop = 0;
+                targetLeft = 0 - (targetWidth - targetHeight) / 2;
+            }
+            else {
+                targetWidth = getImageSize();
+                targetHeight = imageHeight / (imageWidth / getImageSize());
+                targetLeft = 0;
+                targetTop = 0 - (targetHeight - targetWidth) / 2;
+            }
+            var card = $(
+                "<div id='Card" + cardId + "' name='Card" + i + "' class='Card' style='width:" + getImageSize() + "px; height:" + getImageSize() + "px;'>"
+                + "<div id='CardHider" + cardId + "' class='CardHider' style='display: inline-block; width:" + getImageSize() + "px; height:" + getImageSize() + "px; '></div>"
+                + "<img src='" + thisEntry.content.src + "' width='" + targetWidth + "px' height='" + targetHeight + "px' style='left:" + targetLeft + "px; top:" + targetTop + "px'/>"
+                + "</div>"
+            );
+            card.mousedown(onCardClicked);
+            g_cards.push(card);
+            cardId++;
+
+            card = $(
+                "<div id='Card" + cardId + "' name='Card" + i + "' class='Card' style='width:" + getImageSize() + "px; height:" + getImageSize() + "px;'>"
+                + "<div id='CardHider" + cardId + "' class='CardHider' style='display: inline-block; width:" + getImageSize() + "px; height:" + getImageSize() + "px; '></div>"
+                + "<img src='" + thisEntry.content.src + "' width='" + targetWidth + "px' height='" + targetHeight + "px' style='left:" + targetLeft + "px; top:" + targetTop + "px'/>"
+                + "</div>"
+            );
+            card.mousedown(onCardClicked);
+            g_cards.push(card);
+            cardId++;
+        }
+        
+        g_cardsLeft = cardId - 1;
+        
+        var shuffledCards = new Array();
+        while (g_cards.length && shuffledCards.length < 16) {
+            var index = g_cards.length == 1 ? 0 : Math.round( Math.random() * g_cards.length );
+            if (index >= g_cards.length) {
+                index = g_cards.length - 1;
+            }
+            shuffledCards.push( g_cards[ index ]);
+            g_cards.splice(index, 1);
+        }
+        
+        var x=0;
+        var y=0;
+        $.each(shuffledCards, function(i, card) {
+            $("#PlayArea").append(card);
+            x = (++x) % 4;
+            if (x == 0) y++;
+        });
+    }
+
+    var g_animationFrame = 0;
+    var g_animationThread = null;
+    function onAnimateGamePlay() {
+        g_animationFrame++;
+        if ((g_animationFrame % 8) == 0) {
+            $("#MinjaArea").css("background-position", "-205px 0px");
+        }
+        else {
+            $("#MinjaArea").css("background-position", "0px 0px");
+        }
+    }
+    function onAnimateFinished() {
+        g_animationFrame++;
+        $("#MinjaArea").css("background-position", "" + (205 * ((g_animationFrame % 2) + 1)) + "px 0px");
+    }
+    
+    $("body").append("<scr" + "ipt src='http://picasaweb.google.com/data/feed/api/user/" + getUsername() + "/albumid/" + getAlbum() + "?alt=json&callback=onAlbumLoaded'></scr" + "ipt>");
+    document.oncontextmenu = function() { return false; }
+    g_animationThread = setInterval(onAnimateGamePlay, 1000);
+    </script>
+</body>
+</html>
