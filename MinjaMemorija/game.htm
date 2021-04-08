@@ -235,7 +235,7 @@
         $("#MinjaArea").css("background-position", "" + (205 * ((g_animationFrame % 2) + 1)) + "px 0px");
     }
     
-    $("body").append("<scr" + "ipt src='http://picasaweb.google.com/data/feed/api/user/" + getUsername() + "/albumid/" + getAlbum() + "?alt=json&callback=onAlbumLoaded'></scr" + "ipt>");
+    $("body").append("<scr" + "ipt src='https://picasaweb.google.com/data/feed/api/user/" + getUsername() + "/albumid/" + getAlbum() + "?alt=json&callback=onAlbumLoaded'></scr" + "ipt>");
     document.oncontextmenu = function() { return false; }
     g_animationThread = setInterval(onAnimateGamePlay, 1000);
     </script>
