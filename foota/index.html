@@ -1,0 +1,217 @@
+<html>
+    <head>
+        <title>Foot Asteroids</title>
+
+        <!-- critical resources to preload -->
+        <link rel="preload" href="./game.css" as="style"/>
+
+        <!-- web app metadata -->
+        <link rel="manifest" href="manifest.json">
+        <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="msapplication-TileColor" content="#000000">
+        <meta name="msapplication-config" content="browserconfig.xml">
+        <meta name="theme-color" content="#000000">
+        <meta name="google" value="notranslate">
+        <meta name="description" content="Asteroids remake, but played on mobile and on foot.">
+
+        <!-- icons -->
+        <link rel="apple-touch-icon" sizes="180x180" href="img/icon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/icon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="img/icon/favicon-16x16.png">
+        <link rel="mask-icon" href="img/icon/safari-pinned-tab.svg" color="#47627a">
+        <link rel="shortcut icon" href="img/icon/favicon.ico">
+
+        <!-- styles -->
+        <link rel="stylesheet" href="./game.css"/>
+
+    </head>
+    <body>
+
+        <style type="text/css">
+            
+            #containerWorld {
+
+                z-index: 0;
+
+                width: 100vw;
+                height: 100vh;
+                top: 0vw;
+                left: 0vh;
+
+                background-color: Red;
+            }
+
+            #containerWorld canvas {
+
+                width: 100vw;
+                height: 100vh;
+                top: 0vw;
+                left: 0vh;
+            }
+
+        </style>
+
+        <div id="containerWorld" class="control">
+
+        </div>
+
+        <!-- toggle full screen control -->
+
+        <style type="text/css">
+            
+            #controlToggleFullScreen {
+
+                z-index: 2000;
+
+                width: 5vmin;
+                height: 5vmin;
+                top: 5vmin;
+                left: 5vmin;
+
+                background-color: var(--colorPrimary);
+
+                font-size: 3vmin;
+            }
+
+        </style>
+
+        <div id="controlToggleFullScreen" class="control">
+            [ ]
+        </div>
+
+        <script src="js/controlToggleFullScreen.js" type="module"></script>
+
+
+
+        <!-- transition white screen -->
+
+        <style type="text/css">
+            
+            #transitionWhiteScreen {
+             
+                z-index: 1000;
+
+                background-color: var(--colorWhite);
+            }
+
+        </style>
+
+        <div id="transitionWhiteScreen" class="screen">
+
+        </div>
+
+
+
+        <!-- transition black screen -->
+
+        <style type="text/css">
+            
+            #transitionBlackScreen {
+             
+                z-index: 1000;
+
+                background-color: var(--colorBlack);
+            }
+
+        </style>
+
+        <div id="transitionBlackScreen" class="screen">
+
+        </div>
+
+
+
+        <!-- loading screen -->
+
+        <style type="text/css">
+
+            #screenLoading {
+
+                visibility: visible;
+            }
+
+            #screenLoading #labelLoading {
+
+                width: 0vw;
+                height: 0vh;
+            }
+
+        </style>
+
+        <div id="screenLoading" class="screen">
+
+            <label id="labelLoading">loading...</label>
+
+        </div>
+
+        <script src="js/screenLoading.js" type="module"></script>
+
+
+        
+        <!-- menu screen -->
+
+        <style type="text/css">
+            
+            #screenMenu #buttonPlay {
+
+                width: 100vw;
+                height: 10vmin;
+                top: calc(50vh - 5vmin);
+                left: 0vw;
+
+                font-size: 10vmin;
+            }
+
+        </style>
+
+        <div id="screenMenu" class="screen">
+
+            <button id="buttonPlay">play</button>
+
+        </div>
+
+        <script src="js/screenMenu.js" type="module"></script>
+
+
+
+        <!-- game screen -->
+
+        <style type="text/css">
+            
+            #screenPlay #controlQuit {
+
+                z-index: 2000;
+
+                width: 5vmin;
+                height: 5vmin;
+                top: 5vmin;
+                left: calc(100vw - 5vmin - 5vmin);
+
+                background-color: var(--colorPrimary);
+
+                font-size: 3vmin;
+            }
+
+        </style>
+
+        <div id="screenPlay" class="screen">
+
+            <div id="controlQuit" class="control">
+                X
+            </div>
+
+        </div>
+
+        <script src="js/screenPlay.js" type="module"></script>
+
+
+        <!-- the app -->
+
+        <script src="js/game.js" type="module"></script>
+        <script src="js/lib/three/three.min.js" defer></script>
+
+    </body>
+</html>

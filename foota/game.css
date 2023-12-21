@@ -1,0 +1,59 @@
+:root {
+
+    --colorBlack: #000000ff;
+    --colorWhite: #ffffffff;
+    --colorBackground: #00000044;
+    --colorPrimary: #00ff00ff;
+    --colorSecondary: #880088ff;
+}
+
+body {
+
+    background-color: var(--colorBlack);
+}
+
+button {
+
+    background: none;
+    color: var(--colorPrimary);
+    border: 0;
+
+    cursor: hand;
+    user-select: none;
+}
+
+div.control {
+
+    color: var(--colorBlack);
+
+    cursor: hand;
+    user-select: none;
+}
+
+div.screen, div.control, label, button {
+
+    position: fixed;
+    display: flex;
+
+    margin: 0px;
+    padding: 0px;
+
+    justify-content: center;
+    align-items: center;
+
+    font-family: Arial;
+    font-size: 5vmin;
+}
+
+div.screen {
+
+    visibility: hidden;   
+
+    left: 0vw;
+    top: 0vh;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: var(--colorBackground);
+    color: var(--colorPrimary);
+}
