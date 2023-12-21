@@ -3,12 +3,14 @@ import Tween from "./lib/tween/tween.esm.js";
 import Screen from "./screen.js";
 import World from "./world.js";
 import { screen as screenMenu } from "./screenMenu.js";
+import { RelativeOrientationSensor } from "./lib/sensors/motion-sensors.js";
 
 export default class Game {
 
     // global vars
 
     static time = null;
+    static orientation = null;
 
     // helper functions
     
@@ -160,9 +162,89 @@ export default class Game {
         }).bind(this));
     }
 
-    init() {
+    async initSensor(permission, sensorName, sensorClass, handler) {
 
-        Log.info(`Initialising the game.`);
+        Log.info(`Initializing ${sensorName} sensor...`);
+
+        if (permission) {
+
+            try {
+
+                const result = await navigator.permissions.query({ name: permission });
+                if (result.state != "granted") {
+    
+                    Log.warning(`Permission not granted for ${sensorName} sensor...`);
+                    return false;
+                }
+            }
+            catch (ex) {
+    
+                Log.warning(`Unable to request permissions for ${sensorName} sensor: ${ex.toString()}`);
+                return false;
+            }
+        }
+
+        try {
+
+            var sensor = new sensorClass({ frequency: 60 });
+
+            sensor.onreading = (function() {
+    
+                if (handler) {
+
+                    (handler.bind(this))(sensor);
+                }
+
+            }).bind(this);
+    
+            sensor.onerror = (function(event) {
+    
+                if (event.error.name == 'NotReadableError') {
+    
+                    Log.warning(`${sensorName} sensor is not available.`);
+                }
+                else {
+        
+                    Log.warning(`Unexpected ${sensorName} sensor error.`);
+                }
+
+            }).bind(this);
+    
+            sensor.start();
+
+            return true;
+        }
+        catch (ex) {
+
+            Log.warning(`Unable to initialize ${sensorName} sensor: ${ex.toString()}`);
+
+            return false;
+        }
+    }
+
+    onRelativeOrientationUpdate(sensor) {
+
+        Game.orientation = sensor;
+    }
+
+    async init() {
+
+        Log.info(`Initialising the game...`);
+
+
+        if (await this.initSensor(
+            null,
+            "relative orientation",
+            typeof(RelativeOrientationSensor) == "undefined" ? null : RelativeOrientationSensor,
+            this.onRelativeOrientationUpdate
+        )) {
+
+            Log.info(`Initialised relative orientation sensor.`);
+        }
+        else {
+
+            Log.error(`Unable to initialise relative orientation sensor.`);
+        }
 
         requestAnimationFrame( this.animate.bind(this));
 
