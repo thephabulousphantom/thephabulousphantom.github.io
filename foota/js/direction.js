@@ -6,7 +6,9 @@ class Direction {
 
     deviceAngle = null;
     keyboardAngle = 0;
-    current = null;
+    current = 0;
+    target = 0;
+    smoothness = 6;
 
     constructor() {
 
@@ -113,32 +115,54 @@ class Direction {
             ? 2 * (Math.PI - Math.acos(oz.dot(yz)))
             : 2 * Math.acos(oz.dot(yz));
       
-        if (Math.abs(this.deviceAngle - newAngle) > Math.PI) {
-
-            if (Math.abs(2 * Math.PI + this.deviceAngle - newAngle) < Math.PI) {
-
-                this.deviceAngle += 2 * Math.PI;
-            }
-            else if (Math.abs(this.deviceAngle - 2 * Math.PI - newAngle) < Math.PI) {
-
-                newAngle += 2 * Math.PI;
-            }
-        }
+        
 
         this.deviceAngle = ((9 * this.deviceAngle + newAngle) / 10) % (2 * Math.PI);
 
-        // document.getElementById("labelDebug").innerText = `${((this.deviceAngle * 100) | 0) / 100.0} ${(oz.clone().cross(yz).z < 0 ? "u" : "d")}`;
+        document.getElementById("labelDebug").innerText = `${((this.deviceAngle * 100) | 0) / 100.0} ${(oz.clone().cross(yz).z < 0 ? "u" : "d")}`;
 
         this.updateDirection();
     }
 
     updateDirection() {
 
-        this.current = this.keyboardAngle;
+        this.target = this.keyboardAngle;
 
         if (this.deviceAngle) {
 
-            this.current += this.deviceAngle;
+            this.target += this.deviceAngle;
+        }
+
+        this.target %= 2 * Math.PI;
+    }
+
+    smoothDirection() {
+
+        if (this.target == this.current) {
+
+            return;
+        }
+
+        if (Math.abs(this.target - this.current) > Math.PI) {
+
+            if (Math.abs(2 * Math.PI + this.target - this.current) < Math.PI) {
+
+                this.target += 2 * Math.PI;
+            }
+            else if (Math.abs(this.target - 2 * Math.PI - this.current) < Math.PI) {
+
+                this.current += 2 * Math.PI;
+            }
+        }
+
+        this.current = (((this.smoothness - 1) * this.current + this.target) / this.smoothness) % (2 * Math.PI);
+
+        this.target %= 2 * Math.PI;
+        this.current %= 2 * Math.PI;
+
+        if (Math.abs(this.current - this.target) < 0.01) {
+
+            this.target = this.current;
         }
     }
 
@@ -154,6 +178,8 @@ class Direction {
             this.keyboardAngle += 0.1;
             this.updateDirection();
         }
+
+        this.smoothDirection();
     }
 }
 
