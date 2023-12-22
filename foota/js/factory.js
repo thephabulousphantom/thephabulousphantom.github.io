@@ -86,7 +86,7 @@ class Factory {
 
     getStarField() {
 
-        return new StartField(5000, -2000, 2000, -1200, 1200, -300, -100, 1);
+        return new StartField(10000, -2000, 2000, -1200, 1200, -300, -100, 2);
     }
 }
 
