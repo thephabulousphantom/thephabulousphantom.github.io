@@ -97,7 +97,7 @@ class Direction {
     onDeviceOrientationUpdate(sensor) {
 
         const qt = new THREE.Quaternion();
-        qt.fromArray(this.deviceAngle.quaternion);
+        qt.fromArray(sensor.quaternion);
 
         const v = new THREE.Vector3(0, 1, 0);
         v.applyQuaternion(qt);
@@ -116,7 +116,7 @@ class Direction {
         //var angle_V1V2y = Math.acos(V1y.dot(V2xy.normalize()));
 
         //angle in radian between origin Z axis and Z axis of V2
-        Game.deviceAngle = Math.acos(V1z.dot(Vxz.normalize()));
+        this.deviceAngle = Math.acos(V1z.dot(Vxz.normalize()));
 
         //Game.deviceAngle = sensor.quaternion;
         //Log.debug(`direction ${JSON.stringify(Game.deviceAngle.quaternion)}`);
