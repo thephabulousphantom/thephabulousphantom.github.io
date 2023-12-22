@@ -4,12 +4,15 @@ import Screen from "./screen.js";
 import World from "./world.js";
 import { screen as screenMenu } from "./screenMenu.js";
 import { RelativeOrientationSensor } from "./lib/sensors/motion-sensors.js";
+import Keyboard from "./keyboard.js";
 
 export default class Game {
 
     // global vars
 
     static time = null;
+    static deviceOrientation = null;
+    static keyboardAngle = 0;
     static orientation = null;
 
     // helper functions
@@ -222,23 +225,40 @@ export default class Game {
         }
     }
 
-    onRelativeOrientationUpdate(sensor) {
+    onDeviceOrientationUpdate(sensor) {
 
-        Game.orientation = sensor;
-        Log.debug(`orientation ${JSON.stringify(Game.orientation.quaternion)}`);
+        Game.deviceOrientation = sensor;
+        Log.debug(`orientation ${JSON.stringify(Game.deviceOrientation.quaternion)}`);
+
+        this.updateOrientation();
+    }
+
+    updateOrientation() {
+
+        if (Game.deviceOrientation) {
+
+            Game.orientation.fromArray(Game.deviceOrientation.quaternion);
+        }
+        else {
+
+            var qt = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Game.keyboardAngle);
+            Game.orientation.copy(qt);
+        }
     }
 
     async init() {
 
         Log.info(`Initialising the game...`);
 
+        Game.orientation = new THREE.Quaternion();
+    
         //Log.debugLabel = document.getElementById("labelDebug");
 
         if (await this.initSensor(
             null,
             "relative orientation",
             typeof(RelativeOrientationSensor) == "undefined" ? null : RelativeOrientationSensor,
-            this.onRelativeOrientationUpdate
+            this.onDeviceOrientationUpdate
         )) {
 
             Log.info(`Initialised relative orientation sensor.`);
@@ -294,6 +314,17 @@ export default class Game {
         }
 
         this.lastFrameTime += elapsed;
+
+        if (Keyboard.down["KeyD"]) {
+
+            Game.keyboardAngle += 0.1;
+            this.updateOrientation();
+        }
+        else if (Keyboard.down["KeyA"]) {
+
+            Game.keyboardAngle -= 0.1;
+            this.updateOrientation();
+        }
 
         Tween.update(time);
 
