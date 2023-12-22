@@ -98,7 +98,7 @@ class World {
 
         if (this.objects.starField) {
 
-            this.objects.starField.update(this.camera.position.x, this.camera.position.z);
+            this.objects.starField.update(this.camera.position.x, this.camera.position.y);
         }
 
         if (this.renderer) {
