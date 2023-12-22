@@ -33,20 +33,20 @@ export default class screenMenu extends Screen {
 
         World.objects.protagonist.visible = true;
         World.objects.protagonist.position.x =
-        World.objects.protagonist.position.z =
+        World.objects.protagonist.position.y =
         World.objects.lightSpot.position.x = 
-        World.objects.lightSpot.position.z = 0;
+        World.objects.lightSpot.position.y = 0;
         
         const animation = {
 
             this: this,
             properties: {
                 rotationRadius: 0,
-                cameraY: World.camera.position.y
+                cameraZ: World.camera.position.z
             },
             target: {
                 rotationRadius:2,
-                cameraY : 10
+                cameraZ : 10
             }
         };
 
@@ -56,7 +56,7 @@ export default class screenMenu extends Screen {
             .onUpdate(function() {
 
                 animation.this.rotationRadius = animation.properties.rotationRadius;
-                World.camera.position.y = animation.properties.cameraY;
+                World.camera.position.z = animation.properties.cameraZ;
 
             });
 
@@ -70,11 +70,11 @@ export default class screenMenu extends Screen {
             this: this,
             properties: {
                 rotationRadius: 2,
-                cameraY : 10
+                cameraZ : 10
             },
             target: {
                 rotationRadius: 0,
-                cameraY : 50
+                cameraZ : 50
             }
         };
 
@@ -84,17 +84,17 @@ export default class screenMenu extends Screen {
             .onUpdate(function() {
 
                 animation.this.rotationRadius = animation.properties.rotationRadius;
-                World.camera.position.y = animation.properties.cameraY;
+                World.camera.position.z = animation.properties.cameraZ;
             });
     }
 
     update(time) {
      
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
-        World.camera.position.z = this.rotationRadius * Math.cos(time / 2000);
+        World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
 
-        World.objects.protagonist.rotation.z = Math.PI * 2 * time / 6000;
-        World.objects.protagonist.rotation.x = Math.PI * 2 * time / 10000;
+        World.objects.protagonist.rotation.x = Math.PI * 2 * time / 6000;
+        World.objects.protagonist.rotation.y = Math.PI * 2 * time / 10000;
     }
 }
 

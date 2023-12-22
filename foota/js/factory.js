@@ -17,8 +17,8 @@ class Factory {
         );
 
         camera.position.x = 0;
-        camera.position.z = 0;
-        camera.position.y = 50;
+        camera.position.y = 0;
+        camera.position.z = 50;
 
         return camera;
     }
@@ -65,8 +65,8 @@ class Factory {
         lightSpot.shadow.camera.fov = 5;*/
 
         lightSpot.position.x = 0;
-        lightSpot.position.z = 0;
-        lightSpot.position.y = 10;
+        lightSpot.position.y = 0;
+        lightSpot.position.z = 10;
 
         return lightSpot;
     }
@@ -86,7 +86,7 @@ class Factory {
 
     getStarField() {
 
-        return new StartField(5000, -2000, 2000, -300, -100, -1200, 1200, 1);
+        return new StartField(5000, -2000, 2000, -1200, 1200, -300, -100, 1);
     }
 }
 

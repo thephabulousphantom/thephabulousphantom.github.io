@@ -12,21 +12,21 @@ export default class StarField {
         this.size.y = Math.abs(yMax - yMin);
         this.size.z = Math.abs(zMax - zMin);
 
-        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin, yMax, zMin / 2, zMax / 2, size));
+        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, size, zMin, zMax));
         this.objects[0].position.x = ((xMax - xMin) / 2 + xMin) / 2;
-        this.objects[0].position.z = ((zMax - zMin) / 2 + zMin) / 2;
+        this.objects[0].position.y = ((yMax - yMin) / 2 + yMin) / 2;
 
-        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin, yMax, zMin / 2, zMax / 2, size));
+        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, zMin, zMax, size));
         this.objects[1].position.x = ((xMax - xMin) / 2 + xMax) / 2;
-        this.objects[1].position.z = ((zMax - zMin) / 2 + zMin) / 2;
+        this.objects[1].position.y = ((yMax - yMin) / 2 + yMin) / 2;
 
-        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin, yMax, zMin / 2, zMax / 2, size));
+        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, zMin, zMax, size));
         this.objects[2].position.x = ((xMax - xMin) / 2 + xMin) / 2;
-        this.objects[2].position.z = ((zMax - zMin) / 2 + zMax) / 2;
+        this.objects[2].position.y = ((yMax - yMin) / 2 + yMax) / 2;
 
-        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin, yMax, zMin / 2, zMax / 2, size));
+        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, zMin, zMax, size));
         this.objects[3].position.x = ((xMax - xMin) / 2 + xMax) / 2;
-        this.objects[3].position.z = ((zMax - zMin) / 2 + zMax) / 2;
+        this.objects[3].position.y = ((yMax - yMin) / 2 + yMax) / 2;
     }
 
     getStarFieldSector(count, xMin, xMax, yMin, yMax, zMin, zMax, size, color) {
@@ -50,7 +50,7 @@ export default class StarField {
         return starField;
     }
 
-    update(x, z) {
+    update(x, y) {
 
         for (var i = 0; i < this.objects.length; i++) {
 
@@ -65,15 +65,15 @@ export default class StarField {
                 this.objects[i].position.x += this.size.x;
             }
 
-            const zOffset = this.objects[i].position.z - z;
+            const yOffset = this.objects[i].position.y - y;
 
-            if (zOffset > (this.size.z / 2 + 1)) {
+            if (yOffset > (this.size.y / 2 + 1)) {
 
-                this.objects[i].position.z -= this.size.z;
+                this.objects[i].position.y -= this.size.y;
             }
-            else if (zOffset < -(this.size.z / 2 + 1)) {
+            else if (yOffset < -(this.size.y / 2 + 1)) {
 
-                this.objects[i].position.z += this.size.z;
+                this.objects[i].position.y += this.size.y;
             }
         }
     }

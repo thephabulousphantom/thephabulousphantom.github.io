@@ -43,8 +43,8 @@ export default class screenPlay extends Screen {
         World.objects.protagonist.rotation.z = 0;
 
         World.camera.position.x = 0;
-        World.camera.position.y = 50;
-        World.camera.position.z = 0;
+        World.camera.position.y = 0;
+        World.camera.position.z = 50;
     }
 
     afterShow() {
@@ -54,9 +54,9 @@ export default class screenPlay extends Screen {
 
     update(time) {
      
-        World.camera.position.z =
-        World.objects.lightSpot.position.z =
-        World.objects.protagonist.position.z -= 1;
+        World.camera.position.y =
+        World.objects.lightSpot.position.y =
+        World.objects.protagonist.position.y += 1;
 
         try {
 
