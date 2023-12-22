@@ -12,7 +12,7 @@ export default class StarField {
         this.size.y = Math.abs(yMax - yMin);
         this.size.z = Math.abs(zMax - zMin);
 
-        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, size, zMin, zMax));
+        this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, zMin, zMax, size));
         this.objects[0].position.x = ((xMax - xMin) / 2 + xMin) / 2;
         this.objects[0].position.y = ((yMax - yMin) / 2 + yMin) / 2;
 
