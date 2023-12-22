@@ -110,15 +110,11 @@ class Direction {
         const oz = orientation.sub(zAxis).normalize();
         const yz = yAxis.sub(zAxis).normalize();
 
-        var newAngle = 
+        this.deviceAngle = 
             (oz.clone().cross(yz).z < 0)
             ? 2 * (Math.PI - Math.acos(oz.dot(yz)))
             : 2 * Math.acos(oz.dot(yz));
       
-        
-
-        this.deviceAngle = ((9 * this.deviceAngle + newAngle) / 10) % (2 * Math.PI);
-
         document.getElementById("labelDebug").innerText = `${((this.deviceAngle * 100) | 0) / 100.0} ${(oz.clone().cross(yz).z < 0 ? "u" : "d")}`;
 
         this.updateDirection();
