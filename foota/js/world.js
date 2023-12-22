@@ -51,6 +51,7 @@ class World {
 
         Log.info("Adding protagonist...");
         this.objects.protagonist = Factory.getProtagonist();
+        this.objects.protagonist.visible = false;
         this.scene.add(this.objects.protagonist);
 
         this.camera.lookAt(this.objects.protagonist.position);

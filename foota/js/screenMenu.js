@@ -31,6 +31,7 @@ export default class screenMenu extends Screen {
 
         super.beforeShow();
 
+        World.objects.protagonist.visible = true;
         World.objects.protagonist.position.x =
         World.objects.protagonist.position.z =
         World.objects.lightSpot.position.x = 

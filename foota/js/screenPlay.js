@@ -58,9 +58,15 @@ export default class screenPlay extends Screen {
         World.objects.lightSpot.position.z =
         World.objects.protagonist.position.z -= 1;
 
-        if (Game.orientation) {
+        try {
 
-            World.objects.protagonist.quaternion.fromArray(Game.orientation.quaternion).inverse();
+            if (Game.orientation) {
+
+                World.objects.protagonist.quaternion.fromArray(Game.orientation.quaternion).inverse();
+            }
+        }
+        catch {
+
         }
     }
 
