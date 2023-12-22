@@ -173,13 +173,13 @@ export default class Game {
                 const result = await navigator.permissions.query({ name: permission });
                 if (result.state != "granted") {
     
-                    Log.warning(`Permission not granted for ${sensorName} sensor...`);
+                    Log.debug(`Permission not granted for ${sensorName} sensor...`);
                     return false;
                 }
             }
             catch (ex) {
     
-                Log.warning(`Unable to request permissions for ${sensorName} sensor: ${ex.toString()}`);
+                Log.debug(`Unable to request permissions for ${sensorName} sensor: ${ex.toString()}`);
                 return false;
             }
         }
@@ -201,11 +201,11 @@ export default class Game {
     
                 if (event.error.name == 'NotReadableError') {
     
-                    Log.warning(`${sensorName} sensor is not available.`);
+                    Log.debug(`${sensorName} sensor is not available.`);
                 }
                 else {
         
-                    Log.warning(`Unexpected ${sensorName} sensor error.`);
+                    Log.debug(`Unexpected ${sensorName} sensor error.`);
                 }
 
             }).bind(this);
@@ -216,7 +216,7 @@ export default class Game {
         }
         catch (ex) {
 
-            Log.warning(`Unable to initialize ${sensorName} sensor: ${ex.toString()}`);
+            Log.debug(`Unable to initialize ${sensorName} sensor: ${ex.toString()}`);
 
             return false;
         }
@@ -225,6 +225,7 @@ export default class Game {
     onRelativeOrientationUpdate(sensor) {
 
         Game.orientation = sensor;
+        Log.debug(`sensor running`);
     }
 
     async init() {

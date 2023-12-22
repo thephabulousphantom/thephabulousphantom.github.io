@@ -41,6 +41,12 @@ export default class Log {
     static debug(message) {
 
         Log.log(Log.Severity.debug, message);
+
+        const labelDebug = document.getElementById("labelDebug");
+        if (labelDebug) {
+
+            labelDebug.innerText = message;
+        }
     }
 
     static info(message) {
