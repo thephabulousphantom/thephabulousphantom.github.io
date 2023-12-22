@@ -3,17 +3,13 @@ import Tween from "./lib/tween/tween.esm.js";
 import Screen from "./screen.js";
 import World from "./world.js";
 import { screen as screenMenu } from "./screenMenu.js";
-import { RelativeOrientationSensor } from "./lib/sensors/motion-sensors.js";
-import Keyboard from "./keyboard.js";
+import Direction from "./direction.js";
 
 export default class Game {
 
     // global vars
 
     static time = null;
-    static deviceOrientation = null;
-    static keyboardAngle = 0;
-    static orientation = null;
 
     // helper functions
     
@@ -165,108 +161,11 @@ export default class Game {
         }).bind(this));
     }
 
-    async initSensor(permission, sensorName, sensorClass, handler) {
-
-        Log.info(`Initializing ${sensorName} sensor...`);
-
-        if (permission) {
-
-            try {
-
-                const result = await navigator.permissions.query({ name: permission });
-                if (result.state != "granted") {
-    
-                    Log.warning(`Permission not granted for ${sensorName} sensor...`);
-                    return false;
-                }
-            }
-            catch (ex) {
-    
-                Log.warning(`Unable to request permissions for ${sensorName} sensor: ${ex.toString()}`);
-                return false;
-            }
-        }
-
-        try {
-
-            var sensor = new sensorClass({ frequency: 60 });
-
-            sensor.onreading = (function() {
-    
-                if (handler) {
-
-                    (handler.bind(this))(sensor);
-                }
-
-            }).bind(this);
-    
-            sensor.onerror = (function(event) {
-    
-                if (event.error.name == 'NotReadableError') {
-    
-                    Log.warning(`${sensorName} sensor is not available.`);
-                }
-                else {
-        
-                    Log.warning(`Unexpected ${sensorName} sensor error.`);
-                }
-
-            }).bind(this);
-    
-            sensor.start();
-
-            return true;
-        }
-        catch (ex) {
-
-            Log.warning(`Unable to initialize ${sensorName} sensor: ${ex.toString()}`);
-
-            return false;
-        }
-    }
-
-    onDeviceOrientationUpdate(sensor) {
-
-        Game.deviceOrientation = sensor;
-        Log.debug(`orientation ${JSON.stringify(Game.deviceOrientation.quaternion)}`);
-
-        this.updateOrientation();
-    }
-
-    updateOrientation() {
-
-        if (Game.deviceOrientation) {
-
-            Game.orientation.fromArray(Game.deviceOrientation.quaternion);
-        }
-        else {
-
-            var qt = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Game.keyboardAngle);
-            Game.orientation.copy(qt);
-        }
-    }
-
     async init() {
 
         Log.info(`Initialising the game...`);
 
-        Game.orientation = new THREE.Quaternion();
-    
         //Log.debugLabel = document.getElementById("labelDebug");
-
-        if (await this.initSensor(
-            null,
-            "relative orientation",
-            typeof(RelativeOrientationSensor) == "undefined" ? null : RelativeOrientationSensor,
-            this.onDeviceOrientationUpdate
-        )) {
-
-            Log.info(`Initialised relative orientation sensor.`);
-        }
-        else {
-
-            Log.error(`Unable to initialise relative orientation sensor.`);
-        }
 
         requestAnimationFrame( this.animate.bind(this));
 
@@ -315,27 +214,17 @@ export default class Game {
 
         this.lastFrameTime += elapsed;
 
-        if (Keyboard.down["KeyD"]) {
-
-            Game.keyboardAngle += 0.1;
-            this.updateOrientation();
-        }
-        else if (Keyboard.down["KeyA"]) {
-
-            Game.keyboardAngle -= 0.1;
-            this.updateOrientation();
-        }
+        Direction.update(time);
 
         Tween.update(time);
+
+        World.update(time);
 
         if (Screen.current) {
 
             Screen.current.update(time);
         }
-
-        World.update(time);
     }
-
 }
 
 export const game = new Game();

@@ -1,7 +1,7 @@
 import Screen from "./screen.js";
 import { screen as screenMenu } from "./screenMenu.js";
 import World from "./world.js";
-import Game from "./game.js";
+import Direction from "./direction.js"
 
 export default class screenPlay extends Screen {
 
@@ -55,26 +55,18 @@ export default class screenPlay extends Screen {
     update(time) {
      
         const v = new THREE.Vector3(0, 1, 0);
-        v.applyQuaternion(Game.orientation);
+        v.applyAxisAngle(new THREE.Vector3(0, 0, 1), Direction.current);
+
+        World.camera.position.x =
+        World.objects.lightSpot.position.x =
+        World.objects.protagonist.position.x += 1 * v.x;
 
         World.camera.position.y =
         World.objects.lightSpot.position.y =
         World.objects.protagonist.position.y += 1 * v.y;
 
-        World.camera.position.x =
-        World.objects.lightSpot.position.x =
-        World.objects.protagonist.position.x -= 1 * v.x;
-
-        try {
-
-            if (Game.orientation) {
-
-                World.objects.protagonist.quaternion.copy(Game.orientation).invert();
-            }
-        }
-        catch {
-
-        }
+        World.camera.rotation.z = 
+        World.objects.protagonist.rotation.z = Direction.current;
     }
 
     quit() {
