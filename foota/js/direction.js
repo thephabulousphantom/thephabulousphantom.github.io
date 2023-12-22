@@ -97,29 +97,23 @@ class Direction {
     onDeviceOrientationUpdate(sensor) {
 
         const qt = new THREE.Quaternion();
-        qt.fromArray(sensor.quaternion);
+        qt.fromArray(sensor.quaternion).invert();
 
-        const v = new THREE.Vector3(0, 1, 0);
-        v.applyQuaternion(qt);
+        const orientation = new THREE.Vector3(0, 1, 0);
+        orientation.applyQuaternion(qt);
 
-        var V1x = new THREE.Vector3(1, 0, 0);
-        var V1y = new THREE.Vector3(0, 1, 0);
-        var V1z = new THREE.Vector3(0, 0, 1);
+        const yAxis = new THREE.Vector3(0, 1, 0);
+        const zAxis = new THREE.Vector3(0, 0, 1);
 
-        var Vxz = new THREE.Vector3(v.x, 0, v.z);
-        var Vxy = new THREE.Vector3(v.x, v.y, 0);
+        const oz = orientation.sub(zAxis).normalize();
+        const yz = yAxis.sub(zAxis).normalize();
 
-        //angle in radian between origin X axis and X axis of V2
-        //var angle_V1V2x = Math.acos(V1x.dot(V2xz.normalize()));
-
-        //angle in radian between origin Y axis and Y axis of V2
-        //var angle_V1V2y = Math.acos(V1y.dot(V2xy.normalize()));
-
-        //angle in radian between origin Z axis and Z axis of V2
-        this.deviceAngle = Math.acos(V1z.dot(Vxz.normalize()));
-
-        //Game.deviceAngle = sensor.quaternion;
-        //Log.debug(`direction ${JSON.stringify(Game.deviceAngle.quaternion)}`);
+        this.deviceAngle = 
+            (oz.clone().cross(yz).z < 0)
+            ? 2 * (Math.PI - Math.acos(oz.dot(yz)))
+            : 2 * Math.acos(oz.dot(yz));            
+      
+        // document.getElementById("labelDebug").innerText = `${((this.deviceAngle * 100) | 0) / 100.0} ${(oz.clone().cross(yz).z < 0 ? "u" : "d")}`;
 
         this.updateDirection();
     }
@@ -131,13 +125,7 @@ class Direction {
         if (this.deviceAngle) {
 
             this.current += this.deviceAngle;
-            //this.direction.fromArray(this.deviceAngle.quaternion);
         }
-        /*else {
-
-            var qt = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), this.keyboardAngle);
-            this.direction.copy(qt);
-        }*/
     }
 
     update(time) {
