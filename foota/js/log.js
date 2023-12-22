@@ -9,7 +9,7 @@ export default class Log {
         error: 3
     }
 
-
+    static debugLabel = null;
 
     static log(severity, message) {
 
@@ -42,25 +42,39 @@ export default class Log {
 
         Log.log(Log.Severity.debug, message);
 
-        const labelDebug = document.getElementById("labelDebug");
-        if (labelDebug) {
+        if (Log.debugLabel) {
 
-            labelDebug.innerText = message;
+            Log.debugLabel.innerText = "D" + message;
         }
     }
 
     static info(message) {
 
         Log.log(Log.Severity.info, message);
+
+        if (Log.debugLabel) {
+
+            Log.debugLabel.innerText = "I" + message;
+        }
     }
 
     static warning(message) {
 
         Log.log(Log.Severity.warning, message);
+
+        if (Log.debugLabel) {
+
+            Log.debugLabel.innerText = "W" + message;
+        }
     }
 
     static error(message) {
 
         Log.log(Log.Severity.error, message);
+
+        if (Log.debugLabel) {
+
+            Log.debugLabel.innerText = "E" + message;
+        }
     }
 }

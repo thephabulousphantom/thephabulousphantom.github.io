@@ -1,6 +1,7 @@
 import Screen from "./screen.js";
 import { screen as screenMenu } from "./screenMenu.js";
 import World from "./world.js";
+import Game from "./game.js";
 
 export default class screenPlay extends Screen {
 

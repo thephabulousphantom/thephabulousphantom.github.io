@@ -173,13 +173,13 @@ export default class Game {
                 const result = await navigator.permissions.query({ name: permission });
                 if (result.state != "granted") {
     
-                    Log.debug(`Permission not granted for ${sensorName} sensor...`);
+                    Log.warning(`Permission not granted for ${sensorName} sensor...`);
                     return false;
                 }
             }
             catch (ex) {
     
-                Log.debug(`Unable to request permissions for ${sensorName} sensor: ${ex.toString()}`);
+                Log.warning(`Unable to request permissions for ${sensorName} sensor: ${ex.toString()}`);
                 return false;
             }
         }
@@ -201,11 +201,11 @@ export default class Game {
     
                 if (event.error.name == 'NotReadableError') {
     
-                    Log.debug(`${sensorName} sensor is not available.`);
+                    Log.warning(`${sensorName} sensor is not available.`);
                 }
                 else {
         
-                    Log.debug(`Unexpected ${sensorName} sensor error.`);
+                    Log.warning(`Unexpected ${sensorName} sensor error.`);
                 }
 
             }).bind(this);
@@ -216,7 +216,7 @@ export default class Game {
         }
         catch (ex) {
 
-            Log.debug(`Unable to initialize ${sensorName} sensor: ${ex.toString()}`);
+            Log.warning(`Unable to initialize ${sensorName} sensor: ${ex.toString()}`);
 
             return false;
         }
@@ -232,6 +232,7 @@ export default class Game {
 
         Log.info(`Initialising the game...`);
 
+        Log.debugLabel = document.getElementById("labelDebug");
 
         if (await this.initSensor(
             null,
