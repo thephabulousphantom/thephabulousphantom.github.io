@@ -225,7 +225,7 @@ export default class Game {
     onRelativeOrientationUpdate(sensor) {
 
         Game.orientation = sensor;
-        Log.debug(`sensor running`);
+        Log.debug(`orientation ${Game.orientation.quaternion.x} ${Game.orientation.quaternion.y} ${Game.orientation.quaternion.z} ${Game.orientation.quaternion.w}`);
     }
 
     async init() {
