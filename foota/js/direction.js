@@ -40,7 +40,7 @@ class Direction {
 
     onDeviceOrientationUpdate(evt) {
 
-        this.deviceAngle = evt.alpha;
+        this.deviceAngle = evt.alpha * 0.0174532925;
         this.updateDirection();
     }
 
