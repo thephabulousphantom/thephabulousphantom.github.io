@@ -3,7 +3,6 @@ import Tween from "./lib/tween/tween.esm.js";
 import Screen from "./screen.js";
 import World from "./world.js";
 import { screen as screenMenu } from "./screenMenu.js";
-import Direction from "./direction.js";
 
 export default class Game {
 
@@ -66,8 +65,6 @@ export default class Game {
         }
 
         this.lastFrameTime += elapsed;
-
-        Direction.update(time);
 
         Tween.update(time);
 

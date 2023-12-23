@@ -22,6 +22,15 @@ button {
     user-select: none;
 }
 
+.touchArea {
+
+    position: fixed;
+    display: flex;
+    
+    cursor: hand;
+    user-select: none;
+}
+
 div.control {
 
     color: var(--colorBlack);

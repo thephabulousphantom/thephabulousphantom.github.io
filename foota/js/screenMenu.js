@@ -94,6 +94,9 @@ export default class screenMenu extends Screen {
      
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
+
+        World.things.protagonist.object.rotation.x = Math.PI * 2 * time / 6000;
+        World.things.protagonist.object.rotation.y = Math.PI * 2 * time / 10000;
     }
 }
 
