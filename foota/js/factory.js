@@ -1,7 +1,8 @@
 import Colors from "./colors.js";
 import Thing from "./thing.js";
-import StartField from "./thingStarField.js";
-import ThingProtagonist from "./thingProtagonist.js";
+import StarField from "./thingStarField.js";
+import Protagonist from "./thingProtagonist.js";
+import Bullets from "./thingBullets.js";
 
 class Factory {
 
@@ -66,21 +67,27 @@ class Factory {
         lightSpot.shadow.camera.far = 15.5;
         lightSpot.shadow.camera.fov = 5;*/
 
+        lightSpot.object.penumbra = 1;
         lightSpot.object.position.x = 0;
         lightSpot.object.position.y = 0;
-        lightSpot.object.position.z = 10;
+        lightSpot.object.position.z = 15;
 
         return lightSpot;
     }
 
     getProtagonist() {
 
-        return new ThingProtagonist();
+        return new Protagonist();
     }
 
     getStarField() {
 
-        return new StartField(10000, -2000, 2000, -1200, 1200, -300, -100, 2);
+        return new StarField(10000, -2000, 2000, -1200, 1200, -300, -100, 2);
+    }
+
+    getBullets() {
+
+        return new Bullets(20);
     }
 }
 

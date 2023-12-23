@@ -12,9 +12,13 @@ export default class screenPlay extends Screen {
     directionDevice = null;
     directionKeyboard = 0;
     directionSmoothness = 3;
+
     velocity = 1;
     accelleration = 0.2;
+    decelleration = 0.95;
     maxSpeed = 2;
+    lastBulletShootTime = null;
+    rapidFirePeriod = 100;
 
     touch = {
 
@@ -159,6 +163,7 @@ export default class screenPlay extends Screen {
         super.afterShow();
     }
 
+
     update(time) {
      
         if (Keyboard.down["KeyD"]) {
@@ -173,13 +178,32 @@ export default class screenPlay extends Screen {
             this.updateDirection();
         }
 
+        if (Keyboard.down["Space"] || this.touch.shooting) {
+
+            if (!this.lastBulletShootTime || time - this.lastBulletShootTime > this.rapidFirePeriod) {
+
+                this.lastBulletShootTime = time;
+
+                World.things.bullets.shoot(
+                    World.things.protagonist.object.position.x,
+                    World.things.protagonist.object.position.y,
+                    this.directionCurrent,
+                    this.velocity
+                );
+            }
+        }
+        else {
+
+            this.lastBulletShootTime = null;
+        }
+
         if (Keyboard.down["KeyW"] || this.touch.accellerating) {
 
             this.velocity += this.accelleration;
         }
         else if (this.velocity > 0) {
 
-            this.velocity *= 0.9;
+            this.velocity *= this.decelleration;
         }
 
         if (this.velocity > this.maxSpeed) {

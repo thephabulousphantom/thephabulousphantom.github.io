@@ -51,6 +51,10 @@ class World {
         this.things.protagonist.object.visible = false;
         this.scene.add(this.things.protagonist.object);
 
+        Log.info("Adding bullets...");
+        this.things.bullets = Factory.getBullets();
+        this.scene.add(this.things.bullets.object);
+
         this.camera.lookAt(this.things.protagonist.object.position);
         this.things.lightSpot.object.target = this.things.protagonist.object;
 

@@ -1,6 +1,5 @@
 import Thing from "./thing.js";
 import Colors from "./colors.js";
-import World from "./world.js";
 
 export default class ThingProtagonist extends Thing {
 

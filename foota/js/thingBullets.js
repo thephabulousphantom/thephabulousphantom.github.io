@@ -1,0 +1,75 @@
+import Thing from "./thing.js";
+import Colors from "./colors.js";
+
+export default class Bullets extends Thing {
+
+    objects = [];
+    speed = 2;
+    lifeSpan = 1000;
+
+    constructor(number) {
+
+        super();
+
+        const geometry = new THREE.BoxGeometry(0.3, 2, 0.3); 
+        const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
+
+        const bullets = new THREE.Group();
+
+        for (var i = 0; i < number; i++) {
+
+            const cube = new THREE.Mesh(geometry, material); 
+
+            cube.position.x = 0;
+            cube.position.y = 0;
+            cube.position.z = 0;
+            cube.visible = false;
+
+            this.objects.push(cube);
+            bullets.add(cube);
+        }
+
+        super.object = bullets;
+    }
+
+    shoot(x, y, direction, velocity) {
+
+        for (var i = 0; i < this.objects.length; i++) {
+
+            if (!this.objects[i].visible) {
+
+                this.objects[i].position.x = x;
+                this.objects[i].position.y = y;
+                this.objects[i].rotation.z = direction;
+                this.objects[i].visible = true;
+                this.objects[i].speed = velocity + this.speed;
+                return;
+            }
+        }
+    }
+
+    update(time) {
+
+        for (var i = 0; i < this.objects.length; i++) {
+
+            if (this.objects[i].visible) {
+
+                /*const velocityVector = new THREE.Vector3(0, this.velocity, 0);
+                velocityVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);*/
+
+                this.objects[i].position.x += this.objects[i].speed * Math.sin(-this.objects[i].rotation.z);
+                this.objects[i].position.y += this.objects[i].speed * Math.cos(-this.objects[i].rotation.z);
+
+                if (!this.objects[i].deathTime) {
+
+                    this.objects[i].deathTime = time + this.lifeSpan;
+                }
+                else if (time > this.objects[i].deathTime) {
+
+                    delete this.objects[i].deathTime;
+                    this.objects[i].visible = false;
+                }
+            }
+        }
+    }
+}
