@@ -4,7 +4,9 @@
     --colorWhite: #ffffffff;
     --colorBackground: #00000044;
     --colorPrimary: #00ff00ff;
+    --colorPrimaryTransparent: #00ff0044;
     --colorSecondary: #880088ff;
+    --colorSecondaryTransparent: #88008844;
 }
 
 body {

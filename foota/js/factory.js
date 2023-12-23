@@ -3,6 +3,7 @@ import Thing from "./thing.js";
 import StarField from "./thingStarField.js";
 import Protagonist from "./thingProtagonist.js";
 import Bullets from "./thingBullets.js";
+import Asteroids from "./thingsAsteroids.js";
 
 class Factory {
 
@@ -88,6 +89,11 @@ class Factory {
     getBullets() {
 
         return new Bullets(20);
+    }
+
+    getAsteroids() {
+
+        return new Asteroids(20);
     }
 }
 

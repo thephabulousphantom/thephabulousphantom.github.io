@@ -55,6 +55,10 @@ class World {
         this.things.bullets = Factory.getBullets();
         this.scene.add(this.things.bullets.object);
 
+        Log.info("Adding asteroids...");
+        this.things.asteroids = Factory.getAsteroids();
+        this.scene.add(this.things.asteroids.object);
+
         this.camera.lookAt(this.things.protagonist.object.position);
         this.things.lightSpot.object.target = this.things.protagonist.object;
 

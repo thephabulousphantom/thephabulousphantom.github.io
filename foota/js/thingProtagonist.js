@@ -1,7 +1,7 @@
 import Thing from "./thing.js";
 import Colors from "./colors.js";
 
-export default class ThingProtagonist extends Thing {
+export default class Protagonist extends Thing {
 
     constructor() {
 

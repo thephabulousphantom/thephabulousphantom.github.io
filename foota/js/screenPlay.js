@@ -13,7 +13,7 @@ export default class screenPlay extends Screen {
     directionKeyboard = 0;
     directionSmoothness = 3;
 
-    velocity = 1;
+    velocity = 0;
     accelleration = 0.2;
     decelleration = 0.95;
     maxSpeed = 2;
@@ -135,6 +135,8 @@ export default class screenPlay extends Screen {
     afterHide() {
 
         super.afterHide();
+
+        World.things.asteroids.killAll();
     }
 
     beforeShow() {
@@ -156,6 +158,11 @@ export default class screenPlay extends Screen {
         World.camera.position.x = 0;
         World.camera.position.y = 0;
         World.camera.position.z = 50;
+
+        for (var i = 0; i < 10; i++) {
+
+            World.things.asteroids.spawn();
+        }
     }
 
     afterShow() {

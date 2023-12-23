@@ -11,7 +11,7 @@ export default class Bullets extends Thing {
 
         super();
 
-        const geometry = new THREE.BoxGeometry(0.3, 2, 0.3); 
+        const geometry = new THREE.BoxGeometry(0.2, 1.5, 0.2); 
         const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
 
         const bullets = new THREE.Group();
@@ -41,8 +41,8 @@ export default class Bullets extends Thing {
                 this.objects[i].position.x = x;
                 this.objects[i].position.y = y;
                 this.objects[i].rotation.z = direction;
-                this.objects[i].visible = true;
                 this.objects[i].speed = velocity + this.speed;
+                this.objects[i].visible = true;
                 return;
             }
         }
@@ -53,9 +53,6 @@ export default class Bullets extends Thing {
         for (var i = 0; i < this.objects.length; i++) {
 
             if (this.objects[i].visible) {
-
-                /*const velocityVector = new THREE.Vector3(0, this.velocity, 0);
-                velocityVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);*/
 
                 this.objects[i].position.x += this.objects[i].speed * Math.sin(-this.objects[i].rotation.z);
                 this.objects[i].position.y += this.objects[i].speed * Math.cos(-this.objects[i].rotation.z);

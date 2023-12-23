@@ -1,7 +1,7 @@
 import Thing from "./thing.js";
 import World from "./world.js";
 
-export default class ThingStarField extends Thing {
+export default class StarField extends Thing {
 
     objects = [];
 
