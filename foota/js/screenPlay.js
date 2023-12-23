@@ -14,6 +14,7 @@ export default class screenPlay extends Screen {
     directionSmoothness = 3;
     velocity = 1;
     accelleration = 0.2;
+    maxSpeed = 2;
 
     touch = {
 
@@ -171,9 +172,9 @@ export default class screenPlay extends Screen {
             this.velocity *= 0.9;
         }
 
-        if (this.velocity > 4) {
+        if (this.velocity > this.maxSpeed) {
 
-            this.velocity = 4;
+            this.velocity = this.maxSpeed;
         }
         else if (this.velocity < 0.1) {
 
