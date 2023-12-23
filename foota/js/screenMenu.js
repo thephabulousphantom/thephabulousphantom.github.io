@@ -22,9 +22,10 @@ export default class screenMenu extends Screen {
         this.buttonPlay.addEventListener("click", this.onPlayClicked);
     }
 
-    onPlayClicked() {
+    onPlayClicked(evt) {
 
         Screen.transition(screenPlay);
+        evt.preventDefault();
     }
 
     beforeShow() {

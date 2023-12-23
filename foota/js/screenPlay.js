@@ -32,7 +32,7 @@ export default class screenPlay extends Screen {
         super.init();
 
         this.controlQuit = document.getElementById("controlQuit");
-        this.controlQuit.addEventListener("click", this.quit);
+        this.controlQuit.addEventListener("click", this.onQuit);
 
         this.areaAccellerate = document.getElementById("areaAccellerate");
         this.areaAccellerate.addEventListener("touchstart", this.onAccelleratePress.bind(this));
@@ -51,24 +51,34 @@ export default class screenPlay extends Screen {
         this.updateDirection();
     }
 
-    onAccelleratePress() {
+    onAccelleratePress(evt) {
 
         this.touch.accellerating = true;
+        evt.preventDefault();
     }
 
-    onAccellerateRelease() {
+    onAccellerateRelease(evt) {
 
         this.touch.accellerating = false;
+        evt.preventDefault();
     }
 
-    onShootPress() {
+    onShootPress(evt) {
 
         this.touch.shooting = true;
+        evt.preventDefault();
     }
 
-    onShootRelease() {
+    onShootRelease(evt) {
 
         this.touch.shooting = false;
+        evt.preventDefault();
+    }
+
+    onQuit(evt) {
+
+        Screen.transition(screenMenu);
+        evt.preventDefault();
     }
 
     updateDirection() {
@@ -199,11 +209,6 @@ export default class screenPlay extends Screen {
 
         World.camera.rotation.z = 
         World.things.protagonist.object.rotation.z = this.directionCurrent;
-    }
-
-    quit() {
-
-        Screen.transition(screenMenu);
     }
 }
 

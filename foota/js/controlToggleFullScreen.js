@@ -21,7 +21,7 @@ export default class controlToggleFullScreen {
         this.htmlElement.addEventListener("click", this.toggle);
     }
 
-    toggle() {
+    toggle(evt) {
 
         try {
 
@@ -41,6 +41,8 @@ export default class controlToggleFullScreen {
 
             Log.warning(`Unable to toggle full screen: ${JSON.stringify(ex)}`)
         }
+        
+        evt.preventDefault();
     }
 }
 
