@@ -34,13 +34,15 @@ export default class screenPlay extends Screen {
 
         super.beforeShow();
 
-        World.objects.protagonist.position.x = 0;
-        World.objects.protagonist.position.y = 0;
-        World.objects.protagonist.position.z = 0;
+        World.things.protagonist.object.position.x = 0;
+        World.things.protagonist.object.position.y = 0;
+        World.things.protagonist.object.position.z = 0;
 
-        World.objects.protagonist.rotation.x = 0;
-        World.objects.protagonist.rotation.y = 0;
-        World.objects.protagonist.rotation.z = 0;
+        World.things.protagonist.behaviour = World.things.protagonist.behaviourPlay;
+
+        World.things.protagonist.object.rotation.x = 0;
+        World.things.protagonist.object.rotation.y = 0;
+        World.things.protagonist.object.rotation.z = 0;
 
         World.camera.position.x = 0;
         World.camera.position.y = 0;
@@ -54,19 +56,16 @@ export default class screenPlay extends Screen {
 
     update(time) {
      
-        const v = new THREE.Vector3(0, 1, 0);
-        v.applyAxisAngle(new THREE.Vector3(0, 0, 1), Direction.current);
-
         World.camera.position.x =
-        World.objects.lightSpot.position.x =
-        World.objects.protagonist.position.x += 1 * v.x;
+        World.things.lightSpot.object.position.x =
+        World.things.protagonist.object.position.x;
 
         World.camera.position.y =
-        World.objects.lightSpot.position.y =
-        World.objects.protagonist.position.y += 1 * v.y;
+        World.things.lightSpot.object.position.y =
+        World.things.protagonist.object.position.y;
 
         World.camera.rotation.z = 
-        World.objects.protagonist.rotation.z = Direction.current;
+        World.things.protagonist.object.rotation.z;
     }
 
     quit() {

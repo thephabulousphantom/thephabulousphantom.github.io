@@ -31,11 +31,13 @@ export default class screenMenu extends Screen {
 
         super.beforeShow();
 
-        World.objects.protagonist.visible = true;
-        World.objects.protagonist.position.x =
-        World.objects.protagonist.position.y =
-        World.objects.lightSpot.position.x = 
-        World.objects.lightSpot.position.y = 0;
+        World.things.protagonist.object.visible = true;
+        World.things.protagonist.object.position.x =
+        World.things.protagonist.object.position.y =
+        World.things.lightSpot.object.position.x = 
+        World.things.lightSpot.object.position.y = 0;
+
+        World.things.protagonist.behaviour = World.things.protagonist.behaviourMenu;
         
         const animation = {
 
@@ -92,9 +94,6 @@ export default class screenMenu extends Screen {
      
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
-
-        World.objects.protagonist.rotation.x = Math.PI * 2 * time / 6000;
-        World.objects.protagonist.rotation.y = Math.PI * 2 * time / 10000;
     }
 }
 

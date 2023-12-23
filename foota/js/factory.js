@@ -1,5 +1,7 @@
 import Colors from "./colors.js";
-import StartField from "./starField.js";
+import Thing from "./thing.js";
+import StartField from "./thingStarField.js";
+import ThingProtagonist from "./thingProtagonist.js";
 
 class Factory {
 
@@ -42,18 +44,18 @@ class Factory {
 
     getLightAmbient() {
 
-        return new THREE.AmbientLight(
+        return new Thing(new THREE.AmbientLight(
             Colors.lightAmbient,
             0.2
-        );
+        ));
     }
 
     getLightSpot() {
 
-        const lightSpot = new THREE.SpotLight(
+        const lightSpot = new Thing(new THREE.SpotLight(
             Colors.lightSpot,
             10
-        );
+        ));
 
         /*lightSpot.castShadow = true;
 
@@ -64,24 +66,16 @@ class Factory {
         lightSpot.shadow.camera.far = 15.5;
         lightSpot.shadow.camera.fov = 5;*/
 
-        lightSpot.position.x = 0;
-        lightSpot.position.y = 0;
-        lightSpot.position.z = 10;
+        lightSpot.object.position.x = 0;
+        lightSpot.object.position.y = 0;
+        lightSpot.object.position.z = 10;
 
         return lightSpot;
     }
 
     getProtagonist() {
 
-        const geometry = new THREE.BoxGeometry(1, 1, 1); 
-        const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
-        const cube = new THREE.Mesh(geometry, material); 
-
-        cube.position.x = 0;
-        cube.position.y = 0;
-        cube.position.z = 0;
-
-        return cube;
+        return new ThingProtagonist();
     }
 
     getStarField() {

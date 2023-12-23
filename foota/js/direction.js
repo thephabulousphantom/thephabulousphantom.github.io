@@ -1,5 +1,5 @@
 import Log from "./log.js";
-import { RelativeOrientationSensor } from "./lib/sensors/motion-sensors.js";
+//import { RelativeOrientationSensor } from "./lib/sensors/motion-sensors.js";
 import Keyboard from "./keyboard.js";
 
 class Direction {
@@ -21,7 +21,7 @@ class Direction {
 
     async init() {
 
-        if (await this.initSensor(
+        /*if (await this.initSensor(
             null,
             "relative direction",
             typeof(RelativeOrientationSensor) == "undefined" ? null : RelativeOrientationSensor,
@@ -33,10 +33,18 @@ class Direction {
         else {
 
             Log.error(`Unable to initialise relative direction sensor.`);
-        }
+        }*/
+
+        window.addEventListener("deviceorientation", (this.onDeviceOrientationUpdate).bind(this));
     }
 
-    async initSensor(permission, sensorName, sensorClass, handler) {
+    onDeviceOrientationUpdate(evt) {
+
+        this.deviceAngle = evt.alpha;
+        this.updateDirection();
+    }
+
+    /*async initSensor(permission, sensorName, sensorClass, handler) {
 
         Log.info(`Initializing ${sensorName} sensor...`);
 
@@ -118,7 +126,7 @@ class Direction {
         document.getElementById("labelDebug").innerText = `${((this.deviceAngle * 100) | 0) / 100.0} ${(oz.clone().cross(yz).z < 0 ? "u" : "d")}`;
 
         this.updateDirection();
-    }
+    }*/
 
     updateDirection() {
 

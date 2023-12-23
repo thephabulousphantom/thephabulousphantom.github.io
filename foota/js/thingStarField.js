@@ -1,4 +1,7 @@
-export default class StarField {
+import Thing from "./thing.js";
+import World from "./world.js";
+
+export default class ThingStarField extends Thing {
 
     objects = [];
 
@@ -8,10 +11,12 @@ export default class StarField {
 
     constructor(count, xMin, xMax, yMin, yMax, zMin, zMax, size) {
 
+        super();
+        
         this.size.x = Math.abs(xMax - xMin);
         this.size.y = Math.abs(yMax - yMin);
         this.size.z = Math.abs(zMax - zMin);
-
+        
         this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, zMin, zMax, size));
         this.objects[0].position.x = ((xMax - xMin) / 2 + xMin) / 2;
         this.objects[0].position.y = ((yMax - yMin) / 2 + yMin) / 2;
@@ -27,6 +32,14 @@ export default class StarField {
         this.objects.push(this.getStarFieldSector(count / 4, xMin / 2, xMax / 2, yMin / 2, yMax / 2, zMin, zMax, size));
         this.objects[3].position.x = ((xMax - xMin) / 2 + xMax) / 2;
         this.objects[3].position.y = ((yMax - yMin) / 2 + yMax) / 2;
+
+        const starField = new THREE.Group();
+        starField.add(this.objects[0]);
+        starField.add(this.objects[1]);
+        starField.add(this.objects[2]);
+        starField.add(this.objects[3]);
+
+        super.object = starField;
     }
 
     getStarFieldSector(count, xMin, xMax, yMin, yMax, zMin, zMax, size, color) {
@@ -50,7 +63,10 @@ export default class StarField {
         return starField;
     }
 
-    update(x, y) {
+    update(time) {
+
+        const x = World.things.protagonist.object.position.x;
+        const y = World.things.protagonist.object.position.y;
 
         for (var i = 0; i < this.objects.length; i++) {
 
