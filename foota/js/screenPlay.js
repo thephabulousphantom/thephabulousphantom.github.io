@@ -221,6 +221,20 @@ export default class screenPlay extends Screen {
         World.things.protagonist.object.position.x += velocityVector.x;
         World.things.protagonist.object.position.y += velocityVector.y;
 
+        if (World.things.protagonist.killed) {
+
+            World.things.protagonist.object.position.z += 1;
+            World.things.protagonist.object.rotation.x += .1;
+            World.things.protagonist.object.rotation.y += .2;
+            this.directionKeyboard += 0.1;
+            this.updateDirection();
+
+            if (!Screen.transitioning) {
+
+                Screen.transition(screenMenu);
+            }
+        }
+
         World.camera.position.x =
         World.things.lightSpot.object.position.x =
         World.things.protagonist.object.position.x;
@@ -231,12 +245,6 @@ export default class screenPlay extends Screen {
 
         World.camera.rotation.z = 
         World.things.protagonist.object.rotation.z = this.directionCurrent;
-
-        if (World.things.protagonist.killed) {
-
-            World.things.protagonist.killed = false;
-            Screen.transition(screenMenu);
-        }
     }
 }
 

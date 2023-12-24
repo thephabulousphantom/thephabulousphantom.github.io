@@ -5,7 +5,8 @@ export default class Screen {
 
     static transitionScreenId = "transitionBlackScreen";
     static current = null;
-    static transitionMilliseconds = 1000;
+    static transitioning = false;
+    static transitionMilliseconds = 2000;
 
     id = null;
     htmlElement = null;
@@ -116,6 +117,8 @@ export default class Screen {
     
     static transition(screen) {
 
+        Screen.transitioning = true;
+
         if (Screen.current) {
 
             Screen.current.transitionOut = true;
@@ -165,6 +168,8 @@ export default class Screen {
                         transitionScreenElement.style.visibility = "hidden";
                         screen.afterShow();
                         Screen.current.transitionIn = false;
+
+                        Screen.transitioning = false;
                     })
             )
             .start();

@@ -69,9 +69,10 @@ class Factory {
         lightSpot.shadow.camera.fov = 5;*/
 
         lightSpot.object.penumbra = 1;
+        lightSpot.object.angle = 0.4;
         lightSpot.object.position.x = 0;
         lightSpot.object.position.y = 0;
-        lightSpot.object.position.z = 15;
+        lightSpot.object.position.z = 50;
 
         return lightSpot;
     }

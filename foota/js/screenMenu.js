@@ -66,6 +66,10 @@ export default class screenMenu extends Screen {
         World.things.protagonist.object.visible = true;
         World.things.protagonist.object.position.x =
         World.things.protagonist.object.position.y =
+        World.things.protagonist.object.position.z = 
+        World.things.protagonist.object.rotation.x =
+        World.things.protagonist.object.rotation.y =
+        World.things.protagonist.object.rotation.z =
         World.things.lightSpot.object.position.x = 
         World.things.lightSpot.object.position.y = 0;
 
