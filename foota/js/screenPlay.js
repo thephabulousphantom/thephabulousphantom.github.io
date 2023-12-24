@@ -163,15 +163,15 @@ export default class screenPlay extends Screen {
         World.camera.position.y = 0;
         World.camera.position.z = 50;
 
+        World.things.asteroids.killAll();
+        this.visibleCount = 0;
+
         this.level = 1;
         this.onLevelUpdated();
 
         this.score = 0;
         this.onScoreUpdated();
 
-        World.things.asteroids.killAll();
-        this.visibleCount = 0;
-        this.onAsteroidCountUpdated();
 
         World.things.protagonist.killed = false;
     }
@@ -183,14 +183,14 @@ export default class screenPlay extends Screen {
 
     onLevelUpdated() {
 
-        this.spawnAsteroid(10 + this.level * 4);
-        
         this.asteroidsToSpawn = 10 + this.level * 4;
         this.asteroidSpawnScale = Math.pow(2, 1 + ((this.level / 4) | 0));
-        this.asteroidSpawnDelay = 10000 / this.level;
+        this.asteroidSpawnDelay = 5000 / this.level;
         this.nextAsteroidSpawnedTime = null;
 
         this.labelLevel.innerText = `level ${this.level}`;
+
+        this.spawnAsteroid(5 + this.level * 2);
     }
 
     onScoreUpdated() {
@@ -226,6 +226,8 @@ export default class screenPlay extends Screen {
     explode(asteroid) {
 
         asteroid.visible = false;
+        this.visibleCount--;
+        
         this.score += (1000 / asteroid.scale.x) | 0;
         this.onScoreUpdated();
 
@@ -307,19 +309,16 @@ export default class screenPlay extends Screen {
         this.visibleCount = visibleCount;
     }
 
-    spawnAsteroid(count) {
+    spawnAsteroid(count, time) {
 
         for (var i = 0; i < count; i++) {
 
-            if (this.asteroidsToSpawn > 0 && (!this.nextAsteroidSpawnedTime || this.nextAsteroidSpawnedTime < time)) {
-
-                World.things.asteroids.spawnRandom(this.asteroidSpawnScale);
-                this.asteroidsToSpawn--;
-                this.nextAsteroidSpawnedTime = time + this.asteroidSpawnDelay;
-                this.score += this.asteroidSpawnScale * 10;
-                this.onScoreUpdated();
-                this.visibleCount++;
-            }
+            World.things.asteroids.spawnRandom(this.asteroidSpawnScale);
+            this.asteroidsToSpawn--;
+            this.nextAsteroidSpawnedTime = time ? (time + this.asteroidSpawnDelay) : null;
+            this.score += this.asteroidSpawnScale * 10;
+            this.onScoreUpdated();
+            this.visibleCount++;
         }
 
         this.onAsteroidCountUpdated();
@@ -329,9 +328,13 @@ export default class screenPlay extends Screen {
      
         this.checkForCollissions();
 
-        if (!this.asteroidsToSpawn && !World.things.asteroids.visibleCount) {
+        if (this.asteroidsToSpawn > 0 && (!this.nextAsteroidSpawnedTime || this.nextAsteroidSpawnedTime < time)) {
+                
+            this.spawnAsteroid(1, time);
+        }
 
-            this.spawnAsteroid(1);
+        if (!this.asteroidsToSpawn && !this.visibleCount) {
+
             this.level++;
             this.onLevelUpdated();
         }
