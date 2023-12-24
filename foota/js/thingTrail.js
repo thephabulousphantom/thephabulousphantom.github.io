@@ -59,7 +59,7 @@ export default class Trail extends Thing {
         segment.position.x = x;
         segment.position.y = y;
         segment.position.z = z;
-        segment.rotation.z = direction;
+        segment.material.rotation = 2 * Math.PI * Math.random();//direction;
         segment.scale.x = 
         segment.scale.y = 
         segment.scale.z = this.size;

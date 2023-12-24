@@ -20,7 +20,8 @@ export default class screenPlay extends Screen {
 
     score = null;
     level = null;
-    visibleCount = 0;
+    asteroidCount = 0;
+    asteroidWeight = 0;
     asteroidsToSpawn = null;
     asteroidSpawnScale = null;
     asteroidSpawnDelay = null;
@@ -164,7 +165,8 @@ export default class screenPlay extends Screen {
         World.camera.position.z = 50;
 
         World.things.asteroids.killAll();
-        this.visibleCount = 0;
+        this.asteroidCount = 0;
+        this.asteroidWeight = 0;
 
         this.level = 1;
         this.onLevelUpdated();
@@ -183,14 +185,14 @@ export default class screenPlay extends Screen {
 
     onLevelUpdated() {
 
-        this.asteroidsToSpawn = 10 + this.level * 4;
+        this.asteroidsToSpawn = 10 + this.level * 2;
         this.asteroidSpawnScale = Math.pow(2, 1 + ((this.level / 4) | 0));
         this.asteroidSpawnDelay = 5000 / this.level;
         this.nextAsteroidSpawnedTime = null;
 
         this.labelLevel.innerText = `level ${this.level}`;
 
-        this.spawnAsteroid(5 + this.level * 2);
+        this.spawnAsteroid(this.level * 2);
     }
 
     onScoreUpdated() {
@@ -200,7 +202,20 @@ export default class screenPlay extends Screen {
 
     onAsteroidCountUpdated() {
 
-        this.labelAsteroidCount.innerText = `asteroids ${this.visibleCount}`;
+        var count = 0, weight = 0;
+        for (var i = 0; i < World.things.asteroids.objects.length; i++) {
+
+            if (World.things.asteroids.objects[i].visible) {
+
+                count++;
+                weight += Math.pow(World.things.asteroids.objects[i].scale.x, 2);
+            }
+        }
+
+        this.asteroidCount = count;
+        this.asteroidWeight = weight;
+
+        this.labelAsteroidCount.innerText = `asteroids ${this.asteroidCount} / ${this.asteroidWeight}`;
     }
 
     bulletAndAsteroidCollision(bullet, asteroid) {
@@ -226,7 +241,6 @@ export default class screenPlay extends Screen {
     explode(asteroid) {
 
         asteroid.visible = false;
-        this.visibleCount--;
         
         this.score += (1000 / asteroid.scale.x) | 0;
         this.onScoreUpdated();
@@ -248,14 +262,10 @@ export default class screenPlay extends Screen {
         const protagonist = World.things.protagonist.object;
         const fenceSize = World.things.asteroids.fenceSize;
 
-        var visibleCount = 0;
-
         for (var i = 0; i < World.things.asteroids.objects.length; i++) {
 
             const asteroid = World.things.asteroids.objects[i];
             if (asteroid.visible) {
-
-                visibleCount++;
 
                 if (this.protagonistAndAsteroidCollision(protagonist, asteroid)) {
 
@@ -305,8 +315,6 @@ export default class screenPlay extends Screen {
                 }
             }
         }
-
-        this.visibleCount = visibleCount;
     }
 
     spawnAsteroid(count, time) {
@@ -318,7 +326,6 @@ export default class screenPlay extends Screen {
             this.nextAsteroidSpawnedTime = time ? (time + this.asteroidSpawnDelay) : null;
             this.score += this.asteroidSpawnScale * 10;
             this.onScoreUpdated();
-            this.visibleCount++;
         }
 
         this.onAsteroidCountUpdated();
@@ -333,7 +340,7 @@ export default class screenPlay extends Screen {
             this.spawnAsteroid(1, time);
         }
 
-        if (!this.asteroidsToSpawn && !this.visibleCount) {
+        if (!this.asteroidsToSpawn && this.asteroidWeight < 4) {
 
             this.level++;
             this.onLevelUpdated();
