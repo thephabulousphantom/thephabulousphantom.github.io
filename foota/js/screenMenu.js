@@ -64,6 +64,7 @@ export default class screenMenu extends Screen {
         super.beforeShow();
 
         World.things.protagonist.object.visible = true;
+        World.things.trail.object.visible = false;
         World.things.protagonist.object.position.x =
         World.things.protagonist.object.position.y =
         World.things.protagonist.object.position.z = 

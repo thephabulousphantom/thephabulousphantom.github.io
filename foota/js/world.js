@@ -51,6 +51,11 @@ class World {
         this.things.protagonist.object.visible = false;
         this.scene.add(this.things.protagonist.object);
 
+        Log.info("Adding trail...");
+        this.things.trail = Factory.getTrail();
+        this.things.trail.object.visible = false;
+        this.scene.add(this.things.trail.object);
+
         Log.info("Adding bullets...");
         this.things.bullets = Factory.getBullets();
         this.scene.add(this.things.bullets.object);

@@ -48,6 +48,7 @@ export default class screenGameOver extends Screen {
         super.beforeShow();
 
         World.things.protagonist.object.visible = false;
+        World.things.trail.object.visible = false;
         this.labelLevel.innerText = `level ${screenPlay.level}`;
         this.labelScore.innerText = `score ${screenPlay.score}`;
         this.labelAsteroidCount.innerText = `asteroids ${screenPlay.visibleCount}`;

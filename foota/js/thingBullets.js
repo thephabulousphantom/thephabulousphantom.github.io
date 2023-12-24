@@ -12,7 +12,7 @@ export default class Bullets extends Thing {
         super();
 
         const geometry = new THREE.BoxGeometry(0.2, 1.5, 0.2); 
-        const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
+        const material = new THREE.MeshLambertMaterial({ color: Colors.fire }); 
 
         const bullets = new THREE.Group();
 

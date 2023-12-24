@@ -2,8 +2,9 @@ import Colors from "./colors.js";
 import Thing from "./thing.js";
 import StarField from "./thingStarField.js";
 import Protagonist from "./thingProtagonist.js";
+import Trail from "./thingTrail.js";
 import Bullets from "./thingBullets.js";
-import Asteroids from "./thingsAsteroids.js";
+import Asteroids from "./thingAsteroids.js";
 
 class Factory {
 
@@ -80,6 +81,11 @@ class Factory {
     getProtagonist() {
 
         return new Protagonist();
+    }
+
+    getTrail() {
+
+        return new Trail();
     }
 
     getStarField() {

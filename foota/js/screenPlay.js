@@ -2,7 +2,6 @@ import Screen from "./screen.js";
 import { screen as screenGameOver } from "./screenGameOver.js";
 import World from "./world.js";
 import Keyboard from "./keyboard.js";
-import Asteroids from "./thingsAsteroids.js";
 
 export default class screenPlay extends Screen {
 
@@ -13,8 +12,8 @@ export default class screenPlay extends Screen {
     directionSmoothness = 3;
 
     velocity = 0;
-    accelleration = 0.05;
-    decelleration = 0.95;
+    accelleration = 0.01;
+    decelleration = 0.99;
     maxSpeed = 1;
     lastBulletShootTime = null;
     rapidFirePeriod = 100;
@@ -158,6 +157,7 @@ export default class screenPlay extends Screen {
         World.things.protagonist.object.rotation.z = 0;
 
         World.things.protagonist.object.visible = true;
+        World.things.trail.object.visible = true;
 
         World.camera.position.x = 0;
         World.camera.position.y = 0;
@@ -370,13 +370,28 @@ export default class screenPlay extends Screen {
             this.lastBulletShootTime = null;
         }
 
+        const exhaustVector = new THREE.Vector3(0, 2, 0);
+        exhaustVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);
+
         if (Keyboard.down["KeyW"] || this.touch.accellerating) {
 
             this.velocity += this.accelleration;
+
+            World.things.trail.trace(
+                World.things.protagonist.object.position.x - exhaustVector.x,
+                World.things.protagonist.object.position.y - exhaustVector.y,
+                World.things.protagonist.object.position.z - 0.5,
+                this.directionCurrent,
+                time
+            );
+
+            World.things.protagonist.object.children[1].visible = true;
+            World.things.protagonist.object.children[1].rotation.y = 2 * Math.PI * Math.random();
         }
         else if (this.velocity > 0) {
 
             this.velocity *= this.decelleration;
+            World.things.protagonist.object.children[1].visible = false;
         }
 
         if (this.velocity > this.maxSpeed) {
@@ -398,10 +413,18 @@ export default class screenPlay extends Screen {
 
         if (World.things.protagonist.killed) {
 
+            World.things.trail.trace(
+                World.things.protagonist.object.position.x,
+                World.things.protagonist.object.position.y,
+                World.things.protagonist.object.position.z,
+                this.directionCurrent,
+                time
+            );
+
             World.things.protagonist.object.position.z += 1;
             World.things.protagonist.object.rotation.x += .1;
             World.things.protagonist.object.rotation.y += .2;
-            this.directionKeyboard += 0.1;
+            this.directionKeyboard += 0.1;            
             this.updateDirection();
 
             if (!Screen.transitioning) {

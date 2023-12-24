@@ -18,7 +18,7 @@ export default class Asteroids extends Thing {
 
         super();
 
-        const geometry = new THREE.BoxGeometry(1, 1, 1); 
+        const geometry = new THREE.OctahedronGeometry(1); //new THREE.BoxGeometry(1, 1, 1); 
         const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
 
         const asteroids = new THREE.Group();
