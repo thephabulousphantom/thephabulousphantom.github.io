@@ -29,8 +29,6 @@ export default class Game {
 
         requestAnimationFrame( this.animate.bind(this));
 
-        Screen.autoFullScreen();
-
         Screen.transition(screenMenu);
     }
 

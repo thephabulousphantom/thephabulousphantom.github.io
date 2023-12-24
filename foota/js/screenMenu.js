@@ -19,12 +19,43 @@ export default class screenMenu extends Screen {
         super.init();
 
         this.buttonPlay = document.getElementById("buttonPlay");
-        this.buttonPlay.addEventListener("click", this.onPlayClicked);
+        this.buttonPlay.addEventListener("click", this.onPlayClicked.bind(this));
+
+        this.controlToggleFullScreen = document.getElementById("controlToggleFullScreen");
+        this.controlToggleFullScreen.addEventListener("click", this.onToggleFullScreen.bind(this));
+
+        if (Screen.runningAsPWA) {
+
+            this.controlToggleFullScreen.style.display = "none";
+        }
     }
 
     onPlayClicked(evt) {
 
         Screen.transition(screenPlay);
+        evt.preventDefault();
+    }
+
+    onToggleFullScreen(evt) {
+
+        try {
+
+            if (Screen.fullScreen) {
+
+                Screen.exitFull();
+                this.controlToggleFullScreen.innerText = "fullscreen";
+            }
+            else {
+
+                Screen.goFull();
+                this.controlToggleFullScreen.innerText = "fullscreen_exit";
+            }
+        }
+        catch (ex) {
+
+            Log.warning(`Unable to toggle full screen: ${JSON.stringify(ex)}`)
+        }
+
         evt.preventDefault();
     }
 

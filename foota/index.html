@@ -83,33 +83,6 @@
         <div id="labelDebug" class="control">
         </div>
 
-        <!-- toggle full screen control -->
-
-        <style type="text/css">
-            
-            #controlToggleFullScreen {
-
-                z-index: 2000;
-
-                width: 5vmin;
-                height: 5vmin;
-                top: 5vmin;
-                left: 5vmin;
-
-                border-radius: 5vmin;
-                background-color: var(--colorPrimaryTransparent);
-
-                font-size: 3vmin;
-            }
-
-        </style>
-
-        <div id="controlToggleFullScreen" class="control">
-            [ ]
-        </div>
-
-        <script src="js/controlToggleFullScreen.js" type="module"></script>
-
 
 
         <!-- transition white screen -->
@@ -191,11 +164,29 @@
                 font-size: 10vmin;
             }
 
+            #controlToggleFullScreen {
+
+                z-index: 2000;
+
+                width: 10vmin;
+                height: 10vmin;
+                top: calc(100vh - 10vmin - 10vmin);
+                left: calc(100vw - 10vmin - 10vmin);
+
+                border-radius: 5vmin;
+                color: var(--colorPrimary);
+                background-color: var(--colorPrimaryTransparent);
+
+                font-size: 10vmin;
+            }
+
         </style>
 
         <div id="screenMenu" class="screen">
 
             <button id="buttonPlay">play</button>
+
+            <div id="controlToggleFullScreen" class="control material-icons">fullscreen</div>
 
         </div>
 
@@ -207,21 +198,6 @@
 
         <style type="text/css">
             
-            #screenPlay #controlQuit {
-
-                z-index: 2000;
-
-                width: 5vmin;
-                height: 5vmin;
-                top: 5vmin;
-                left: calc(100vw - 5vmin - 5vmin);
-
-                border-radius: 5vmin;
-                background-color: var(--colorPrimaryTransparent);
-
-                font-size: 3vmin;
-            }
-
             #screenPlay .touchArea {
 
                 width: 100vw;
@@ -242,10 +218,6 @@
         </style>
 
         <div id="screenPlay" class="screen">
-
-            <div id="controlQuit" class="control">
-                X
-            </div>
 
             <div id="areaAccellerate" class="touchArea"></div>
             <div id="areaShoot" class="touchArea"></div>

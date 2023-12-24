@@ -5,8 +5,6 @@ import Keyboard from "./keyboard.js";
 
 export default class screenPlay extends Screen {
 
-    controlQuit = null;
-
     directionTarget = 0;
     directionCurrent = 0;
     directionDevice = null;
@@ -34,9 +32,6 @@ export default class screenPlay extends Screen {
     init() {
 
         super.init();
-
-        this.controlQuit = document.getElementById("controlQuit");
-        this.controlQuit.addEventListener("click", this.onQuit);
 
         this.areaAccellerate = document.getElementById("areaAccellerate");
         this.areaAccellerate.addEventListener("touchstart", this.onAccelleratePress.bind(this));
@@ -76,12 +71,6 @@ export default class screenPlay extends Screen {
     onShootRelease(evt) {
 
         this.touch.shooting = false;
-        evt.preventDefault();
-    }
-
-    onQuit(evt) {
-
-        Screen.transition(screenMenu);
         evt.preventDefault();
     }
 

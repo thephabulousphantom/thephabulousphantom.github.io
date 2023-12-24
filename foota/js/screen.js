@@ -47,60 +47,17 @@ export default class Screen {
         return check;
     }
 
-    static runningAsPWA() {
-        
-        return window.matchMedia("(display-mode: fullscreen)").matches
-        || (window.navigator && window.navigator.standalone === true);
-    }
+    static runningAsPWA = null;
 
 
     // full screen support
 
-    static _attemptedFullscreen = false;
-    static _userSwitchedToFullScreen = false;
+    static fullScreen = false;
 
-    static async autoFullScreen() {
-
-        if (!Screen.runningOnMobileOrTablet()) {
-
-            return;
-        }
-
-        this.firstClickHandler = (async function() {
-
-            document.documentElement.removeEventListener("mouseup", this.firstClickHandler);
-            delete this.firstClickHandler;
-
-            try {
-
-                Log.info("Automatically switching to full screen...");
-    
-                Screen.goFull();
-            }
-            catch (ex) {
-    
-                Log.warning(`Unable to switch to full screen mode: ${JSON.stringify(ex)}`);
-            }
-
-            document.documentElement.addEventListener("mouseup", function() {
-
-                Screen.ensureFUllScreenIfRequested();
-            });
-            
-        }).bind(this);
-
-        document.documentElement.addEventListener("mouseup", this.firstClickHandler);
-    }
-
-    static async goFull(onlyOnce) {
+    static async goFull() {
 
         try {
 
-            if (onlyOnce && Game._attemptedFullscreen) {
-
-                throw new Error("Can't request fullscreen multiple times.");
-            }
-    
             var domElement = document.documentElement;
 
             if (domElement.requestFullscreen) {
@@ -120,23 +77,11 @@ export default class Screen {
                 throw new Error("Browser doesn't support going fullscreen.");
             }
 
-            Screen._userSwitchedToFullScreen = true;
+            Screen.fullScreen = true;
         }
         catch (ex) {
 
             Log.warning(ex.message ? ex.message : JSON.stringify(ex));
-        }
-        finally {
-
-            Screen._attemptedFullscreen = true;
-        }
-    }
-
-    static ensureFUllScreenIfRequested() {
-
-        if (Screen._userSwitchedToFullScreen && !window.matchMedia("(display-mode: fullscreen)").matches) {
-
-            Screen.goFull();
         }
     }
 
@@ -161,7 +106,7 @@ export default class Screen {
                 throw new Error("Browser doesn't support exiting fullscreen.");
             }
 
-            Screen._userSwitchedToFullScreen = false;
+            Screen.fullScreen = false;
         }
         catch (ex) {
 
@@ -249,3 +194,11 @@ export default class Screen {
         
     }
 }
+
+window.addEventListener("load", function() {
+            
+    Screen.runningAsPWA =
+        window.matchMedia("(display-mode: fullscreen)").matches
+        || (window.navigator && window.navigator.standalone === true);
+
+});
