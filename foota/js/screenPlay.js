@@ -150,7 +150,7 @@ export default class screenPlay extends Screen {
 
         for (var i = 0; i < 50; i++) {
 
-            World.things.asteroids.spawn();
+            World.things.asteroids.spawnRandom();
         }
 
         World.things.protagonist.killed = false;

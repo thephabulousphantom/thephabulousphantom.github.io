@@ -18,7 +18,7 @@ export default class Asteroids extends Thing {
 
         super();
 
-        const geometry = new THREE.BoxGeometry(2, 2, 2); 
+        const geometry = new THREE.BoxGeometry(1, 1, 1); 
         const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
 
         const asteroids = new THREE.Group();
@@ -39,22 +39,26 @@ export default class Asteroids extends Thing {
         super.object = asteroids;
     }
 
-    spawn(scale, setX, setY, setDirection) {
+    spawnRandom(scale) {
 
-        var x = setX;
-        var y = setY
+        var x = World.things.protagonist.object.position.x;
+        var y = World.things.protagonist.object.position.y;
 
-        if (!x) {
+        while (Math.sqrt((World.things.protagonist.object.position.x - x)*(World.things.protagonist.object.position.x - x) + (World.things.protagonist.object.position.y - y)*(World.things.protagonist.object.position.y - y)) < this.safeZone) {
 
-            x = World.things.protagonist.object.position.x;
-            y = World.things.protagonist.object.position.y;
-    
-            while (Math.sqrt((World.things.protagonist.object.position.x - x)*(World.things.protagonist.object.position.x - x) + (World.things.protagonist.object.position.y - y)*(World.things.protagonist.object.position.y - y)) < this.safeZone) {
-
-                x = World.things.protagonist.object.position.x - this.fenceSize + Math.random() * this.fenceSize * 2;
-                y = World.things.protagonist.object.position.y - this.fenceSize + Math.random() * this.fenceSize * 2;
-            }
+            x = World.things.protagonist.object.position.x - this.fenceSize + Math.random() * this.fenceSize * 2;
+            y = World.things.protagonist.object.position.y - this.fenceSize + Math.random() * this.fenceSize * 2;
         }
+
+        this.spawn(
+            scale ? scale : 4,
+            x,
+            y,
+            2 * Math.PI * Math.random()
+        );
+    }
+
+    spawn(scale, x, y, direction) {
 
         for (var i = 0; i < this.objects.length; i++) {
 
@@ -65,7 +69,7 @@ export default class Asteroids extends Thing {
 
                 this.objects[i].scale.x = 
                 this.objects[i].scale.y = 
-                this.objects[i].scale.z = scale ? scale : 1;
+                this.objects[i].scale.z = scale;
 
                 this.objects[i].angleMomentum = {
                     x: Math.random() * (this.momentumMax - this.momentumMin) - (this.momentumMax - this.momentumMin) / 2,
@@ -73,9 +77,7 @@ export default class Asteroids extends Thing {
                     z: Math.random() * (this.momentumMax - this.momentumMin) - (this.momentumMax - this.momentumMin) / 2,
                 };
 
-                this.objects[i].direction = setDirection !== undefined
-                    ? setDirection
-                    : 2 * Math.PI * Math.random();
+                this.objects[i].direction = direction;
                 this.objects[i].speed = this.speedMin + Math.random() * (this.speedMax - this.speedMin);
 
                 this.objects[i].visible = true;
@@ -88,13 +90,12 @@ export default class Asteroids extends Thing {
 
         asteroid.visible = false;
 
-        if (asteroid.scale.x == 1) {
+        if (asteroid.scale.x > 1) {
 
-            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 0 * Math.PI / 4);
-            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 1 * Math.PI / 4);
-            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 2 * Math.PI / 4);
-            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 3 * Math.PI / 4);
-            return;
+            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 0 * Math.PI / 4);
+            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 1 * Math.PI / 4);
+            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 2 * Math.PI / 4);
+            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 3 * Math.PI / 4);
         }
     }
 
@@ -106,59 +107,77 @@ export default class Asteroids extends Thing {
         }
     }
 
+    bulletAndAsteroidCollision(bullet, asteroid) {
+
+        const distance = Math.sqrt(
+            (bullet.position.x - asteroid.position.x) * (bullet.position.x - asteroid.position.x)
+          + (bullet.position.y - asteroid.position.y) * (bullet.position.y - asteroid.position.y)
+        );
+
+        return distance < asteroid.scale.x / 2 + 0.5;
+    }
+
+    protagonistAndAsteroidCollision(protagonist, asteroid) {
+
+        const distance = Math.sqrt(
+              (protagonist.position.x - asteroid.position.x) * (protagonist.position.x - asteroid.position.x)
+            + (protagonist.position.y - asteroid.position.y) * (protagonist.position.y - asteroid.position.y)
+            );
+
+        return distance < (asteroid.scale.x / 2 + 0.5);
+    }
+
     update(time) {
+
+        const protagonist = World.things.protagonist.object;
 
         for (var i = 0; i < this.objects.length; i++) {
 
-            if (this.objects[i].visible) {
+            const asteroid = this.objects[i];
+            if (asteroid.visible) {
 
-                if (Math.sqrt(
-                    (World.things.protagonist.object.position.x - this.objects[i].position.x) * (World.things.protagonist.object.position.x - this.objects[i].position.x)
-                    + (World.things.protagonist.object.position.y - this.objects[i].position.y) * (World.things.protagonist.object.position.y - this.objects[i].position.y)
-                    ) < this.objects[i].scale.x * 2) {
+                if (this.protagonistAndAsteroidCollision(protagonist, asteroid)) {
 
                     World.things.protagonist.killed = true;
                 }
 
-                this.objects[i].position.x += this.objects[i].speed * Math.sin(-this.objects[i].direction);
+                asteroid.position.x += asteroid.speed * Math.sin(-asteroid.direction);
 
-                if (this.objects[i].position.x > World.things.protagonist.object.position.x + this.fenceSize) {
+                if (asteroid.position.x > protagonist.position.x + this.fenceSize) {
 
-                    this.objects[i].position.x -= 2 * this.fenceSize;
+                    asteroid.position.x -= 2 * this.fenceSize;
                 }
 
-                if (this.objects[i].position.x < World.things.protagonist.object.position.x - this.fenceSize) {
+                if (asteroid.position.x < protagonist.position.x - this.fenceSize) {
 
-                    this.objects[i].position.x += 2 * this.fenceSize;
+                    asteroid.position.x += 2 * this.fenceSize;
                 }
 
-                this.objects[i].position.y += this.objects[i].speed * Math.cos(-this.objects[i].direction);
+                asteroid.position.y += asteroid.speed * Math.cos(-asteroid.direction);
 
-                if (this.objects[i].position.y > World.things.protagonist.object.position.y + this.fenceSize) {
+                if (asteroid.position.y > protagonist.position.y + this.fenceSize) {
 
-                    this.objects[i].position.y -= 2 * this.fenceSize;
+                    asteroid.position.y -= 2 * this.fenceSize;
                 }
 
-                if (this.objects[i].position.y < World.things.protagonist.object.position.y - this.fenceSize) {
+                if (asteroid.position.y < protagonist.position.y - this.fenceSize) {
 
-                    this.objects[i].position.y += 2 * this.fenceSize;
+                    asteroid.position.y += 2 * this.fenceSize;
                 }
 
-                this.objects[i].rotation.x += this.objects[i].angleMomentum.x;
-                this.objects[i].rotation.y += this.objects[i].angleMomentum.y;
-                this.objects[i].rotation.z += this.objects[i].angleMomentum.z;
+                asteroid.rotation.x += asteroid.angleMomentum.x;
+                asteroid.rotation.y += asteroid.angleMomentum.y;
+                asteroid.rotation.z += asteroid.angleMomentum.z;
 
                 for (var j = 0; j < World.things.bullets.objects.length; j++) {
 
-                    if (World.things.bullets.objects[j].visible) {
+                    const bullet = World.things.bullets.objects[j];
+                    if (bullet.visible) {
 
-                        if (Math.sqrt(
-                            (World.things.bullets.objects[j].position.x - this.objects[i].position.x) * (World.things.bullets.objects[j].position.x - this.objects[i].position.x)
-                            + (World.things.bullets.objects[j].position.y - this.objects[i].position.y) * (World.things.bullets.objects[j].position.y - this.objects[i].position.y)
-                            ) < 1) {
+                        if (this.bulletAndAsteroidCollision(bullet, asteroid)) {
 
-                            World.things.bullets.objects[j].visible = false;
-                            this.explode(this.objects[i]);
+                            bullet.visible = false;
+                            this.explode(asteroid);
                             break;
                         }
                     }
