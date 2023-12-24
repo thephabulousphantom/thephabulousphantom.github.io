@@ -86,19 +86,6 @@ export default class Asteroids extends Thing {
         }
     }
 
-    explode(asteroid) {
-
-        asteroid.visible = false;
-
-        if (asteroid.scale.x > 1) {
-
-            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 0 * Math.PI / 4);
-            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 1 * Math.PI / 4);
-            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 2 * Math.PI / 4);
-            this.spawn(asteroid.scale.x / 2, asteroid.position.x, asteroid.position.y, asteroid.direction + 3 * Math.PI / 4);
-        }
-    }
-
     killAll() {
 
         for (var i = 0; i < this.objects.length; i++) {
@@ -107,82 +94,7 @@ export default class Asteroids extends Thing {
         }
     }
 
-    bulletAndAsteroidCollision(bullet, asteroid) {
-
-        const distance = Math.sqrt(
-            (bullet.position.x - asteroid.position.x) * (bullet.position.x - asteroid.position.x)
-          + (bullet.position.y - asteroid.position.y) * (bullet.position.y - asteroid.position.y)
-        );
-
-        return distance < asteroid.scale.x / 2 + 0.5;
-    }
-
-    protagonistAndAsteroidCollision(protagonist, asteroid) {
-
-        const distance = Math.sqrt(
-              (protagonist.position.x - asteroid.position.x) * (protagonist.position.x - asteroid.position.x)
-            + (protagonist.position.y - asteroid.position.y) * (protagonist.position.y - asteroid.position.y)
-            );
-
-        return distance < (asteroid.scale.x / 2 + 0.5);
-    }
-
     update(time) {
 
-        const protagonist = World.things.protagonist.object;
-
-        for (var i = 0; i < this.objects.length; i++) {
-
-            const asteroid = this.objects[i];
-            if (asteroid.visible) {
-
-                if (this.protagonistAndAsteroidCollision(protagonist, asteroid)) {
-
-                    World.things.protagonist.killed = true;
-                }
-
-                asteroid.position.x += asteroid.speed * Math.sin(-asteroid.direction);
-
-                if (asteroid.position.x > protagonist.position.x + this.fenceSize) {
-
-                    asteroid.position.x -= 2 * this.fenceSize;
-                }
-
-                if (asteroid.position.x < protagonist.position.x - this.fenceSize) {
-
-                    asteroid.position.x += 2 * this.fenceSize;
-                }
-
-                asteroid.position.y += asteroid.speed * Math.cos(-asteroid.direction);
-
-                if (asteroid.position.y > protagonist.position.y + this.fenceSize) {
-
-                    asteroid.position.y -= 2 * this.fenceSize;
-                }
-
-                if (asteroid.position.y < protagonist.position.y - this.fenceSize) {
-
-                    asteroid.position.y += 2 * this.fenceSize;
-                }
-
-                asteroid.rotation.x += asteroid.angleMomentum.x;
-                asteroid.rotation.y += asteroid.angleMomentum.y;
-                asteroid.rotation.z += asteroid.angleMomentum.z;
-
-                for (var j = 0; j < World.things.bullets.objects.length; j++) {
-
-                    const bullet = World.things.bullets.objects[j];
-                    if (bullet.visible) {
-
-                        if (this.bulletAndAsteroidCollision(bullet, asteroid)) {
-
-                            bullet.visible = false;
-                            this.explode(asteroid);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
     }
 }

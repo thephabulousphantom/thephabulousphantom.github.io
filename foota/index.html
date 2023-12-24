@@ -215,17 +215,119 @@
                 top: 50vh;
             }
 
+            #screenPlay #labelLevel {
+
+                width: 30vw;
+                height: 10vmin;
+                top: calc(100vh - 20vmin);
+                left: 5vw;
+                font-size: 3vmin;
+                color: var(--colorPrimary);
+            }
+
+            #screenPlay #labelScore {
+
+                width: 30vw;
+                height: 10vmin;
+                top: calc(100vh - 20vmin);
+                left: 35vw;
+                font-size: 3vmin;
+                color: var(--colorPrimary);
+            }
+
+            #screenPlay #labelAsteroidCount {
+
+                width: 30vw;
+                height: 10vmin;
+                top: calc(100vh - 20vmin);
+                left: 65vw;
+                font-size: 3vmin;
+                color: var(--colorPrimary);
+            }
+
         </style>
 
         <div id="screenPlay" class="screen">
 
             <div id="areaAccellerate" class="touchArea"></div>
             <div id="areaShoot" class="touchArea"></div>
-
+            <div id="labelLevel" class="control"></div>
+            <div id="labelScore" class="control"></div>
+            <div id="labelAsteroidCount" class="control"></div>
         </div>
 
         <script src="js/screenPlay.js" type="module"></script>
 
+
+
+        <!-- game over screen -->
+
+        <style type="text/css">
+                    
+            #screenGameOver #buttonReplay {
+
+                width: 100vw;
+                height: 10vmin;
+                top: calc(50vh - 15vmin);
+                left: 0vw;
+
+                font-size: 10vmin;
+            }
+
+            #screenGameOver #buttonMenu {
+
+                width: 100vw;
+                height: 10vmin;
+                top: calc(50vh + 5vmin);
+                left: 0vw;
+
+                font-size: 10vmin;
+            }
+
+            #screenGameOver #labelLevel {
+
+                width: 30vw;
+                height: 10vmin;
+                top: calc(100vh - 20vmin);
+                left: 5vw;
+                font-size: 3vmin;
+                color: var(--colorPrimary);
+            }
+
+            #screenGameOver #labelScore {
+
+                width: 30vw;
+                height: 10vmin;
+                top: calc(100vh - 20vmin);
+                left: 35vw;
+                font-size: 3vmin;
+                color: var(--colorPrimary);
+            }
+
+            #screenGameOver #labelAsteroidCount {
+
+                width: 30vw;
+                height: 10vmin;
+                top: calc(100vh - 20vmin);
+                left: 65vw;
+                font-size: 3vmin;
+                color: var(--colorPrimary);
+            }
+
+        </style>
+
+        <div id="screenGameOver" class="screen">
+
+            <button id="buttonReplay">again</button>
+            <button id="buttonMenu">menu</button>
+
+            <div id="labelLevel" class="control"></div>
+            <div id="labelScore" class="control"></div>
+            <div id="labelAsteroidCount" class="control"></div>
+
+        </div>
+
+        <script src="js/screenGameOver.js" type="module"></script>
 
         <!-- the app -->
 

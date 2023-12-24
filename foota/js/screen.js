@@ -6,7 +6,7 @@ export default class Screen {
     static transitionScreenId = "transitionBlackScreen";
     static current = null;
     static transitioning = false;
-    static transitionMilliseconds = 2000;
+    static transitionMilliseconds = 1500;
 
     id = null;
     htmlElement = null;

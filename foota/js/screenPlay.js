@@ -1,7 +1,8 @@
 import Screen from "./screen.js";
-import { screen as screenMenu } from "./screenMenu.js";
+import { screen as screenGameOver } from "./screenGameOver.js";
 import World from "./world.js";
 import Keyboard from "./keyboard.js";
+import Asteroids from "./thingsAsteroids.js";
 
 export default class screenPlay extends Screen {
 
@@ -17,6 +18,14 @@ export default class screenPlay extends Screen {
     maxSpeed = 1;
     lastBulletShootTime = null;
     rapidFirePeriod = 100;
+
+    score = null;
+    level = null;
+    visibleCount = 0;
+    asteroidsToSpawn = null;
+    asteroidSpawnScale = null;
+    asteroidSpawnDelay = null;
+    nextAsteroidSpawnedTime = null;
 
     touch = {
 
@@ -40,6 +49,10 @@ export default class screenPlay extends Screen {
         this.areaShoot = document.getElementById("areaShoot");
         this.areaShoot.addEventListener("touchstart", this.onShootPress.bind(this));
         this.areaShoot.addEventListener("touchend", this.onShootRelease.bind(this));
+
+        this.labelLevel = document.querySelector("#screenPlay #labelLevel");
+        this.labelScore = document.querySelector("#screenPlay #labelScore");
+        this.labelAsteroidCount = document.querySelector("#screenPlay #labelAsteroidCount");
 
         window.addEventListener("deviceorientation", this.onDeviceOrientationUpdate.bind(this));
     }
@@ -144,15 +157,22 @@ export default class screenPlay extends Screen {
         World.things.protagonist.object.rotation.y = 
         World.things.protagonist.object.rotation.z = 0;
 
+        World.things.protagonist.object.visible = true;
+
         World.camera.position.x = 0;
         World.camera.position.y = 0;
         World.camera.position.z = 50;
 
-        for (var i = 0; i < 50; i++) {
+        this.level = 1;
+        this.onLevelUpdated();
 
-            World.things.asteroids.spawnRandom();
-        }
+        this.score = 0;
+        this.onScoreUpdated();
 
+        World.things.asteroids.killAll();
+        this.visibleCount = 0;
+        this.onAsteroidCountUpdated();
+        
         World.things.protagonist.killed = false;
     }
 
@@ -161,9 +181,151 @@ export default class screenPlay extends Screen {
         super.afterShow();
     }
 
+    onLevelUpdated() {
+
+        this.asteroidsToSpawn = 10 + this.level * 4;
+        this.asteroidSpawnScale = Math.pow(2, 1 + ((this.level / 4) | 0));
+        this.asteroidSpawnDelay = 10000 / this.level;
+        this.nextAsteroidSpawnedTime = null;
+
+        this.labelLevel.innerText = `level ${this.level}`;
+    }
+
+    onScoreUpdated() {
+
+        this.labelScore.innerText = `score ${this.score}`;
+    }
+
+    onAsteroidCountUpdated() {
+
+        this.labelAsteroidCount.innerText = `asteroids ${this.visibleCount}`;
+    }
+
+    bulletAndAsteroidCollision(bullet, asteroid) {
+
+        const distance = Math.sqrt(
+            (bullet.position.x - asteroid.position.x) * (bullet.position.x - asteroid.position.x)
+          + (bullet.position.y - asteroid.position.y) * (bullet.position.y - asteroid.position.y)
+        );
+
+        return distance < asteroid.scale.x / 2 + 0.5;
+    }
+
+    protagonistAndAsteroidCollision(protagonist, asteroid) {
+
+        const distance = Math.sqrt(
+              (protagonist.position.x - asteroid.position.x) * (protagonist.position.x - asteroid.position.x)
+            + (protagonist.position.y - asteroid.position.y) * (protagonist.position.y - asteroid.position.y)
+            );
+
+        return distance < (asteroid.scale.x / 2 + 0.5);
+    }
+
+    explode(asteroid) {
+
+        asteroid.visible = false;
+        this.score += (1000 / asteroid.scale.x) | 0;
+        this.onScoreUpdated();
+
+        if (asteroid.scale.x > 1) {
+
+            const fragmentScale = asteroid.scale.x / 2;
+            World.things.asteroids.spawn(fragmentScale, asteroid.position.x, asteroid.position.y, asteroid.direction + 0 * Math.PI / 4);
+            World.things.asteroids.spawn(fragmentScale, asteroid.position.x, asteroid.position.y, asteroid.direction + 1 * Math.PI / 4);
+            World.things.asteroids.spawn(fragmentScale, asteroid.position.x, asteroid.position.y, asteroid.direction + 2 * Math.PI / 4);
+            World.things.asteroids.spawn(fragmentScale, asteroid.position.x, asteroid.position.y, asteroid.direction + 3 * Math.PI / 4);
+        }
+
+        this.onAsteroidCountUpdated();
+    }
+
+    checkForCollissions() {
+
+        const protagonist = World.things.protagonist.object;
+        const fenceSize = World.things.asteroids.fenceSize;
+
+        var visibleCount = 0;
+
+        for (var i = 0; i < World.things.asteroids.objects.length; i++) {
+
+            const asteroid = World.things.asteroids.objects[i];
+            if (asteroid.visible) {
+
+                visibleCount++;
+
+                if (this.protagonistAndAsteroidCollision(protagonist, asteroid)) {
+
+                    World.things.protagonist.killed = true;
+                }
+
+                asteroid.position.x += asteroid.speed * Math.sin(-asteroid.direction);
+
+                if (asteroid.position.x > protagonist.position.x + fenceSize) {
+
+                    asteroid.position.x -= 2 * fenceSize;
+                }
+
+                if (asteroid.position.x < protagonist.position.x - fenceSize) {
+
+                    asteroid.position.x += 2 * fenceSize;
+                }
+
+                asteroid.position.y += asteroid.speed * Math.cos(-asteroid.direction);
+
+                if (asteroid.position.y > protagonist.position.y + fenceSize) {
+
+                    asteroid.position.y -= 2 * fenceSize;
+                }
+
+                if (asteroid.position.y < protagonist.position.y - fenceSize) {
+
+                    asteroid.position.y += 2 * fenceSize;
+                }
+
+                asteroid.rotation.x += asteroid.angleMomentum.x;
+                asteroid.rotation.y += asteroid.angleMomentum.y;
+                asteroid.rotation.z += asteroid.angleMomentum.z;
+
+                for (var j = 0; j < World.things.bullets.objects.length; j++) {
+
+                    const bullet = World.things.bullets.objects[j];
+                    if (bullet.visible) {
+
+                        if (this.bulletAndAsteroidCollision(bullet, asteroid)) {
+
+                            bullet.visible = false;
+                            this.explode(asteroid);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        this.visibleCount = visibleCount;
+    }
 
     update(time) {
      
+        if (this.asteroidsToSpawn > 0 && (!this.nextAsteroidSpawnedTime || this.nextAsteroidSpawnedTime < time)) {
+
+            World.things.asteroids.spawnRandom(this.asteroidSpawnScale);
+            this.asteroidsToSpawn--;
+            this.nextAsteroidSpawnedTime = time + this.asteroidSpawnDelay;
+            this.score += this.asteroidSpawnScale * 10;
+            this.onScoreUpdated();
+            this.visibleCount++;
+            this.onAsteroidCountUpdated();
+        }
+
+        this.checkForCollissions();
+
+        if (!this.asteroidsToSpawn && !World.things.asteroids.visibleCount) {
+
+            this.level++;
+            this.onLevelUpdated();
+        }
+
         if (Keyboard.down["KeyD"]) {
 
             this.directionKeyboard -= 0.1;
@@ -231,7 +393,7 @@ export default class screenPlay extends Screen {
 
             if (!Screen.transitioning) {
 
-                Screen.transition(screenMenu);
+                Screen.transition(screenGameOver);
             }
         }
 
