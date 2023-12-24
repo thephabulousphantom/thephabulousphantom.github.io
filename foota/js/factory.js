@@ -88,12 +88,12 @@ class Factory {
 
     getBullets() {
 
-        return new Bullets(20);
+        return new Bullets(100);
     }
 
     getAsteroids() {
 
-        return new Asteroids(20);
+        return new Asteroids(100);
     }
 }
 

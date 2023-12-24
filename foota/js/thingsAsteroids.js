@@ -63,13 +63,9 @@ export default class Asteroids extends Thing {
                 this.objects[i].position.x = x;
                 this.objects[i].position.y = y;
 
-                if (scale) {
-
-                    this.objects[i].scale.x = 
-                    this.objects[i].scale.y = 
-                    this.objects[i].scale.z = scale;
-                }
-
+                this.objects[i].scale.x = 
+                this.objects[i].scale.y = 
+                this.objects[i].scale.z = scale ? scale : 1;
 
                 this.objects[i].angleMomentum = {
                     x: Math.random() * (this.momentumMax - this.momentumMin) - (this.momentumMax - this.momentumMin) / 2,
@@ -94,8 +90,10 @@ export default class Asteroids extends Thing {
 
         if (asteroid.scale.x == 1) {
 
-            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + Math.PI / 2);
-            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction - Math.PI / 2);
+            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 0 * Math.PI / 4);
+            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 1 * Math.PI / 4);
+            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 2 * Math.PI / 4);
+            this.spawn(0.5, asteroid.position.x, asteroid.position.y, asteroid.direction + 3 * Math.PI / 4);
             return;
         }
     }
@@ -104,7 +102,7 @@ export default class Asteroids extends Thing {
 
         for (var i = 0; i < this.objects.length; i++) {
 
-            this.objects.visible = false;
+            this.objects[i].visible = false;
         }
     }
 
@@ -113,6 +111,14 @@ export default class Asteroids extends Thing {
         for (var i = 0; i < this.objects.length; i++) {
 
             if (this.objects[i].visible) {
+
+                if (Math.sqrt(
+                    (World.things.protagonist.object.position.x - this.objects[i].position.x) * (World.things.protagonist.object.position.x - this.objects[i].position.x)
+                    + (World.things.protagonist.object.position.y - this.objects[i].position.y) * (World.things.protagonist.object.position.y - this.objects[i].position.y)
+                    ) < this.objects[i].scale.x * 2) {
+
+                    World.things.protagonist.killed = true;
+                }
 
                 this.objects[i].position.x += this.objects[i].speed * Math.sin(-this.objects[i].direction);
 
@@ -151,10 +157,10 @@ export default class Asteroids extends Thing {
                             + (World.things.bullets.objects[j].position.y - this.objects[i].position.y) * (World.things.bullets.objects[j].position.y - this.objects[i].position.y)
                             ) < 1) {
 
-                                World.things.bullets.objects[j].visible = false;
-                                this.explode(this.objects[i]);
-                                break;
-                            }
+                            World.things.bullets.objects[j].visible = false;
+                            this.explode(this.objects[i]);
+                            break;
+                        }
                     }
                 }
             }

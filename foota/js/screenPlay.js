@@ -14,9 +14,9 @@ export default class screenPlay extends Screen {
     directionSmoothness = 3;
 
     velocity = 0;
-    accelleration = 0.2;
+    accelleration = 0.05;
     decelleration = 0.95;
-    maxSpeed = 2;
+    maxSpeed = 1;
     lastBulletShootTime = null;
     rapidFirePeriod = 100;
 
@@ -159,10 +159,12 @@ export default class screenPlay extends Screen {
         World.camera.position.y = 0;
         World.camera.position.z = 50;
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 50; i++) {
 
             World.things.asteroids.spawn();
         }
+
+        World.things.protagonist.killed = false;
     }
 
     afterShow() {
@@ -217,7 +219,7 @@ export default class screenPlay extends Screen {
 
             this.velocity = this.maxSpeed;
         }
-        else if (this.velocity < 0.1) {
+        else if (this.velocity < 0.01) {
 
             this.velocity = 0;
         }
@@ -240,6 +242,12 @@ export default class screenPlay extends Screen {
 
         World.camera.rotation.z = 
         World.things.protagonist.object.rotation.z = this.directionCurrent;
+
+        if (World.things.protagonist.killed) {
+
+            World.things.protagonist.killed = false;
+            Screen.transition(screenMenu);
+        }
     }
 }
 
