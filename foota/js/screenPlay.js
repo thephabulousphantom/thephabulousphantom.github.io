@@ -172,7 +172,7 @@ export default class screenPlay extends Screen {
         World.things.asteroids.killAll();
         this.visibleCount = 0;
         this.onAsteroidCountUpdated();
-        
+
         World.things.protagonist.killed = false;
     }
 
@@ -183,6 +183,8 @@ export default class screenPlay extends Screen {
 
     onLevelUpdated() {
 
+        this.spawnAsteroid(10 + this.level * 4);
+        
         this.asteroidsToSpawn = 10 + this.level * 4;
         this.asteroidSpawnScale = Math.pow(2, 1 + ((this.level / 4) | 0));
         this.asteroidSpawnDelay = 10000 / this.level;
@@ -305,23 +307,31 @@ export default class screenPlay extends Screen {
         this.visibleCount = visibleCount;
     }
 
-    update(time) {
-     
-        if (this.asteroidsToSpawn > 0 && (!this.nextAsteroidSpawnedTime || this.nextAsteroidSpawnedTime < time)) {
+    spawnAsteroid(count) {
 
-            World.things.asteroids.spawnRandom(this.asteroidSpawnScale);
-            this.asteroidsToSpawn--;
-            this.nextAsteroidSpawnedTime = time + this.asteroidSpawnDelay;
-            this.score += this.asteroidSpawnScale * 10;
-            this.onScoreUpdated();
-            this.visibleCount++;
-            this.onAsteroidCountUpdated();
+        for (var i = 0; i < count; i++) {
+
+            if (this.asteroidsToSpawn > 0 && (!this.nextAsteroidSpawnedTime || this.nextAsteroidSpawnedTime < time)) {
+
+                World.things.asteroids.spawnRandom(this.asteroidSpawnScale);
+                this.asteroidsToSpawn--;
+                this.nextAsteroidSpawnedTime = time + this.asteroidSpawnDelay;
+                this.score += this.asteroidSpawnScale * 10;
+                this.onScoreUpdated();
+                this.visibleCount++;
+            }
         }
 
+        this.onAsteroidCountUpdated();
+    }
+
+    update(time) {
+     
         this.checkForCollissions();
 
         if (!this.asteroidsToSpawn && !World.things.asteroids.visibleCount) {
 
+            this.spawnAsteroid(1);
             this.level++;
             this.onLevelUpdated();
         }
