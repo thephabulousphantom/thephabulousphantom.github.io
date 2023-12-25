@@ -191,14 +191,28 @@ export default class screenPlay extends Screen {
 
     onLevelUpdated() {
 
-        this.asteroidsToSpawn = 10 + this.level * 2;
-        this.asteroidSpawnScale = Math.pow(2, 1 + ((this.level / 4) | 0));
-        this.asteroidSpawnDelay = 5000 / this.level;
-        this.nextAsteroidSpawnedTime = null;
+        if (this.level % 4 == 0) {
+
+            this.asteroidsToSpawn = (this.level / 4);
+            this.asteroidSpawnScale = 3;
+            this.asteroidSpawnDelay = 10000;
+            this.nextAsteroidSpawnedTime = null;
+
+            this.spawnAsteroid(1);
+        }
+        else {
+
+            const difficulty = Math.round(this.level * 3 / 4 + 0.25);
+
+            this.asteroidsToSpawn = 10 + difficulty * 2;
+            this.asteroidSpawnScale = 2;
+            this.asteroidSpawnDelay = 5000 / difficulty;
+            this.nextAsteroidSpawnedTime = null;
+    
+            this.spawnAsteroid(difficulty * 2);
+        }
 
         this.labelLevel.innerText = this.level;
-
-        this.spawnAsteroid(this.level * 2);
     }
 
     onScoreUpdated() {
@@ -360,6 +374,19 @@ export default class screenPlay extends Screen {
         }
 
         if (!World.things.protagonist.killed) {
+
+            if (Keyboard.down["KeyX"]) {
+
+                for (var i = 0; i < World.things.asteroids.objects.length; i++) {
+
+                    const asteroid = World.things.asteroids.objects[i];
+                    if (asteroid.visible) {
+
+                        this.explode(asteroid, time);
+                        this.asteroidsToSpawn = 0;
+                    }
+                }
+            }
 
             if (Keyboard.down["KeyD"]) {
 
