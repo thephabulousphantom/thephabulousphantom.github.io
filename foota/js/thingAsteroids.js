@@ -6,8 +6,8 @@ export default class Asteroids extends Thing {
 
     objects = [];
 
-    speedMin = 0.1;
-    speedMax = 0.5;
+    speedMin = 0.05;
+    speedMax = 0.25;
     momentumMin = 0.1;
     momentumMax = 0.2;
 
