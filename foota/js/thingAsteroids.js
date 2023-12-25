@@ -6,8 +6,8 @@ export default class Asteroids extends Thing {
 
     objects = [];
 
-    speedMin = 0.05;
-    speedMax = 0.2;
+    speedMin = 0.1;
+    speedMax = 0.5;
     momentumMin = 0.1;
     momentumMax = 0.2;
 
@@ -18,7 +18,7 @@ export default class Asteroids extends Thing {
 
         super();
 
-        const geometry = new THREE.OctahedronGeometry(1); //new THREE.BoxGeometry(1, 1, 1); 
+        const geometry = new THREE.OctahedronGeometry(1);
         const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
 
         const asteroids = new THREE.Group();

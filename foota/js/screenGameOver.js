@@ -9,7 +9,7 @@ export default class screenGameOver extends Screen {
 
     buttonReplay = null;
     buttonMenu = null;
-    rotationRadius = 2;
+    rotationRadius = 4;
 
     constructor() {
 
@@ -26,9 +26,8 @@ export default class screenGameOver extends Screen {
         this.buttonMenu = document.getElementById("buttonMenu");
         this.buttonMenu.addEventListener("click", this.onMenuClicked.bind(this));
 
-        this.labelLevel = document.querySelector("#screenGameOver #labelLevel");
-        this.labelScore = document.querySelector("#screenGameOver #labelScore");
-        this.labelAsteroidCount = document.querySelector("#screenGameOver #labelAsteroidCount");
+        this.labelLevel = document.querySelector("#screenGameOver #labelLevel label");
+        this.labelScore = document.querySelector("#screenGameOver #labelScore label");
     }
 
     onReplayClicked(evt) {
@@ -49,9 +48,8 @@ export default class screenGameOver extends Screen {
 
         World.things.protagonist.object.visible = false;
         World.things.trail.object.visible = false;
-        this.labelLevel.innerText = `level ${screenPlay.level}`;
-        this.labelScore.innerText = `score ${screenPlay.score}`;
-        this.labelAsteroidCount.innerText = `asteroids ${screenPlay.visibleCount}`;
+        this.labelLevel.innerText = screenPlay.level;
+        this.labelScore.innerText = screenPlay.score;
     }
 
     beforeHide() {

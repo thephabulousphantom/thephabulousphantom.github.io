@@ -164,6 +164,11 @@
                 font-size: 10vmin;
             }
 
+            #screenMenu #buttonPlay span {
+
+                font-size: 16vmin;
+            }
+
             #controlToggleFullScreen {
 
                 z-index: 2000;
@@ -184,7 +189,7 @@
 
         <div id="screenMenu" class="screen">
 
-            <button id="buttonPlay">play</button>
+            <button id="buttonPlay"><span class="material-icons">play_arrow</span></button>
 
             <div id="controlToggleFullScreen" class="control material-icons">fullscreen</div>
 
@@ -213,6 +218,24 @@
             #screenPlay #areaShoot {
                 
                 top: 50vh;
+            }
+
+            #screenPlay #labelLevel, #screenPlay #labelScore, #screenPlay #labelAsteroidCount,
+            #screenPlay #labelLevel span, #screenPlay #labelScore span, #screenPlay #labelAsteroidCount span,
+            #screenPlay #labelLevel label, #screenPlay #labelScore label, #screenPlay #labelAsteroidCount label {
+
+                display: inline-block;
+                text-align: center;
+            }
+
+            #screenPlay #labelLevel label, #screenPlay #labelScore label, #screenPlay #labelAsteroidCount label {
+
+                font-size: 3vmin;
+            }
+
+            #screenPlay #labelLevel span, #screenPlay #labelScore span, #screenPlay #labelAsteroidCount span {
+
+                font-size: 3.3vmin;
             }
 
             #screenPlay #labelLevel {
@@ -251,9 +274,9 @@
 
             <div id="areaAccellerate" class="touchArea"></div>
             <div id="areaShoot" class="touchArea"></div>
-            <div id="labelLevel" class="control"></div>
-            <div id="labelScore" class="control"></div>
-            <div id="labelAsteroidCount" class="control"></div>
+            <div id="labelLevel" class="control"><span class="material-icons">line_weight</span><label></label></div>
+            <div id="labelScore" class="control"><span class="material-icons">grade</span><label></label></div>
+            <div id="labelAsteroidCount" class="control"><span class="material-icons">layers</span><label></label></div>
         </div>
 
         <script src="js/screenPlay.js" type="module"></script>
@@ -284,46 +307,63 @@
                 font-size: 10vmin;
             }
 
+            #screenGameOver #buttonReplay span, #screenGameOver #buttonMenu span {
+
+                font-size: 16vmin;
+            }
+
+            #screenGameOver #labelLevel, #screenGameOver #labelScore, 
+            #screenGameOver #labelLevel span, #screenGameOver #labelScore span, 
+            #screenGameOver #labelLevel label, #screenGameOver #labelScore label {
+
+                display: inline-block;
+                text-align: center;
+            }
+
+            #screenGameOver #labelLevel span, #screenGameOver #labelScore span {
+
+                font-size: 3.3vmin;
+            }
+
             #screenGameOver #labelLevel {
 
-                width: 30vw;
+                width: 50vw;
                 height: 10vmin;
                 top: calc(100vh - 20vmin);
-                left: 5vw;
+                left: 0vw;
                 font-size: 3vmin;
                 color: var(--colorPrimary);
+            }
+
+            #screenGameOver #labelLevel label {
+
+                font-size: 3vmin;
             }
 
             #screenGameOver #labelScore {
 
-                width: 30vw;
+                width: 50vw;
                 height: 10vmin;
                 top: calc(100vh - 20vmin);
-                left: 35vw;
+                left: 50vw;
                 font-size: 3vmin;
                 color: var(--colorPrimary);
             }
 
-            #screenGameOver #labelAsteroidCount {
+            #screenGameOver #labelScore label {
 
-                width: 30vw;
-                height: 10vmin;
-                top: calc(100vh - 20vmin);
-                left: 65vw;
                 font-size: 3vmin;
-                color: var(--colorPrimary);
             }
 
         </style>
 
         <div id="screenGameOver" class="screen">
 
-            <button id="buttonReplay">again</button>
-            <button id="buttonMenu">menu</button>
+            <button id="buttonReplay"><span class="material-icons">refresh</span></button>
+            <button id="buttonMenu"><span class="material-icons">menu_open</span></button>
 
-            <div id="labelLevel" class="control"></div>
-            <div id="labelScore" class="control"></div>
-            <div id="labelAsteroidCount" class="control"></div>
+            <div id="labelLevel" class="control"><span class="material-icons">line_weight</span><label></label></div>
+            <div id="labelScore" class="control"><span class="material-icons">grade</span><label></label></div>
 
         </div>
 

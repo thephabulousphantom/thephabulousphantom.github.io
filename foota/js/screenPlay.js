@@ -11,12 +11,13 @@ export default class screenPlay extends Screen {
     directionKeyboard = 0;
     directionSmoothness = 3;
 
-    velocity = 0;
-    accelleration = 0.01;
+    velocity = null;
+    accelleration = 0.02;
     decelleration = 0.99;
     maxSpeed = 1;
+
     lastBulletShootTime = null;
-    rapidFirePeriod = 100;
+    rapidFirePeriod = 3000 / 60;
 
     score = null;
     level = null;
@@ -26,6 +27,7 @@ export default class screenPlay extends Screen {
     asteroidSpawnScale = null;
     asteroidSpawnDelay = null;
     nextAsteroidSpawnedTime = null;
+    lastAsteroidKillTime = null;
 
     touch = {
 
@@ -50,11 +52,13 @@ export default class screenPlay extends Screen {
         this.areaShoot.addEventListener("touchstart", this.onShootPress.bind(this));
         this.areaShoot.addEventListener("touchend", this.onShootRelease.bind(this));
 
-        this.labelLevel = document.querySelector("#screenPlay #labelLevel");
-        this.labelScore = document.querySelector("#screenPlay #labelScore");
-        this.labelAsteroidCount = document.querySelector("#screenPlay #labelAsteroidCount");
+        this.labelLevel = document.querySelector("#screenPlay #labelLevel label");
+        this.labelScore = document.querySelector("#screenPlay #labelScore label");
+        this.labelAsteroidCount = document.querySelector("#screenPlay #labelAsteroidCount label");
 
         window.addEventListener("deviceorientation", this.onDeviceOrientationUpdate.bind(this));
+
+        this.velocity = new THREE.Vector3(0, 0, 0);
     }
 
     onDeviceOrientationUpdate(evt) {
@@ -149,6 +153,8 @@ export default class screenPlay extends Screen {
         this.directionTarget =
         this.directionKeyboard = 0;
 
+        this.velocity.multiplyScalar(0);
+
         World.things.protagonist.object.position.x = 
         World.things.protagonist.object.position.y = 
         World.things.protagonist.object.position.z = 0;
@@ -190,14 +196,14 @@ export default class screenPlay extends Screen {
         this.asteroidSpawnDelay = 5000 / this.level;
         this.nextAsteroidSpawnedTime = null;
 
-        this.labelLevel.innerText = `level ${this.level}`;
+        this.labelLevel.innerText = this.level;
 
         this.spawnAsteroid(this.level * 2);
     }
 
     onScoreUpdated() {
 
-        this.labelScore.innerText = `score ${this.score}`;
+        this.labelScore.innerText = this.score;
     }
 
     onAsteroidCountUpdated() {
@@ -215,7 +221,7 @@ export default class screenPlay extends Screen {
         this.asteroidCount = count;
         this.asteroidWeight = weight;
 
-        this.labelAsteroidCount.innerText = `asteroids ${this.asteroidCount} / ${this.asteroidWeight}`;
+        this.labelAsteroidCount.innerText = this.asteroidCount;
     }
 
     bulletAndAsteroidCollision(bullet, asteroid) {
@@ -238,11 +244,18 @@ export default class screenPlay extends Screen {
         return distance < (asteroid.scale.x / 2 + 0.5);
     }
 
-    explode(asteroid) {
+    explode(asteroid, time) {
 
         asteroid.visible = false;
         
-        this.score += (1000 / asteroid.scale.x) | 0;
+        const timeSinceLastKill = this.lastAsteroidKillTime
+            ? time - this.lastAsteroidKillTime
+            : 1000;
+
+        this.lastAsteroidKillTime = time;
+        const scoreTimeMultiplier = Math.min(Math.max(2000 / timeSinceLastKill, 8), 1);
+
+        this.score += ((scoreTimeMultiplier * 100) / asteroid.scale.x) | 0;
         this.onScoreUpdated();
 
         if (asteroid.scale.x > 1) {
@@ -257,7 +270,7 @@ export default class screenPlay extends Screen {
         this.onAsteroidCountUpdated();
     }
 
-    checkForCollissions() {
+    checkForCollissions(time) {
 
         const protagonist = World.things.protagonist.object;
         const fenceSize = World.things.asteroids.fenceSize;
@@ -308,7 +321,7 @@ export default class screenPlay extends Screen {
                         if (this.bulletAndAsteroidCollision(bullet, asteroid)) {
 
                             bullet.visible = false;
-                            this.explode(asteroid);
+                            this.explode(asteroid, time);
                             break;
                         }
                     }
@@ -333,7 +346,7 @@ export default class screenPlay extends Screen {
 
     update(time) {
      
-        this.checkForCollissions();
+        this.checkForCollissions(time);
 
         if (this.asteroidsToSpawn > 0 && (!this.nextAsteroidSpawnedTime || this.nextAsteroidSpawnedTime < time)) {
                 
@@ -346,77 +359,80 @@ export default class screenPlay extends Screen {
             this.onLevelUpdated();
         }
 
-        if (Keyboard.down["KeyD"]) {
+        if (!World.things.protagonist.killed) {
 
-            this.directionKeyboard -= 0.1;
-            this.updateDirection();
-        }
-        
-        if (Keyboard.down["KeyA"]) {
+            if (Keyboard.down["KeyD"]) {
 
-            this.directionKeyboard += 0.1;
-            this.updateDirection();
-        }
+                this.directionKeyboard -= 0.1;
+                this.updateDirection();
+            }
+            
+            if (Keyboard.down["KeyA"]) {
+    
+                this.directionKeyboard += 0.1;
+                this.updateDirection();
+            }
+    
+            if (Keyboard.down["Space"] || this.touch.shooting) {
+    
+                if (!this.lastBulletShootTime || time - this.lastBulletShootTime > this.rapidFirePeriod) {
+    
+                    this.lastBulletShootTime = time;
+    
+                    World.things.bullets.shoot(
+                        World.things.protagonist.object.position.x,
+                        World.things.protagonist.object.position.y,
+                        this.directionCurrent,
+                        this.velocity.length()
+                    );
+                }
+            }
+            else {
+    
+                this.lastBulletShootTime = null;
+            }
 
-        if (Keyboard.down["Space"] || this.touch.shooting) {
+            const exhaustVector = new THREE.Vector3(0, 2, 0);
+            exhaustVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);
+    
+            if (Keyboard.down["KeyW"] || this.touch.accellerating) {
+    
+                const accelerationVector = new THREE.Vector3(0, this.accelleration, 0);
+                accelerationVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);
 
-            if (!this.lastBulletShootTime || time - this.lastBulletShootTime > this.rapidFirePeriod) {
-
-                this.lastBulletShootTime = time;
-
-                World.things.bullets.shoot(
-                    World.things.protagonist.object.position.x,
-                    World.things.protagonist.object.position.y,
+                this.velocity.add(accelerationVector);
+    
+                World.things.trail.trace(
+                    World.things.protagonist.object.position.x - exhaustVector.x,
+                    World.things.protagonist.object.position.y - exhaustVector.y,
+                    World.things.protagonist.object.position.z - 0.5,
                     this.directionCurrent,
-                    this.velocity
+                    time
                 );
+    
+                World.things.protagonist.object.children[1].visible = true;
+                World.things.protagonist.object.children[1].rotation.y = 2 * Math.PI * Math.random();
+            }
+            else if (this.velocity.length() > 0) {
+    
+                this.velocity.multiplyScalar(this.decelleration);
+                World.things.protagonist.object.children[1].visible = false;
             }
         }
-        else {
+        
+        if (this.velocity.length() > this.maxSpeed) {
 
-            this.lastBulletShootTime = null;
+            this.velocity.clampLength(0, this.maxSpeed);
         }
+        else if (this.velocity.length() < 0.01) {
 
-        const exhaustVector = new THREE.Vector3(0, 2, 0);
-        exhaustVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);
-
-        if (Keyboard.down["KeyW"] || this.touch.accellerating) {
-
-            this.velocity += this.accelleration;
-
-            World.things.trail.trace(
-                World.things.protagonist.object.position.x - exhaustVector.x,
-                World.things.protagonist.object.position.y - exhaustVector.y,
-                World.things.protagonist.object.position.z - 0.5,
-                this.directionCurrent,
-                time
-            );
-
-            World.things.protagonist.object.children[1].visible = true;
-            World.things.protagonist.object.children[1].rotation.y = 2 * Math.PI * Math.random();
-        }
-        else if (this.velocity > 0) {
-
-            this.velocity *= this.decelleration;
-            World.things.protagonist.object.children[1].visible = false;
-        }
-
-        if (this.velocity > this.maxSpeed) {
-
-            this.velocity = this.maxSpeed;
-        }
-        else if (this.velocity < 0.01) {
-
-            this.velocity = 0;
+            this.velocity.multiplyScalar(0);
         }
 
         this.smoothDirection();
 
-        const velocityVector = new THREE.Vector3(0, this.velocity, 0);
-        velocityVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);
-
-        World.things.protagonist.object.position.x += velocityVector.x;
-        World.things.protagonist.object.position.y += velocityVector.y;
+        World.things.protagonist.object.position.x += this.velocity.x;
+        World.things.protagonist.object.position.y += this.velocity.y;
 
         if (World.things.protagonist.killed) {
 

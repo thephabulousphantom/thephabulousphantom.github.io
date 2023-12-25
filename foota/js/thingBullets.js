@@ -4,7 +4,7 @@ import Colors from "./colors.js";
 export default class Bullets extends Thing {
 
     objects = [];
-    speed = 2;
+    speed = 1.5;
     lifeSpan = 1000;
 
     constructor(number) {
