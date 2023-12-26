@@ -9,27 +9,37 @@ export default class Protagonist extends Thing {
 
         const group = new THREE.Group();
 
-        const geometry = new THREE.ConeGeometry(1, 2, 3);
-        const material = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
-        const mesh = new THREE.Mesh(geometry, material); 
+        const shipGeometry = new THREE.ConeGeometry(1, 2, 3);
+        const shipMaterial = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
+        const shipMesh = new THREE.Mesh(shipGeometry, shipMaterial); 
 
-        mesh.position.x = 0;
-        mesh.position.y = 0;
-        mesh.position.z = 0;
+        shipMesh.position.x = 0;
+        shipMesh.position.y = 0;
+        shipMesh.position.z = 0;
 
-        group.add(mesh);
+        group.add(shipMesh);
         
-        const geometry2 = new THREE.ConeGeometry(0.5, 1, 3);
-        const material2 = new THREE.MeshLambertMaterial({ color: Colors.fire }); 
-        const mesh2 = new THREE.Mesh(geometry2, material2); 
+        const exhaustGeometry = new THREE.ConeGeometry(0.5, 3, 3);
+        const exhaustMaterial = new THREE.MeshLambertMaterial({ color: Colors.fire }); 
+        const exhaustMesh = new THREE.Mesh(exhaustGeometry, exhaustMaterial); 
 
-        mesh2.position.x = 0;
-        mesh2.position.y = -1.6;
-        mesh2.position.z = 0;
-        mesh2.rotation.z = Math.PI;
-        mesh2.visible = false;
+        exhaustMesh.position.x = 0;
+        exhaustMesh.position.y = -2.6;
+        exhaustMesh.position.z = 0;
+        exhaustMesh.rotation.z = Math.PI;
+        exhaustMesh.visible = false;
 
-        group.add(mesh2);
+        group.add(exhaustMesh);
+
+        const fireMap = new THREE.TextureLoader().load("./img/fire.png");
+        const fireMaterial = new THREE.SpriteMaterial({ map: fireMap });
+        const fireSprite = new THREE.Sprite( fireMaterial );
+        fireSprite.scale.x = 
+        fireSprite.scale.y = 
+        fireSprite.scale.z = 4;
+        fireSprite.position.y = 2;
+
+        group.add(fireSprite);
 
         super.object = group;
     }

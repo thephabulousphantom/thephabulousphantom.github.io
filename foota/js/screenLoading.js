@@ -10,11 +10,16 @@ export default class screenLoading extends Screen {
     init() {
 
         super.init();
+
+        this.labelLevel = document.getElementById("labelLoading");
+
     }
 
     beforeHide() {
 
         super.beforeHide();
+
+        this.labelLevel.style.display = "none";
     }
 
     afterHide() {
@@ -25,6 +30,8 @@ export default class screenLoading extends Screen {
     beforeShow() {
 
         super.beforeShow();
+
+        this.labelLevel.style.display = "";
     }
 
     afterShow() {

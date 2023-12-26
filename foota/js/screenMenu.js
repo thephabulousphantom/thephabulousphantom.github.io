@@ -63,8 +63,11 @@ export default class screenMenu extends Screen {
 
         super.beforeShow();
 
+        this.buttonPlay.style.display = "none";
+
         World.things.protagonist.object.visible = true;
         World.things.protagonist.object.children[1].visible = false;
+        World.things.protagonist.object.children[2].visible = false;
         World.things.trail.object.visible = false;
         World.things.protagonist.object.position.x =
         World.things.protagonist.object.position.y =
@@ -103,7 +106,16 @@ export default class screenMenu extends Screen {
         this.update(Game.time);
     }
 
+    afterShow() {
+
+        super.afterShow();
+
+        this.buttonPlay.style.display = "";
+    }
+
     beforeHide() {
+
+        this.buttonPlay.style.display = "none";
 
         const animation = {
 

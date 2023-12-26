@@ -57,7 +57,7 @@ class Factory {
 
         const lightSpot = new Thing(new THREE.SpotLight(
             Colors.lightSpot,
-            10
+            7
         ));
 
         /*lightSpot.castShadow = true;

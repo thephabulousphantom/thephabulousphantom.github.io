@@ -165,6 +165,7 @@ export default class screenPlay extends Screen {
 
         World.things.protagonist.object.visible = true;
         World.things.trail.object.visible = true;
+        World.things.protagonist.object.children[2].visible = false;
 
         World.camera.position.x = 0;
         World.camera.position.y = 0;
@@ -404,6 +405,7 @@ export default class screenPlay extends Screen {
     
                 if (!this.lastBulletShootTime || time - this.lastBulletShootTime > this.rapidFirePeriod) {
     
+                    World.things.protagonist.object.children[2].visible = true;
                     this.lastBulletShootTime = time;
     
                     World.things.bullets.shoot(
@@ -413,10 +415,15 @@ export default class screenPlay extends Screen {
                         this.velocity.length()
                     );
                 }
+                else {
+
+                    World.things.protagonist.object.children[2].visible = false;
+                }
             }
             else {
     
                 this.lastBulletShootTime = null;
+                World.things.protagonist.object.children[2].visible = false;
             }
 
             const exhaustVector = new THREE.Vector3(0, 2, 0);
@@ -443,6 +450,10 @@ export default class screenPlay extends Screen {
             else if (this.velocity.length() > 0) {
     
                 this.velocity.multiplyScalar(this.decelleration);
+                World.things.protagonist.object.children[1].visible = false;
+            }
+            else {
+
                 World.things.protagonist.object.children[1].visible = false;
             }
         }
@@ -476,6 +487,9 @@ export default class screenPlay extends Screen {
             World.things.protagonist.object.rotation.y += .2;
             this.directionKeyboard += 0.1;            
             this.updateDirection();
+
+            World.things.protagonist.object.children[1].visible = 
+            World.things.protagonist.object.children[2].visible = false;
 
             if (!Screen.transitioning) {
 

@@ -46,14 +46,27 @@ export default class screenGameOver extends Screen {
 
         super.beforeShow();
 
+        this.buttonReplay.style.display = "none";
+        this.buttonMenu.style.display = "none";
+
         World.things.protagonist.object.visible = false;
         World.things.trail.object.visible = false;
         this.labelLevel.innerText = screenPlay.level;
         this.labelScore.innerText = screenPlay.score;
     }
 
+    afterShow() {
+
+        super.afterShow();
+
+        this.buttonReplay.style.display = "";
+        this.buttonMenu.style.display = "";
+    }
+
     beforeHide() {
 
+        this.buttonReplay.style.display = "none";
+        this.buttonMenu.style.display = "none";
     }
 
     update(time) {

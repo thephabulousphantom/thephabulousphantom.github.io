@@ -169,6 +169,17 @@
                 font-size: 16vmin;
             }
 
+            #imageQrCode {
+
+                width: 30vmin;
+                height: 30vmin;
+                left: calc(50vw - 15vmin);
+                top: calc(50vh + 15vmin);
+                border-radius: 3vmin;
+                image-rendering: crisp-edges;
+                opacity: 0.8;
+            }
+
             #controlToggleFullScreen {
 
                 z-index: 2000;
@@ -192,6 +203,8 @@
             <button id="buttonPlay"><span class="material-icons">play_arrow</span></button>
 
             <div id="controlToggleFullScreen" class="control material-icons">fullscreen</div>
+
+            <img id="imageQrCode" src="./img/github-qr.png">
 
         </div>
 

@@ -72,7 +72,7 @@ div.control {
     color: var(--colorBlack);
 }
 
-div.screen, div.control, label, button {
+div.screen, div.control, label, button, img {
 
     position: fixed;
     display: flex;
