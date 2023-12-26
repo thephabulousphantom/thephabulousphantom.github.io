@@ -281,6 +281,20 @@
                 color: var(--colorPrimary);
             }
 
+            #screenPlay #barOverheat {
+
+                width: 0vw;
+                height: 1vmin;
+                left: 10vw;
+                top: calc(100vh - 22vmin);
+
+                border-radius: 1vmin;
+
+                opacity: 0.4;
+
+                background-color: var(--colorPrimary);
+            }
+
         </style>
 
         <div id="screenPlay" class="screen">
@@ -290,6 +304,7 @@
             <div id="labelLevel" class="control"><span class="material-icons">line_weight</span><label></label></div>
             <div id="labelScore" class="control"><span class="material-icons">grade</span><label></label></div>
             <div id="labelAsteroidCount" class="control"><span class="material-icons">layers</span><label></label></div>
+            <div id="barOverheat" class="control"></div>
         </div>
 
         <script src="js/screenPlay.js" type="module"></script>

@@ -1,3 +1,16 @@
+:root {
+
+    --colorBlack: #000000ff;
+    --colorWhite: #ffffffff;
+    --colorBackground: #00000044;
+    --colorPrimary: #00ff00ff;
+    --colorPrimaryTransparent: #00ff0044;
+    --colorSecondary: #aa8800ff;
+    --colorSecondaryTransparent: #88889944;
+    
+    font-family: Arial;
+}
+
 @font-face {
 
     font-family: 'Material Icons';
@@ -21,21 +34,6 @@
     direction: ltr;
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
-}
-
-
-
-:root {
-
-    --colorBlack: #000000ff;
-    --colorWhite: #ffffffff;
-    --colorBackground: #00000044;
-    --colorPrimary: #00ff00ff;
-    --colorPrimaryTransparent: #00ff0044;
-    --colorSecondary: #880088ff;
-    --colorSecondaryTransparent: #88008844;
-    
-    font-family: Arial;
 }
 
 body {

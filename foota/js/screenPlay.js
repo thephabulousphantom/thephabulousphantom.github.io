@@ -18,6 +18,11 @@ export default class screenPlay extends Screen {
 
     lastBulletShootTime = null;
     rapidFirePeriod = 3000 / 60;
+    gunHeatMax = 10;
+    gunHeatIncrement = 0.5;
+    gunHeatDecrement = 0.1;
+    gunHeat = 0;
+    gunCoolingDown = false;
 
     score = null;
     level = null;
@@ -55,6 +60,8 @@ export default class screenPlay extends Screen {
         this.labelLevel = document.querySelector("#screenPlay #labelLevel label");
         this.labelScore = document.querySelector("#screenPlay #labelScore label");
         this.labelAsteroidCount = document.querySelector("#screenPlay #labelAsteroidCount label");
+
+        this.barOverheat = document.querySelector("#screenPlay #barOverheat");
 
         window.addEventListener("deviceorientation", this.onDeviceOrientationUpdate.bind(this));
 
@@ -239,6 +246,14 @@ export default class screenPlay extends Screen {
         this.labelAsteroidCount.innerText = this.asteroidCount;
     }
 
+    onGunOverheatUpdated() {
+
+        this.barOverheat.style.width = `${(80 * (this.gunHeat / this.gunHeatMax) | 0)}vw`;
+        this.barOverheat.style.backgroundColor = this.gunCoolingDown
+            ? "var(--colorSecondary)"
+            : "var(--colorPrimary)";
+    }
+
     bulletAndAsteroidCollision(bullet, asteroid) {
 
         const distance = Math.sqrt(
@@ -401,12 +416,22 @@ export default class screenPlay extends Screen {
                 this.updateDirection();
             }
     
+            var fired = false;
             if (Keyboard.down["Space"] || this.touch.shooting) {
     
-                if (!this.lastBulletShootTime || time - this.lastBulletShootTime > this.rapidFirePeriod) {
+                if (!this.gunCoolingDown && (!this.lastBulletShootTime || time - this.lastBulletShootTime > this.rapidFirePeriod)) {
     
                     World.things.protagonist.object.children[2].visible = true;
                     this.lastBulletShootTime = time;
+
+                    this.gunHeat = Math.min(this.gunHeat + this.gunHeatIncrement, this.gunHeatMax);
+                    if (this.gunHeat == this.gunHeatMax) {
+
+                        this.gunCoolingDown = true;
+                    }
+
+                    this.onGunOverheatUpdated();
+                    fired = true;
     
                     World.things.bullets.shoot(
                         World.things.protagonist.object.position.x,
@@ -415,15 +440,25 @@ export default class screenPlay extends Screen {
                         this.velocity.length()
                     );
                 }
-                else {
-
-                    World.things.protagonist.object.children[2].visible = false;
-                }
             }
             else {
     
                 this.lastBulletShootTime = null;
+            }
+
+            if (!fired) {
+
                 World.things.protagonist.object.children[2].visible = false;
+
+                if (this.gunHeat > 0) {
+
+                    this.gunHeat = Math.max(this.gunHeat - this.gunHeatDecrement, 0);
+                    if (this.gunHeat == 0) {
+
+                        this.gunCoolingDown = false;
+                    }
+                    this.onGunOverheatUpdated();
+                }
             }
 
             const exhaustVector = new THREE.Vector3(0, 2, 0);
