@@ -7,7 +7,8 @@ import World from "./world.js";
 export default class screenMenu extends Screen {
 
     buttonPlay = null;
-    rotationRadius = 2;
+    rotationRadius = 3.25;
+    cameraHeight = 25;
 
     constructor() {
 
@@ -88,8 +89,8 @@ export default class screenMenu extends Screen {
                 cameraZ: World.camera.position.z
             },
             target: {
-                rotationRadius:2,
-                cameraZ : 10
+                rotationRadius: this.rotationRadius,
+                cameraZ : this.cameraHeight
             }
         };
 
@@ -98,7 +99,7 @@ export default class screenMenu extends Screen {
             .start()
             .onUpdate(function() {
 
-                animation.this.rotationRadius = animation.properties.rotationRadius;
+                this.rotationRadius = animation.properties.rotationRadius;
                 World.camera.position.z = animation.properties.cameraZ;
 
             });
@@ -121,8 +122,8 @@ export default class screenMenu extends Screen {
 
             this: this,
             properties: {
-                rotationRadius: 2,
-                cameraZ : 10
+                rotationRadius: this.rotationRadius,
+                cameraZ : this.cameraHeight
             },
             target: {
                 rotationRadius: 0,
@@ -135,18 +136,21 @@ export default class screenMenu extends Screen {
             .start()
             .onUpdate(function() {
 
-                animation.this.rotationRadius = animation.properties.rotationRadius;
+                this.rotationRadius = animation.properties.rotationRadius;
                 World.camera.position.z = animation.properties.cameraZ;
             });
     }
 
     update(time) {
      
+        super.update(time);
+
+        World.camera.rotation.z = this.directionCurrent;
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
 
-        World.things.protagonist.object.rotation.x = Math.PI * 2 * time / 6000;
-        World.things.protagonist.object.rotation.y = Math.PI * 2 * time / 10000;
+        World.things.protagonist.object.rotation.set(0, time / 1000, 0);
+        World.things.protagonist.object.rotateOnWorldAxis(this.zVector, - time / 2000);
     }
 }
 

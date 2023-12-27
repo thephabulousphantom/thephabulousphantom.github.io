@@ -5,17 +5,6 @@ import Keyboard from "./keyboard.js";
 
 export default class screenPlay extends Screen {
 
-
-    zVector = null;
-
-    directionTarget = 0;
-    directionCurrent = 0;
-    directionDevice = null;
-    directionKeyboard = 0;
-    directionSmoothness = 3;
-    directionPrevious = null;
-    directionDiff = 0;
-
     velocity = null;
     accelleration = 0.02;
     decelleration = 0.99;
@@ -68,16 +57,7 @@ export default class screenPlay extends Screen {
 
         this.barOverheat = document.querySelector("#screenPlay #barOverheat");
 
-        window.addEventListener("deviceorientation", this.onDeviceOrientationUpdate.bind(this));
-
         this.velocity = new THREE.Vector3(0, 0, 0);
-        this.zVector = new THREE.Vector3(0, 0, 1);
-    }
-
-    onDeviceOrientationUpdate(evt) {
-
-        this.directionDevice = evt.alpha * 0.0174532925;
-        this.updateDirection();
     }
 
     onAccelleratePress(evt) {
@@ -102,52 +82,6 @@ export default class screenPlay extends Screen {
 
         this.touch.shooting = false;
         evt.preventDefault();
-    }
-
-    updateDirection() {
-
-        this.directionTarget = this.directionKeyboard;
-
-        if (this.directionDevice) {
-
-            this.directionTarget += this.directionDevice;
-        }
-
-        this.directionTarget %= 2 * Math.PI;
-    }
-
-    smoothDirection() {
-
-        this.directionPrevious = this.directionCurrent;
-
-        if (this.directionTarget == this.directionCurrent) {
-
-            return;
-        }
-
-        if (Math.abs(this.directionTarget - this.directionCurrent) > Math.PI) {
-
-            if (Math.abs(2 * Math.PI + this.directionTarget - this.directionCurrent) < Math.PI) {
-
-                this.directionTarget += 2 * Math.PI;
-            }
-            else if (Math.abs(this.directionTarget - 2 * Math.PI - this.directionCurrent) < Math.PI) {
-
-                this.directionCurrent += 2 * Math.PI;
-            }
-        }
-
-        this.directionCurrent = (((this.directionSmoothness - 1) * this.directionCurrent + this.directionTarget) / this.directionSmoothness) % (2 * Math.PI);
-
-        this.directionTarget %= 2 * Math.PI;
-        this.directionCurrent %= 2 * Math.PI;
-
-        if (Math.abs(this.directionCurrent - this.directionTarget) < 0.01) {
-
-            this.directionCurrent = this.directionTarget;
-        }
-
-        this.directionDiff = (this.directionPrevious + Math.PI) - (this.directionCurrent + Math.PI);
     }
 
     beforeHide() {
@@ -388,6 +322,8 @@ export default class screenPlay extends Screen {
 
     update(time) {
      
+        super.update(time);
+
         this.checkForCollissions(time);
 
         if (this.asteroidsToSpawn > 0 && (!this.nextAsteroidSpawnedTime || this.nextAsteroidSpawnedTime < time)) {
@@ -414,18 +350,6 @@ export default class screenPlay extends Screen {
                         this.asteroidsToSpawn = 0;
                     }
                 }
-            }
-
-            if (Keyboard.down["KeyD"]) {
-
-                this.directionKeyboard -= 0.1;
-                this.updateDirection();
-            }
-            
-            if (Keyboard.down["KeyA"]) {
-    
-                this.directionKeyboard += 0.1;
-                this.updateDirection();
             }
     
             var fired = false;
@@ -512,8 +436,6 @@ export default class screenPlay extends Screen {
 
             this.velocity.multiplyScalar(0);
         }
-
-        this.smoothDirection();
 
         World.things.protagonist.object.position.x += this.velocity.x;
         World.things.protagonist.object.position.y += this.velocity.y;

@@ -71,8 +71,12 @@ export default class screenGameOver extends Screen {
 
     update(time) {
         
+        super.update(time);
+
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
+
+        World.camera.rotation.z = this.directionCurrent;
     }
 }
 

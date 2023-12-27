@@ -1,5 +1,6 @@
 import Log from "./log.js";
 import { Tween } from "./lib/tween/tween.esm.js";
+import Keyboard from "./keyboard.js";
 
 export default class Screen {
 
@@ -7,11 +8,21 @@ export default class Screen {
     static current = null;
     static transitioning = false;
     static transitionMilliseconds = 1500;
+    
+    zVector = null;
 
     id = null;
     htmlElement = null;
     transitionIn = false;
     transitionOut = false;
+
+    directionTarget = null;
+    directionPrevious = null;
+    directionDiff = null;
+    directionSmoothness = 3;
+    directionKeyboard = 0;
+    directionDevice = 0;
+    directionCurrent = 0;
 
     constructor(id) {
 
@@ -28,6 +39,10 @@ export default class Screen {
     init() {
 
         Log.info(`Initialising screen ${this.id}`);
+
+        window.addEventListener("deviceorientation", this.handleDeviceOrientationUpdate.bind(this));
+
+        this.zVector = new THREE.Vector3(0, 0, 1);
     }
 
     // helper functions
@@ -114,6 +129,8 @@ export default class Screen {
             Log.warning(ex.message ? ex.message : JSON.stringify(ex));
         }
     }
+
+    // screen methods
     
     static transition(screen) {
 
@@ -175,6 +192,71 @@ export default class Screen {
             .start();
     }
 
+    // device orientation support
+
+    handleDeviceOrientationUpdate(evt) {
+
+        this.directionDevice = evt.alpha * 0.0174532925;;
+        this.updateDirection();
+    }
+
+    updateDirection() {
+
+        this.directionTarget = this.directionKeyboard;
+
+        if (this.directionDevice) {
+
+            this.directionTarget += this.directionDevice;
+        }
+
+        this.directionTarget %= 2 * Math.PI;
+    }
+
+    smoothDirection() {
+
+        this.directionPrevious = this.directionCurrent;
+
+        if (this.directionTarget == this.directionCurrent) {
+
+            return;
+        }
+
+        if (Math.abs(this.directionTarget - this.directionCurrent) > Math.PI) {
+
+            if (Math.abs(2 * Math.PI + this.directionTarget - this.directionCurrent) < Math.PI) {
+
+                this.directionTarget += 2 * Math.PI;
+            }
+            else if (Math.abs(this.directionTarget - 2 * Math.PI - this.directionCurrent) < Math.PI) {
+
+                this.directionCurrent += 2 * Math.PI;
+            }
+        }
+
+        this.directionCurrent = (((this.directionSmoothness - 1) * this.directionCurrent + this.directionTarget) / this.directionSmoothness) % (2 * Math.PI);
+
+        this.directionTarget %= 2 * Math.PI;
+        this.directionCurrent %= 2 * Math.PI;
+
+        if (Math.abs(this.directionCurrent - this.directionTarget) < 0.01) {
+
+            this.directionCurrent = this.directionTarget;
+        }
+
+        this.directionDiff = (this.directionPrevious + Math.PI) - (this.directionCurrent + Math.PI);
+
+        if (this.directionTarget !== null && Screen.current && this.directionDiff) {
+
+            Screen.current.onDirectionUpdated();
+        }
+    }
+
+    onDirectionUpdated(direction) {
+
+    }
+
+    // event hooks
+
     beforeHide() {
 
         Log.info(`Hiding screen ${this.id}`);
@@ -197,6 +279,19 @@ export default class Screen {
 
     update() {
         
+        if (Keyboard.down["KeyD"]) {
+
+            this.directionKeyboard -= 0.1;
+            this.updateDirection();
+        }
+        
+        if (Keyboard.down["KeyA"]) {
+
+            this.directionKeyboard += 0.1;
+            this.updateDirection();
+        }
+
+        this.smoothDirection();
     }
 }
 
