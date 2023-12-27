@@ -48,11 +48,17 @@
                 height: 100vh;
                 top: 0vw;
                 left: 0vh;
-
-                
             }
 
-            #containerWorld::before {
+            #backgroundStars {
+
+                width: calc(4 * 100vmax);
+                height: calc(4 * 100vmax);
+                left: calc(50vw - 2 * 100vmax);
+                top: calc(50vh - 2 * 100vmax);
+            }
+
+            #backgroundStars::before {
 
                 content: "";
                 position: absolute;
@@ -61,7 +67,8 @@
                 top: -50%;
                 left: -50%;
                 z-index: -1;
-                background: url(./img/space.jpg) 0 0 repeat;
+                background: url(./img/space.jpg) 15% 0% repeat;
+                background-size: 20%;
                 transform: rotate(var(--backgroundAngle));
             }
 
@@ -75,6 +82,7 @@
 
         </style>
 
+        <div id="backgroundStars" class="control"></div>
         <div id="containerWorld" class="control">
 
         </div>

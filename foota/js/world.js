@@ -103,7 +103,7 @@ class World {
 
     update(time) {
 
-        this.htmlElement.style.backgroundColor = `rgba(255,0,0,${((Math.sin(time / 1000.0) + 1) / 10 + 0.20)})`;
+        this.htmlElement.style.backgroundColor = `rgba(128,0,255,${((Math.sin(time / 1000.0)) / 10 + 0.00)})`;
 
         for (var entityName in this.things) {
 
