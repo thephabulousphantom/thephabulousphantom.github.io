@@ -5,7 +5,11 @@ import World from "./world.js";
 
 export default class screenLoading extends Screen {
 
-    resourcesToLoad = 1;
+    models = [
+        { name: "rocket", url: "./3d/rocket.glb"},
+        { name: "asteroid", url: "./3d/asteroid.glb"}
+    ];
+    resourcesToLoad = this.models.length;
 
     constructor() {
 
@@ -20,16 +24,20 @@ export default class screenLoading extends Screen {
 
         this.gltfLoader = new THREE.GLTFLoader();
 
-        this.loadModel("./3d/rocket.glb", true).then(((model) => {
+        for (var i = 0; i < this.models.length; i++) {
 
-            Game.models.rocket = model;
+            const modelInfo = this.models[i];
+            this.loadModel(modelInfo.url, true).then(((model) => {
 
-            this.onResourceLoaded({
-                type: "model",
-                resource: model
-            });
-
-        }).bind(this));
+                Game.models[modelInfo.name] = model;
+    
+                this.onResourceLoaded({
+                    type: "model",
+                    resource: model
+                });
+    
+            }).bind(this));
+        }
     }
 
     async loadGltf(url) {

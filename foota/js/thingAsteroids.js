@@ -1,4 +1,5 @@
 import Thing from "./thing.js";
+import Game from "./game.js";
 import Colors from "./colors.js";
 import World from "./world.js";
 
@@ -25,15 +26,16 @@ export default class Asteroids extends Thing {
 
         for (var i = 0; i < number; i++) {
 
-            const cube = new THREE.Mesh(geometry, material); 
+            //const cube = new THREE.Mesh(geometry, material); 
+            const asteroidMesh = Game.models.asteroid.clone();
 
-            cube.position.x = 0;
-            cube.position.y = 0;
-            cube.position.z = 0;
-            cube.visible = false;
+            asteroidMesh.position.x = 0;
+            asteroidMesh.position.y = 0;
+            asteroidMesh.position.z = 0;
+            asteroidMesh.visible = false;
 
-            this.objects.push(cube);
-            asteroids.add(cube);
+            this.objects.push(asteroidMesh);
+            asteroids.add(asteroidMesh);
         }
 
         super.object = asteroids;
