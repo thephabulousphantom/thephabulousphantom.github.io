@@ -57,20 +57,11 @@ class Factory {
 
         const lightSpot = new Thing(new THREE.SpotLight(
             Colors.lightSpot,
-            7
+            5
         ));
 
-        /*lightSpot.castShadow = true;
-
-        lightSpot.shadow.mapSize.width = 512;
-        lightSpot.shadow.mapSize.height = 512;
-
-        lightSpot.shadow.camera.near = 1;
-        lightSpot.shadow.camera.far = 15.5;
-        lightSpot.shadow.camera.fov = 5;*/
-
         lightSpot.object.penumbra = 1;
-        lightSpot.object.angle = 0.4;
+        lightSpot.object.angle = 0.7;
         lightSpot.object.position.x = 0;
         lightSpot.object.position.y = 0;
         lightSpot.object.position.z = 50;

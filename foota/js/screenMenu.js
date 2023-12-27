@@ -149,6 +149,8 @@ export default class screenMenu extends Screen {
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
 
+        document.documentElement.style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
+
         World.things.protagonist.object.rotation.set(0, time / 1000, 0);
         World.things.protagonist.object.rotateOnWorldAxis(this.zVector, - time / 2000);
     }

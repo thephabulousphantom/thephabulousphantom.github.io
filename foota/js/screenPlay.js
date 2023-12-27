@@ -474,6 +474,7 @@ export default class screenPlay extends Screen {
         World.things.protagonist.object.position.y;
 
         World.camera.rotation.z = this.directionCurrent;
+        document.documentElement.style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
 
         if (!World.things.protagonist.killed) { 
 

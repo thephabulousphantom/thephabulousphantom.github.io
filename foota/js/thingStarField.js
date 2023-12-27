@@ -3,6 +3,7 @@ import World from "./world.js";
 
 export default class StarField extends Thing {
 
+    defaultColor = 0xed7f65;
     objects = [];
 
     size = {
@@ -57,7 +58,7 @@ export default class StarField extends Thing {
             "position",
             new THREE.BufferAttribute(starPositions, 3)
         );
-        const material = new THREE.PointsMaterial({ size: size, color: color ? color : 0xffffff });
+        const material = new THREE.PointsMaterial({ size: size, color: color ? color : this.defaultColor });
         const starField = new THREE.Points(geometry, material);
 
         return starField;

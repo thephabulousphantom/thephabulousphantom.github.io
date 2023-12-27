@@ -34,6 +34,12 @@
 
         <style type="text/css">
             
+            :root {
+
+                --backgroundAngle: 0deg;
+            }
+            
+
             #containerWorld {
 
                 z-index: 0;
@@ -43,7 +49,20 @@
                 top: 0vw;
                 left: 0vh;
 
-                background-color: Red;
+                
+            }
+
+            #containerWorld::before {
+
+                content: "";
+                position: absolute;
+                width: 200%;
+                height: 200%;
+                top: -50%;
+                left: -50%;
+                z-index: -1;
+                background: url(./img/space.jpg) 0 0 repeat;
+                transform: rotate(var(--backgroundAngle));
             }
 
             #containerWorld canvas {

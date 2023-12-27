@@ -196,7 +196,7 @@ export default class Screen {
 
     handleDeviceOrientationUpdate(evt) {
 
-        this.directionDevice = evt.alpha * 0.0174532925;;
+        this.directionDevice = evt.alpha * 0.0174532925;
         this.updateDirection();
     }
 
