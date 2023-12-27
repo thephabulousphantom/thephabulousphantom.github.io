@@ -8,7 +8,7 @@ export default class screenMenu extends Screen {
 
     buttonPlay = null;
     rotationRadius = 10;
-    cameraHeight = 15;
+    cameraHeight = 20;
 
     constructor() {
 
@@ -150,15 +150,16 @@ export default class screenMenu extends Screen {
         World.camera.rotation.z = this.directionCurrent;
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         /*World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);*/
-        World.camera.position.y = 2;
+        World.camera.position.y = 0;
 
         document.documentElement.style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
 
         World.things.protagonist.object.children[1].rotation.y = 2 * Math.PI * Math.random();
-        World.things.protagonist.object.rotation.set(0, - Math.PI / 4 + Math.PI * (Math.sin(time / 320) * Math.sin(time / 400)) / 8, 0);
+        World.things.protagonist.object.rotation.set(0, - Math.PI / 4 + Math.PI * (Math.sin(time / 1750) * Math.sin(time / 1600)) / 4, 0);
         World.things.protagonist.object.rotateOnWorldAxis(this.zVector, -Math.PI / 2);
-        World.things.protagonist.object.position.x = World.camera.position.x;
-        //World.things.protagonist.object.rotateOnWorldAxis(this.zVector, - time / 2000);
+        World.things.protagonist.object.position.x = World.camera.position.x + 3 * Math.sin(+ time / 1000);
+        World.things.protagonist.object.position.y = 3 * Math.cos( time / 1000);
+        World.things.protagonist.object.rotateOnWorldAxis(this.zVector, - time / 1000);
     }
 }
 
