@@ -4,9 +4,8 @@
     --colorWhite: #ffffffff;
     --colorBackground: #00000044;
     --colorPrimary: #00ff00ff;
-    --colorPrimaryTransparent: #00ff0044;
-    --colorSecondary: #aa8800ff;
-    --colorSecondaryTransparent: #88889944;
+    --colorSecondary: #ed7f65ff;
+    --colorOverheat: #aa8800ff;
     
     font-family: Arial;
 }

@@ -196,7 +196,7 @@ export default class screenPlay extends Screen {
 
         this.barOverheat.style.width = `${(80 * (this.gunHeat / this.gunHeatMax) | 0)}vw`;
         this.barOverheat.style.backgroundColor = this.gunCoolingDown
-            ? "var(--colorSecondary)"
+            ? "var(--colorOverheat)"
             : "var(--colorPrimary)";
     }
 

@@ -189,11 +189,13 @@
                 left: 0vw;
 
                 font-size: 10vmin;
+
             }
 
             #screenMenu #buttonPlay span {
 
                 font-size: 16vmin;
+                filter: drop-shadow(0 0 2vmin var(--colorPrimary));
             }
 
             #imageQrCode {
@@ -205,6 +207,8 @@
                 border-radius: 3vmin;
                 image-rendering: crisp-edges;
                 opacity: 0.8;
+
+                filter: drop-shadow(0 0 2vmin var(--colorSecondary));
             }
 
             #controlToggleFullScreen {
@@ -216,9 +220,8 @@
                 top: calc(10vmin);
                 left: calc(100vw - 10vmin - 10vmin);
 
-                border-radius: 5vmin;
                 color: var(--colorPrimary);
-                background-color: var(--colorPrimaryTransparent);
+                filter: drop-shadow(0 0 1vmin var(--colorPrimary));
 
                 font-size: 10vmin;
             }
@@ -349,6 +352,8 @@
                 top: calc(50vh - 15vmin);
                 left: 0vw;
 
+                filter: drop-shadow(0 0 2vmin var(--colorPrimary));
+
                 font-size: 10vmin;
             }
 
@@ -359,57 +364,69 @@
                 top: calc(50vh + 5vmin);
                 left: 0vw;
 
+                filter: drop-shadow(0 0 2vmin var(--colorPrimary));
+
                 font-size: 10vmin;
             }
 
-            #screenGameOver #buttonReplay span, #screenGameOver #buttonMenu span {
+            #screenGameOver #buttonReplay span,
+            #screenGameOver #buttonMenu span {
 
                 font-size: 16vmin;
             }
 
-            #screenGameOver #labelLevel, #screenGameOver #labelScore, 
-            #screenGameOver #labelLevel span, #screenGameOver #labelScore span, 
-            #screenGameOver #labelLevel label, #screenGameOver #labelScore label {
+            #screenGameOver #labelScore, 
+            #screenGameOver #labelScore span, 
+            #screenGameOver #labelScore label,
+            #screenGameOver #labelLevel, 
+            #screenGameOver #labelLevel span, 
+            #screenGameOver #labelLevel label {
 
                 display: inline-block;
-                text-align: center;
+                
             }
 
-            #screenGameOver #labelLevel span, #screenGameOver #labelScore span {
+            #screenGameOver #labelLevel span,
+            #screenGameOver #labelScore span {
 
-                font-size: 3.3vmin;
+                font-size: 10vmin;
+            }
+
+            #screenGameOver #labelLevel label, 
+            #screenGameOver #labelScore label {
+
+                font-size: 9vmin;
+            }
+
+            #screenGameOver #labelLevel,
+            #screenGameOver #labelScore {
+
+                padding-right: 5vmin;
+                width: 45vw;
+                height: 20vmin;
+                top: calc(50vh - 15vmin - 25vmin);
+                color: var(--colorSecondary);
+                filter: drop-shadow(0 0 2vmin var(--colorSecondary));
             }
 
             #screenGameOver #labelLevel {
 
-                width: 50vw;
-                height: 10vmin;
-                top: calc(100vh - 20vmin);
                 left: 0vw;
-                font-size: 3vmin;
-                color: var(--colorPrimary);
+                text-align: right;
             }
 
-            #screenGameOver #labelLevel label {
+            #screenGameOver #labelLevel span {
 
-                font-size: 3vmin;
+                margin-left: 5vmin;
             }
 
-            #screenGameOver #labelScore {
 
-                width: 50vw;
-                height: 10vmin;
-                top: calc(100vh - 20vmin);
+            #screenGameOver #labelScore{
+
                 left: 50vw;
-                font-size: 3vmin;
-                color: var(--colorPrimary);
+                text-align: left;
             }
-
-            #screenGameOver #labelScore label {
-
-                font-size: 3vmin;
-            }
-
+            
         </style>
 
         <div id="screenGameOver" class="screen">
@@ -417,7 +434,7 @@
             <button id="buttonReplay"><span class="material-icons">refresh</span></button>
             <button id="buttonMenu"><span class="material-icons">menu_open</span></button>
 
-            <div id="labelLevel" class="control"><span class="material-icons">line_weight</span><label></label></div>
+            <div id="labelLevel" class="control"><label></label><span class="material-icons">line_weight</span></div>
             <div id="labelScore" class="control"><span class="material-icons">grade</span><label></label></div>
 
         </div>
