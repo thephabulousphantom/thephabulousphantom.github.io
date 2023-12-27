@@ -1,18 +1,24 @@
 import Thing from "./thing.js";
 import Colors from "./colors.js";
+import Game from "./game.js";
 
 export default class Protagonist extends Thing {
 
-    constructor() {
+    constructor(scale) {
 
         super();
 
         const group = new THREE.Group();
 
-        const shipGeometry = new THREE.ConeGeometry(1, 2, 3);
-        const shipMaterial = new THREE.MeshLambertMaterial({ color: Colors.primary }); 
-        const shipMesh = new THREE.Mesh(shipGeometry, shipMaterial); 
+        const shipMesh = Game.models.rocket.clone();
 
+        if (scale) {
+
+            shipMesh.scale.x = 
+            shipMesh.scale.y = 
+            shipMesh.scale.z = scale;
+        }
+        
         shipMesh.position.x = 0;
         shipMesh.position.y = 0;
         shipMesh.position.z = 0;
@@ -24,7 +30,7 @@ export default class Protagonist extends Thing {
         const exhaustMesh = new THREE.Mesh(exhaustGeometry, exhaustMaterial); 
 
         exhaustMesh.position.x = 0;
-        exhaustMesh.position.y = -2.6;
+        exhaustMesh.position.y = -2.8;
         exhaustMesh.position.z = 0;
         exhaustMesh.rotation.z = Math.PI;
         exhaustMesh.visible = false;
@@ -37,7 +43,7 @@ export default class Protagonist extends Thing {
         fireSprite.scale.x = 
         fireSprite.scale.y = 
         fireSprite.scale.z = 4;
-        fireSprite.position.y = 2;
+        fireSprite.position.y = 3;
 
         group.add(fireSprite);
 

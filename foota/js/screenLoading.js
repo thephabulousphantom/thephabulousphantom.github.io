@@ -1,6 +1,11 @@
 import Screen from "./screen.js";
+import Game from "./game.js";
+import { screen as screenMenu } from "./screenMenu.js";
+import World from "./world.js";
 
 export default class screenLoading extends Screen {
+
+    resourcesToLoad = 1;
 
     constructor() {
 
@@ -13,6 +18,64 @@ export default class screenLoading extends Screen {
 
         this.labelLevel = document.getElementById("labelLoading");
 
+        this.gltfLoader = new THREE.GLTFLoader();
+
+        this.loadModel("./3d/rocket.glb", true).then(((model) => {
+
+            Game.models.rocket = model;
+
+            this.onResourceLoaded({
+                type: "model",
+                resource: model
+            });
+
+        }).bind(this));
+    }
+
+    async loadGltf(url) {
+        
+        return await new Promise((resolve, reject) => {
+
+            this.gltfLoader.load(url, resolve, null, reject);
+        });
+    }
+
+    async loadModel(url, keepShadow) {
+
+        var gltf = await this.loadGltf(url);
+
+        if (!keepShadow) {
+
+            gltf.scene.traverse( function(child) { 
+
+                if (child.isMesh) {
+            
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+        }
+
+        const model = new THREE.Group();
+        while (gltf.scene.children.length > 0) {
+
+            model.add(gltf.scene.children[ 0 ]);
+        }
+
+        return model;
+    }
+
+    onResourceLoaded(info) {
+
+        const type = info.type;
+        const model = info.model;
+
+        if (--this.resourcesToLoad == 0) {
+
+            World.makeThings();
+
+            Screen.transition(screenMenu);
+        }
     }
 
     beforeHide() {

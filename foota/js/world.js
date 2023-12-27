@@ -1,6 +1,5 @@
 import Log from "./log.js"
 import Factory from "./factory.js";
-import Screen from "./screen.js";
 
 class World {
 
@@ -46,6 +45,15 @@ class World {
         this.renderer = Factory.getRenderer();
         this.htmlElement.appendChild( this.renderer.domElement );
 
+        this.updateRendererSize();
+
+        window.addEventListener("resize", this.onWindowResize.bind(this));
+
+        Log.info(`The world initialised.`);
+    }
+
+    makeThings() {
+
         Log.info("Adding protagonist...");
         this.things.protagonist = Factory.getProtagonist();
         this.things.protagonist.object.visible = false;
@@ -70,12 +78,6 @@ class World {
         Log.info(`Adding starfield...`)
         this.things.starField = Factory.getStarField();
         this.scene.add(this.things.starField.object);
-
-        this.updateRendererSize();
-
-        window.addEventListener("resize", this.onWindowResize.bind(this));
-
-        Log.info(`The world initialised.`);
     }
 
     updateRendererSize() {

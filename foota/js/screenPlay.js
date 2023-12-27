@@ -5,11 +5,16 @@ import Keyboard from "./keyboard.js";
 
 export default class screenPlay extends Screen {
 
+
+    zVector = null;
+
     directionTarget = 0;
     directionCurrent = 0;
     directionDevice = null;
     directionKeyboard = 0;
     directionSmoothness = 3;
+    directionPrevious = null;
+    directionDiff = 0;
 
     velocity = null;
     accelleration = 0.02;
@@ -66,6 +71,7 @@ export default class screenPlay extends Screen {
         window.addEventListener("deviceorientation", this.onDeviceOrientationUpdate.bind(this));
 
         this.velocity = new THREE.Vector3(0, 0, 0);
+        this.zVector = new THREE.Vector3(0, 0, 1);
     }
 
     onDeviceOrientationUpdate(evt) {
@@ -112,6 +118,8 @@ export default class screenPlay extends Screen {
 
     smoothDirection() {
 
+        this.directionPrevious = this.directionCurrent;
+
         if (this.directionTarget == this.directionCurrent) {
 
             return;
@@ -138,6 +146,8 @@ export default class screenPlay extends Screen {
 
             this.directionCurrent = this.directionTarget;
         }
+
+        this.directionDiff = (this.directionPrevious + Math.PI) - (this.directionCurrent + Math.PI);
     }
 
     beforeHide() {
@@ -156,6 +166,8 @@ export default class screenPlay extends Screen {
 
         super.beforeShow();
 
+        this.directionPrevious = 
+        this.directionDiff = 
         this.directionCurrent =
         this.directionTarget =
         this.directionKeyboard = 0;
@@ -271,7 +283,7 @@ export default class screenPlay extends Screen {
             + (protagonist.position.y - asteroid.position.y) * (protagonist.position.y - asteroid.position.y)
             );
 
-        return distance < (asteroid.scale.x / 2 + 0.5);
+        return distance < (asteroid.scale.x / 2 + 1.5);
     }
 
     explode(asteroid, time) {
@@ -540,8 +552,13 @@ export default class screenPlay extends Screen {
         World.things.lightSpot.object.position.y =
         World.things.protagonist.object.position.y;
 
-        World.camera.rotation.z = 
-        World.things.protagonist.object.rotation.z = this.directionCurrent;
+        World.camera.rotation.z = this.directionCurrent;
+
+        if (!World.things.protagonist.killed) { 
+
+            World.things.protagonist.object.rotation.set(0, this.directionDiff * 4, 0);
+            World.things.protagonist.object.rotateOnWorldAxis(this.zVector, this.directionCurrent);
+        }
     }
 }
 

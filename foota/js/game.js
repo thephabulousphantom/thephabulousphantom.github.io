@@ -2,13 +2,13 @@ import Log from "./log.js";
 import Tween from "./lib/tween/tween.esm.js";
 import Screen from "./screen.js";
 import World from "./world.js";
-import { screen as screenMenu } from "./screenMenu.js";
 
 export default class Game {
 
     // global vars
 
     static time = null;
+    static models = {};
 
     // construction
 
@@ -28,8 +28,6 @@ export default class Game {
         //Log.debugLabel = document.getElementById("labelDebug");
 
         requestAnimationFrame( this.animate.bind(this));
-
-        Screen.transition(screenMenu);
     }
 
 
