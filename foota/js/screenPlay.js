@@ -448,8 +448,7 @@ export default class screenPlay extends Screen {
                     World.things.bullets.shoot(
                         World.things.protagonist.object.position.x,
                         World.things.protagonist.object.position.y,
-                        this.directionCurrent,
-                        this.velocity.length()
+                        this.directionCurrent
                     );
                 }
             }

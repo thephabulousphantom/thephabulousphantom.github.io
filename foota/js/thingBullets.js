@@ -32,16 +32,16 @@ export default class Bullets extends Thing {
         super.object = bullets;
     }
 
-    shoot(x, y, direction, velocity) {
+    shoot(x, y, direction) {
 
         for (var i = 0; i < this.objects.length; i++) {
 
             if (!this.objects[i].visible) {
 
-                this.objects[i].position.x = x;
-                this.objects[i].position.y = y;
+                this.objects[i].position.x = x + 2 * Math.sin(-direction);
+                this.objects[i].position.y = y + 2 * Math.cos(-direction);
                 this.objects[i].rotation.z = direction;
-                this.objects[i].speed = velocity + this.speed;
+                this.objects[i].speed = this.speed;
                 this.objects[i].visible = true;
                 return;
             }
