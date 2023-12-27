@@ -7,8 +7,8 @@ import World from "./world.js";
 export default class screenMenu extends Screen {
 
     buttonPlay = null;
-    rotationRadius = 3.25;
-    cameraHeight = 25;
+    rotationRadius = 10;
+    cameraHeight = 15;
 
     constructor() {
 
@@ -67,9 +67,11 @@ export default class screenMenu extends Screen {
         this.buttonPlay.style.display = "none";
 
         World.things.protagonist.object.visible = true;
-        World.things.protagonist.object.children[1].visible = false;
+        World.things.protagonist.object.children[1].visible = true;
         World.things.protagonist.object.children[2].visible = false;
         World.things.trail.object.visible = false;
+        World.camera.position.x =
+        World.camera.position.y =
         World.things.protagonist.object.position.x =
         World.things.protagonist.object.position.y =
         World.things.protagonist.object.position.z = 
@@ -147,12 +149,16 @@ export default class screenMenu extends Screen {
 
         World.camera.rotation.z = this.directionCurrent;
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
-        World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
+        /*World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);*/
+        World.camera.position.y = 2;
 
         document.documentElement.style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
 
-        World.things.protagonist.object.rotation.set(0, time / 1000, 0);
-        World.things.protagonist.object.rotateOnWorldAxis(this.zVector, - time / 2000);
+        World.things.protagonist.object.children[1].rotation.y = 2 * Math.PI * Math.random();
+        World.things.protagonist.object.rotation.set(0, - Math.PI / 4 + Math.PI * (Math.sin(time / 320) * Math.sin(time / 400)) / 8, 0);
+        World.things.protagonist.object.rotateOnWorldAxis(this.zVector, -Math.PI / 2);
+        World.things.protagonist.object.position.x = World.camera.position.x;
+        //World.things.protagonist.object.rotateOnWorldAxis(this.zVector, - time / 2000);
     }
 }
 

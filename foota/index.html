@@ -185,7 +185,7 @@
 
                 width: 100vw;
                 height: 10vmin;
-                top: calc(50vh - 5vmin);
+                top: calc(75vh);
                 left: 0vw;
 
                 font-size: 10vmin;
@@ -198,27 +198,35 @@
                 filter: drop-shadow(0 0 2vmin var(--colorPrimary));
             }
 
+            #imageLogo {
+
+                top: calc(13vh);
+                height: calc(40vh);
+                filter: drop-shadow(0 0 2vmin var(--colorSecondary));
+            }
+
             #imageQrCode {
 
-                width: 30vmin;
-                height: 30vmin;
-                left: calc(50vw - 15vmin);
-                top: calc(50vh + 30vmin);
+                width: calc(20vh);
+                height: calc(20vh);
+                left: calc(50vw - 14.5vh);
+                top: calc(13vh + 20vh);
                 border-radius: 3vmin;
                 image-rendering: crisp-edges;
                 opacity: 0.8;
 
                 filter: drop-shadow(0 0 2vmin var(--colorSecondary));
+                transform: rotate(-6deg);
             }
 
             #controlToggleFullScreen {
 
                 z-index: 2000;
 
-                width: 10vmin;
-                height: 10vmin;
-                top: calc(10vmin);
-                left: calc(100vw - 10vmin - 10vmin);
+                width: 10vh;
+                height: 10vh;
+                top: calc(5vh);
+                left: calc(100vw - 5vh - 10vh);
 
                 color: var(--colorPrimary);
                 filter: drop-shadow(0 0 1vmin var(--colorPrimary));
@@ -230,9 +238,10 @@
 
         <div id="screenMenu" class="screen">
 
-            <button id="buttonPlay"><span class="material-icons">play_arrow</span></button>
+            <img id="imageLogo" src="./img/logo.png">
 
             <div id="controlToggleFullScreen" class="control material-icons">fullscreen</div>
+            <button id="buttonPlay"><span class="material-icons">play_arrow</span></button>
 
             <img id="imageQrCode" src="./img/github-qr.png">
 
