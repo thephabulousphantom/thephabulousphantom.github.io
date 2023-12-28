@@ -97,7 +97,7 @@ class Factory {
 
     getExplosions() {
 
-        return new Explosions(100);
+        return new Explosions(20);
     }
 }
 

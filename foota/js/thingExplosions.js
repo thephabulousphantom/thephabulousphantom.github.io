@@ -18,10 +18,10 @@ export default class Explosions extends Thing {
             this.maxExplosions = number;
         }
 
-        const map = new THREE.TextureLoader().load("./img/explosion.png", (texture) => {
+        for (var i = 0; i < this.maxExplosions; i++) {
 
-            for (var i = 0; i < this.maxExplosions; i++) {
-
+            new THREE.TextureLoader().load("./img/explosion.png", (texture) => {
+                
                 const explosion = Game.spriteMixer.ActionSprite( texture, 13, 1 );
 
                 explosion.action = Game.spriteMixer.Action(explosion, 0, 12, 1000 / 15);
@@ -29,9 +29,9 @@ export default class Explosions extends Thing {
                 explosion.visible = false;
 
                 this.object.add(explosion);
-            }
-        });
-    }
+            });
+        }
+}
 
     explode(x, y, z, size) {
 
