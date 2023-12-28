@@ -48,14 +48,14 @@ export default class Bullets extends Thing {
         }
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
 
         for (var i = 0; i < this.objects.length; i++) {
 
             if (this.objects[i].visible) {
 
-                this.objects[i].position.x += this.objects[i].speed * Math.sin(-this.objects[i].rotation.z);
-                this.objects[i].position.y += this.objects[i].speed * Math.cos(-this.objects[i].rotation.z);
+                this.objects[i].position.x += elapsedFrames * this.objects[i].speed * Math.sin(-this.objects[i].rotation.z);
+                this.objects[i].position.y += elapsedFrames * this.objects[i].speed * Math.cos(-this.objects[i].rotation.z);
 
                 if (!this.objects[i].deathTime) {
 

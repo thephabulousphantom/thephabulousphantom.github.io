@@ -69,9 +69,9 @@ export default class screenGameOver extends Screen {
         this.buttonMenu.style.display = "none";
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
         
-        super.update(time);
+        super.update(time, elapsedFrames);
 
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);

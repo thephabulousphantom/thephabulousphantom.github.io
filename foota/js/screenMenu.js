@@ -143,9 +143,9 @@ export default class screenMenu extends Screen {
             });
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
      
-        super.update(time);
+        super.update(time, elapsedFrames);
 
         World.camera.rotation.z = this.directionCurrent;
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);

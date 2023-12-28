@@ -64,7 +64,7 @@ export default class StarField extends Thing {
         return starField;
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
 
         const x = World.things.protagonist.object.position.x;
         const y = World.things.protagonist.object.position.y;

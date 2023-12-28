@@ -50,8 +50,8 @@ export default class Protagonist extends Thing {
         super.object = group;
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
 
-        super.update(time);
+        super.update(time, elapsedFrames);
     }
 }

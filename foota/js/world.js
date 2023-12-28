@@ -101,14 +101,14 @@ class World {
         this.updateRendererSize();
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
 
         this.htmlElement.style.backgroundColor = `rgba(128,0,255,${((Math.sin(time / 1000.0)) / 10 + 0.00)})`;
 
         for (var entityName in this.things) {
 
             const entity = this.things[entityName];
-            entity.update(time);
+            entity.update(time, elapsedFrames);
         }
 
         if (this.renderer) {
@@ -119,5 +119,10 @@ class World {
 };
 
 const world = new World();
+
+window.toggleStarfield = function toggleStarfield() {
+
+    world.things.starField.object.visible = !world.things.starField.object.visible;
+}
 
 export default world;

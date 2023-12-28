@@ -96,7 +96,7 @@ export default class Asteroids extends Thing {
         }
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
 
     }
 }

@@ -320,9 +320,9 @@ export default class screenPlay extends Screen {
         this.onAsteroidCountUpdated();
     }
 
-    update(time) {
+    update(time, elapsedFrames) {
      
-        super.update(time);
+        super.update(time, elapsedFrames);
 
         this.checkForCollissions(time);
 
@@ -437,8 +437,8 @@ export default class screenPlay extends Screen {
             this.velocity.multiplyScalar(0);
         }
 
-        World.things.protagonist.object.position.x += this.velocity.x;
-        World.things.protagonist.object.position.y += this.velocity.y;
+        World.things.protagonist.object.position.x += elapsedFrames * this.velocity.x;
+        World.things.protagonist.object.position.y += elapsedFrames * this.velocity.y;
 
         if (World.things.protagonist.killed) {
 
@@ -450,10 +450,10 @@ export default class screenPlay extends Screen {
                 time
             );
 
-            World.things.protagonist.object.position.z += 1;
-            World.things.protagonist.object.rotation.x += .1;
-            World.things.protagonist.object.rotation.y += .2;
-            this.directionKeyboard += 0.1;            
+            World.things.protagonist.object.position.z += elapsedFrames * 1;
+            World.things.protagonist.object.rotation.x += elapsedFrames * .1;
+            World.things.protagonist.object.rotation.y += elapsedFrames * .2;
+            this.directionKeyboard += elapsedFrames * 0.1;            
             this.updateDirection();
 
             World.things.protagonist.object.children[1].visible = 

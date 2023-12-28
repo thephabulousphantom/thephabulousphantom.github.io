@@ -9,6 +9,7 @@ export default class Game {
 
     static time = null;
     static models = {};
+    boundAnimateFunction = null;
 
     // construction
 
@@ -25,9 +26,11 @@ export default class Game {
 
         Log.info(`Initialising the game...`);
 
+        this.boundAnimateFunction = this.animate.bind(this);
+
         //Log.debugLabel = document.getElementById("labelDebug");
 
-        requestAnimationFrame( this.animate.bind(this));
+        requestAnimationFrame(this.boundAnimateFunction);
     }
 
 
@@ -40,7 +43,7 @@ export default class Game {
 
         if (!single) {
 
-            requestAnimationFrame( this.animate.bind(this));
+            requestAnimationFrame(this.boundAnimateFunction);
         }
 
         if (this.lastFrameTime == null) {
@@ -64,11 +67,13 @@ export default class Game {
 
         Tween.update(time);
 
-        World.update(time);
+        const elapsedFames = elapsed / (1000 / 60);
+
+        World.update(time, elapsedFames);
 
         if (Screen.current) {
 
-            Screen.current.update(time);
+            Screen.current.update(time, elapsedFames);
         }
     }
 }
