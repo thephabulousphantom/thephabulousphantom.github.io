@@ -244,7 +244,7 @@ export default class screenPlay extends Screen {
         this.score += ((scoreTimeMultiplier * 100) / asteroid.scale.x) | 0;
         this.onScoreUpdated();
 
-        World.things.explosions.explode(asteroid.position.x, asteroid.position.y, asteroid.position.z + asteroid.scale.x, asteroid.scale.x * 8);
+        World.things.explosions.explode(asteroid.position.x, asteroid.position.y, asteroid.position.z + asteroid.scale.x, asteroid.scale.x * 6);
 
         if (asteroid.scale.x > 1) {
 

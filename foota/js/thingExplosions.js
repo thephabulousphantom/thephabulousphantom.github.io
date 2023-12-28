@@ -22,9 +22,9 @@ export default class Explosions extends Thing {
 
             new THREE.TextureLoader().load("./img/explosion.png", (texture) => {
                 
-                const explosion = Game.spriteMixer.ActionSprite( texture, 13, 1 );
+                const explosion = Game.spriteMixer.ActionSprite( texture, 4, 4 );
 
-                explosion.action = Game.spriteMixer.Action(explosion, 0, 12, 1000 / 15);
+                explosion.action = Game.spriteMixer.Action(explosion, 0, 6, 1000 / 15);
                 explosion.action.hideWhenFinished = true;
                 explosion.visible = false;
 
