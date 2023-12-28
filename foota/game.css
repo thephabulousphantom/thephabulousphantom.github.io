@@ -4,8 +4,10 @@
     --colorWhite: #ffffffff;
     --colorBackground: #00000044;
     --colorPrimary: #00ff00ff;
-    --colorSecondary: #ed7f65ff;
-    --colorOverheat: #aa8800ff;
+    /*--colorSecondary: #ed7f65ff;*/
+    --colorSecondary: #c58c88ff;
+    /*--colorOverheat: #aa8800ff;*/
+    --colorOverheat: #c53127ff;
     
     font-family: Arial;
 }

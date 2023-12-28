@@ -25,12 +25,12 @@ export default class Protagonist extends Thing {
 
         group.add(shipMesh);
         
-        const exhaustGeometry = new THREE.ConeGeometry(0.5, 3, 3);
+        const exhaustGeometry = new THREE.ConeGeometry(0.2, 1, 3);
         const exhaustMaterial = new THREE.MeshLambertMaterial({ color: Colors.fire, transparent: true, opacity: 0.5 }); 
         const exhaustMesh = new THREE.Mesh(exhaustGeometry, exhaustMaterial); 
 
         exhaustMesh.position.x = 0;
-        exhaustMesh.position.y = -2.8;
+        exhaustMesh.position.y = -1.7;
         exhaustMesh.position.z = 0;
         exhaustMesh.rotation.z = Math.PI;
         exhaustMesh.visible = false;
