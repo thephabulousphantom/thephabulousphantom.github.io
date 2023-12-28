@@ -7,7 +7,7 @@ export default class Thing {
         this.object = object;
     }
 
-    update(time, elapsedFrames) {
+    update(time) {
         
     }
 }

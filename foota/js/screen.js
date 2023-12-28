@@ -281,13 +281,13 @@ export default class Screen {
         
         if (Keyboard.down["KeyD"]) {
 
-            this.directionKeyboard -= 0.1;
+            this.directionKeyboard -= 0.05;
             this.updateDirection();
         }
         
         if (Keyboard.down["KeyA"]) {
 
-            this.directionKeyboard += 0.1;
+            this.directionKeyboard += 0.05;
             this.updateDirection();
         }
 

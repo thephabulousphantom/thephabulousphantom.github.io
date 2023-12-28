@@ -105,14 +105,14 @@ class World {
         this.updateRendererSize();
     }
 
-    update(time, elapsedFrames) {
+    update(time) {
 
         this.htmlElement.style.backgroundColor = `rgba(128,0,255,${((Math.sin(time / 1000.0)) / 10 + 0.00)})`;
 
         for (var entityName in this.things) {
 
             const entity = this.things[entityName];
-            entity.update(time, elapsedFrames);
+            entity.update(time);
         }
 
         if (this.renderer) {

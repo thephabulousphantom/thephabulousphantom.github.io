@@ -4,7 +4,7 @@ import Game from "./game.js";
 export default class Explosions extends Thing {
 
     maxExplosions = 20;
-    minProximity = 1;
+    minProximity = 0;
     defaultSize = 1;
     
     constructor(number) {
@@ -25,6 +25,7 @@ export default class Explosions extends Thing {
                 const explosion = Game.spriteMixer.ActionSprite( texture, 13, 1 );
 
                 explosion.action = Game.spriteMixer.Action(explosion, 0, 12, 1000 / 15);
+                explosion.action.hideWhenFinished = true;
                 explosion.visible = false;
 
                 this.object.add(explosion);
@@ -55,6 +56,7 @@ export default class Explosions extends Thing {
             const explosion = this.object.children[i];
             if (!explosion.visible) {
 
+                console.log(`explosion ${explosion.uuid} starting.`)
                 explosion.position.x = x;
                 explosion.position.y = y;
                 explosion.position.z = z;
@@ -62,7 +64,6 @@ export default class Explosions extends Thing {
                 explosion.scale.y = 
                 explosion.scale.z = size;
 
-                explosion.action.hideWhenFinished = true;
                 explosion.visible = true;
                 explosion.action.playOnce();
                 break;
@@ -70,6 +71,6 @@ export default class Explosions extends Thing {
         }
     }
 
-    update(time, elapsedFrames) {
+    update(time) {
     }
 }

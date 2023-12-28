@@ -67,7 +67,7 @@ export default class Trail extends Thing {
         segment.visible = true;
     }
 
-    update(time, elapsedFrames) {
+    update(time) {
 
         for (var i = 0; i < this.segments.length; i++) {
 
@@ -83,7 +83,7 @@ export default class Trail extends Thing {
             segment.scale.x = 
             segment.scale.y = 
             segment.scale.z = scale;
-            segment.material.rotation += elapsedFrames * 0.1;
+            segment.material.rotation += 0.1;
 
             if (scale < 0.01) {
 

@@ -26,7 +26,6 @@ export default class Asteroids extends Thing {
 
         for (var i = 0; i < number; i++) {
 
-            //const cube = new THREE.Mesh(geometry, material); 
             const asteroidMesh = Game.models.asteroid.clone();
 
             asteroidMesh.position.x = 0;
@@ -96,7 +95,7 @@ export default class Asteroids extends Thing {
         }
     }
 
-    update(time, elapsedFrames) {
+    update(time) {
 
     }
 }

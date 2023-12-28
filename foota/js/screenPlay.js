@@ -202,6 +202,11 @@ export default class screenPlay extends Screen {
 
     bulletAndAsteroidCollision(bullet, asteroid) {
 
+        if (!bullet.visible || !asteroid.visible) {
+
+            return false;
+        }
+
         const distance = Math.sqrt(
             (bullet.position.x - asteroid.position.x) * (bullet.position.x - asteroid.position.x)
           + (bullet.position.y - asteroid.position.y) * (bullet.position.y - asteroid.position.y)
@@ -211,6 +216,11 @@ export default class screenPlay extends Screen {
     }
 
     protagonistAndAsteroidCollision(protagonist, asteroid) {
+
+        if (protagonist.killed || !asteroid.visible) {
+
+            return false;
+        }
 
         const distance = Math.sqrt(
               (protagonist.position.x - asteroid.position.x) * (protagonist.position.x - asteroid.position.x)
@@ -295,14 +305,13 @@ export default class screenPlay extends Screen {
                 for (var j = 0; j < World.things.bullets.objects.length; j++) {
 
                     const bullet = World.things.bullets.objects[j];
-                    if (bullet.visible) {
+                    if (this.bulletAndAsteroidCollision(bullet, asteroid)) {
 
-                        if (this.bulletAndAsteroidCollision(bullet, asteroid)) {
+                        console.log(`asteroid ${asteroid.uuid} and bullet ${bullet.uuid} collided.`);
 
-                            bullet.visible = false;
-                            this.explode(asteroid, time);
-                            break;
-                        }
+                        bullet.visible = false;
+                        this.explode(asteroid, time);
+                        break;
                     }
                 }
             }
@@ -323,9 +332,9 @@ export default class screenPlay extends Screen {
         this.onAsteroidCountUpdated();
     }
 
-    update(time, elapsedFrames) {
+    update(time) {
      
-        super.update(time, elapsedFrames);
+        super.update(time);
 
         this.checkForCollissions(time);
 
@@ -358,29 +367,46 @@ export default class screenPlay extends Screen {
             var fired = false;
             if (Keyboard.down["Space"] || this.touch.shooting) {
     
-                if (!this.gunCoolingDown && (!this.lastBulletShootTime || time - this.lastBulletShootTime > this.rapidFirePeriod)) {
+                if (!this.gunCoolingDown && (!this.lastBulletShootTime || (time - this.lastBulletShootTime) > this.rapidFirePeriod)) {
     
-                    World.things.protagonist.object.children[2].visible = true;
-                    this.lastBulletShootTime = time;
+                    if (!this.lastBulletShootTime) {
+
+                        console.log("--- first shot --- ");
+                    }
+                    else {
+
+                        console.log("--- rapid fire --- ");
+                    }
 
                     this.gunHeat = Math.min(this.gunHeat + this.gunHeatIncrement, this.gunHeatMax);
                     if (this.gunHeat == this.gunHeatMax) {
 
-                        this.gunCoolingDown = true;
+                        console.log("--- overheated --- ");
+                        this.gunCoolingDown = true;                        
+                    }
+
+                    if (!this.gunCoolingDown) {
+
+                        this.lastBulletShootTime = time;
+
+                        World.things.protagonist.object.children[2].visible = true;
+
+                        fired = true;
+    
+                        World.things.bullets.shoot(
+                            World.things.protagonist.object.position.x,
+                            World.things.protagonist.object.position.y,
+                            this.directionCurrent
+                        );
                     }
 
                     this.onGunOverheatUpdated();
-                    fired = true;
-    
-                    World.things.bullets.shoot(
-                        World.things.protagonist.object.position.x,
-                        World.things.protagonist.object.position.y,
-                        this.directionCurrent
-                    );
                 }
             }
-            else {
+            else if (this.lastBulletShootTime) {
     
+                console.log("--- stopped shooting --- ");
+
                 this.lastBulletShootTime = null;
             }
 
@@ -440,8 +466,8 @@ export default class screenPlay extends Screen {
             this.velocity.multiplyScalar(0);
         }
 
-        World.things.protagonist.object.position.x += elapsedFrames * this.velocity.x;
-        World.things.protagonist.object.position.y += elapsedFrames * this.velocity.y;
+        World.things.protagonist.object.position.x += this.velocity.x;
+        World.things.protagonist.object.position.y += this.velocity.y;
 
         if (World.things.protagonist.killed) {
 
@@ -453,10 +479,10 @@ export default class screenPlay extends Screen {
                 time
             );
 
-            World.things.protagonist.object.position.z += elapsedFrames * 1;
-            World.things.protagonist.object.rotation.x += elapsedFrames * .1;
-            World.things.protagonist.object.rotation.y += elapsedFrames * .2;
-            this.directionKeyboard += elapsedFrames * 0.1;            
+            World.things.protagonist.object.position.z += 1;
+            World.things.protagonist.object.rotation.x += .1;
+            World.things.protagonist.object.rotation.y += .2;
+            this.directionKeyboard += 0.1;            
             this.updateDirection();
 
             World.things.protagonist.object.children[1].visible = 

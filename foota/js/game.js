@@ -66,19 +66,20 @@ export default class Game {
             elapsed -= elapsed % (1000 / this.targetFps);
         }
 
-        this.lastFrameTime += elapsed;
+        // updates done one frame at a time!
+        while ((this.lastFrameTime + 1000 / 60) <= time) {
 
-        Tween.update(time);
+            this.lastFrameTime += 1000 / 60;
 
-        const elapsedFames = elapsed / (1000 / 60);
-
-        World.update(time, elapsedFames);
-
-	    Game.spriteMixer.update(elapsed / 1000);
-
-        if (Screen.current) {
-
-            Screen.current.update(time, elapsedFames);
+            Tween.update(this.lastFrameTime);
+            World.update(this.lastFrameTime, 1);
+    
+            Game.spriteMixer.update((1000 / 60) / 1000);
+    
+            if (Screen.current) {
+    
+                Screen.current.update(this.lastFrameTime, 1);
+            }
         }
     }
 }
