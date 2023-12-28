@@ -1,6 +1,6 @@
 {
-    "name": "Foot Asteroids",
-    "short_name": "Foota",
+    "name": "Pirouette",
+    "short_name": "Pirouette",
     "start_url": "./index.html",
     "description": "Asteroids remake, but played on mobile and on foot.",
     "display": "fullscreen",
@@ -30,8 +30,8 @@
     ],
     "shortcuts": [
         {
-            "name": "Foot Asteroids",
-            "short_name": "Foota",
+            "name": "Pirouette",
+            "short_name": "Pirouette",
             "description": "Asteroids remake, but played on mobile and on foot.",
             "url": "/index.html",
             "icons": [{ "src": "/img/icon/android-chrome-192x192.png", "sizes": "192x192" }]

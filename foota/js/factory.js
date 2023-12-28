@@ -5,6 +5,7 @@ import Protagonist from "./thingProtagonist.js";
 import Trail from "./thingTrail.js";
 import Bullets from "./thingBullets.js";
 import Asteroids from "./thingAsteroids.js";
+import Explosions from "./thingExplosions.js";
 
 class Factory {
 
@@ -92,6 +93,11 @@ class Factory {
     getAsteroids() {
 
         return new Asteroids(100);
+    }
+
+    getExplosions() {
+
+        return new Explosions(100);
     }
 }
 

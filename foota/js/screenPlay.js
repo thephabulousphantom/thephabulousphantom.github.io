@@ -234,6 +234,8 @@ export default class screenPlay extends Screen {
         this.score += ((scoreTimeMultiplier * 100) / asteroid.scale.x) | 0;
         this.onScoreUpdated();
 
+        World.things.explosions.explode(asteroid.position.x, asteroid.position.y, asteroid.position.z + asteroid.scale.x, asteroid.scale.x * 8);
+
         if (asteroid.scale.x > 1) {
 
             const fragmentScale = asteroid.scale.x / 2;
@@ -256,9 +258,10 @@ export default class screenPlay extends Screen {
             const asteroid = World.things.asteroids.objects[i];
             if (asteroid.visible) {
 
-                if (this.protagonistAndAsteroidCollision(protagonist, asteroid)) {
+                if (!World.things.protagonist.killed && this.protagonistAndAsteroidCollision(protagonist, asteroid)) {
 
                     World.things.protagonist.killed = true;
+                    World.things.explosions.explode(protagonist.position.x, protagonist.position.y, protagonist.position.z - 2, 16);
                 }
 
                 asteroid.position.x += asteroid.speed * Math.sin(-asteroid.direction);

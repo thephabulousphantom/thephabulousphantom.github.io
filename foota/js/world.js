@@ -72,6 +72,10 @@ class World {
         this.things.asteroids = Factory.getAsteroids();
         this.scene.add(this.things.asteroids.object);
 
+        Log.info("Adding explosions...");
+        this.things.explosions = Factory.getExplosions();
+        this.scene.add(this.things.explosions.object);
+
         this.camera.lookAt(this.things.protagonist.object.position);
         this.things.lightSpot.object.target = this.things.protagonist.object;
 

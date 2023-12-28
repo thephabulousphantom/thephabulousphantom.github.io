@@ -9,6 +9,8 @@ export default class Game {
 
     static time = null;
     static models = {};
+    static spriteMixer = null;
+
     boundAnimateFunction = null;
 
     // construction
@@ -27,6 +29,7 @@ export default class Game {
         Log.info(`Initialising the game...`);
 
         this.boundAnimateFunction = this.animate.bind(this);
+        Game.spriteMixer = new SpriteMixer();
 
         //Log.debugLabel = document.getElementById("labelDebug");
 
@@ -70,6 +73,8 @@ export default class Game {
         const elapsedFames = elapsed / (1000 / 60);
 
         World.update(time, elapsedFames);
+
+	    Game.spriteMixer.update(elapsed / 1000);
 
         if (Screen.current) {
 
