@@ -237,7 +237,7 @@ export default class screenPlay extends Screen {
 
         asteroid.visible = false;
 
-        World.sounds.explosion.play(asteroid.scale.x / 4);
+        //World.sounds.explosion.play(asteroid.scale.x / 4);
 
         const timeSinceLastKill = this.lastAsteroidKillTime
             ? time - this.lastAsteroidKillTime
@@ -277,7 +277,7 @@ export default class screenPlay extends Screen {
 
                     World.things.protagonist.killed = true;
                     World.things.explosions.explode(protagonist.position.x, protagonist.position.y, protagonist.position.z - 2, 16);
-                    World.sounds.explosion.play(1);
+                    //World.sounds.explosion.play(1);
                     if (this.engineSoundId) {
 
                         World.sounds.engine.stop(this.engineSoundId);

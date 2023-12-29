@@ -80,7 +80,7 @@ class World {
         Log.info("Adding explosions...");
         this.things.explosions = Factory.getExplosions();
         this.scene.add(this.things.explosions.object);
-        this.sounds.explosion = new Sound("explosionCrunch_004.ogg");
+        //this.sounds.explosion = new Sound("explosionCrunch_004.ogg");
 
 
         this.camera.lookAt(this.things.protagonist.object.position);
