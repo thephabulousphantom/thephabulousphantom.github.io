@@ -71,7 +71,7 @@ class World {
         this.things.bullets = Factory.getBullets();
         this.scene.add(this.things.bullets.object);
 
-        this.sounds.bullet = new Sound("laserSmall_003.ogg");
+        this.sounds.bullet = new Sound("laser.ogg");
 
         Log.info("Adding asteroids...");
         this.things.asteroids = Factory.getAsteroids();
@@ -80,7 +80,7 @@ class World {
         Log.info("Adding explosions...");
         this.things.explosions = Factory.getExplosions();
         this.scene.add(this.things.explosions.object);
-        //this.sounds.explosion = new Sound("explosionCrunch_004.ogg");
+        this.sounds.explosion = new Sound("explosion.ogg");
 
 
         this.camera.lookAt(this.things.protagonist.object.position);
