@@ -1,5 +1,6 @@
 import Log from "./log.js"
 import Factory from "./factory.js";
+import Sound from "./sound.js";
 
 class World {
 
@@ -10,6 +11,7 @@ class World {
     renderer = null;
 
     things = {};
+    sounds = {};
 
     constructor() {
 
@@ -58,6 +60,7 @@ class World {
         this.things.protagonist = Factory.getProtagonist();
         this.things.protagonist.object.visible = false;
         this.scene.add(this.things.protagonist.object);
+        this.sounds.engine = new Sound("spaceEngineLow_001.ogg", true);
 
         Log.info("Adding trail...");
         this.things.trail = Factory.getTrail();
@@ -68,6 +71,8 @@ class World {
         this.things.bullets = Factory.getBullets();
         this.scene.add(this.things.bullets.object);
 
+        this.sounds.bullet = new Sound("laserSmall_003.ogg");
+
         Log.info("Adding asteroids...");
         this.things.asteroids = Factory.getAsteroids();
         this.scene.add(this.things.asteroids.object);
@@ -75,6 +80,8 @@ class World {
         Log.info("Adding explosions...");
         this.things.explosions = Factory.getExplosions();
         this.scene.add(this.things.explosions.object);
+        this.sounds.explosion = new Sound("explosionCrunch_004.ogg");
+
 
         this.camera.lookAt(this.things.protagonist.object.position);
         this.things.lightSpot.object.target = this.things.protagonist.object;

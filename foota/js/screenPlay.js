@@ -2,6 +2,7 @@ import Screen from "./screen.js";
 import { screen as screenGameOver } from "./screenGameOver.js";
 import World from "./world.js";
 import Keyboard from "./keyboard.js";
+import Sound from "./sound.js";
 
 export default class screenPlay extends Screen {
 
@@ -27,6 +28,8 @@ export default class screenPlay extends Screen {
     asteroidSpawnDelay = null;
     nextAsteroidSpawnedTime = null;
     lastAsteroidKillTime = null;
+
+    engineSoundId = null;
 
     touch = {
 
@@ -233,7 +236,9 @@ export default class screenPlay extends Screen {
     explode(asteroid, time) {
 
         asteroid.visible = false;
-        
+
+        World.sounds.explosion.play(asteroid.scale.x / 4);
+
         const timeSinceLastKill = this.lastAsteroidKillTime
             ? time - this.lastAsteroidKillTime
             : 1000;
@@ -272,6 +277,12 @@ export default class screenPlay extends Screen {
 
                     World.things.protagonist.killed = true;
                     World.things.explosions.explode(protagonist.position.x, protagonist.position.y, protagonist.position.z - 2, 16);
+                    World.sounds.explosion.play(1);
+                    if (this.engineSoundId) {
+
+                        World.sounds.engine.stop(this.engineSoundId);
+                        this.engineSoundId = null;
+                    }
                 }
 
                 asteroid.position.x += asteroid.speed * Math.sin(-asteroid.direction);
@@ -398,6 +409,8 @@ export default class screenPlay extends Screen {
                             World.things.protagonist.object.position.y,
                             this.directionCurrent
                         );
+
+                        World.sounds.bullet.play(0.1);
                     }
 
                     this.onGunOverheatUpdated();
@@ -430,6 +443,11 @@ export default class screenPlay extends Screen {
     
             if (Keyboard.down["KeyW"] || this.touch.accellerating) {
     
+                if (!this.engineSoundId) {
+
+                    this.engineSoundId = World.sounds.engine.play(0.2);
+                }
+
                 const accelerationVector = new THREE.Vector3(0, this.accelleration, 0);
                 accelerationVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);
 
@@ -446,14 +464,19 @@ export default class screenPlay extends Screen {
                 World.things.protagonist.object.children[1].visible = true;
                 World.things.protagonist.object.children[1].rotation.y = 2 * Math.PI * Math.random();
             }
-            else if (this.velocity.length() > 0) {
-    
-                this.velocity.multiplyScalar(this.decelleration);
-                World.things.protagonist.object.children[1].visible = false;
-            }
             else {
 
+                if (this.velocity.length() > 0) {
+
+                    this.velocity.multiplyScalar(this.decelleration);
+                }
+
                 World.things.protagonist.object.children[1].visible = false;
+                if (this.engineSoundId) {
+
+                    World.sounds.engine.stop(this.engineSoundId);
+                    this.engineSoundId = null;
+                }
             }
         }
         
