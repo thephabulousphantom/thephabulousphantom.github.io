@@ -13,26 +13,10 @@ const PRECACHE_URLS = [
     "./browserconfig.xml",
     "./manifest.json",
 
-    // web entry point
+    // app
+    "./",
     "./index.html",
     "./game.css",
-
-    // 3d
-    "./3d/asteroid.glb",
-    "./3d/rocket.glb",
-
-    // fonts
-    "./font/MaterialIcons-Regular.ttf",
-
-    // grafix
-    "./img/exhaust.png",
-    "./img/explosion.png",
-    "./img/fire.png",
-    "./img/github-qr.png",
-    "./img/logo.webp",
-    "./img/orion-nebula-nasa.webp",
-
-    // js
     "./js/colors.js",
     "./js/factory.js",
     "./js/game.js",
@@ -59,6 +43,21 @@ const PRECACHE_URLS = [
     "./js/lib/three/GLTFLoader.js",
     "./js/lib/three/three.min.js",
     "./js/lib/tween/tween.esm.js",
+
+    // 3d
+    "./3d/asteroid.glb",
+    "./3d/rocket.glb",
+
+    // fonts
+    "./font/MaterialIcons-Regular.ttf",
+
+    // grafix
+    "./img/exhaust.png",
+    "./img/explosion.png",
+    "./img/fire.png",
+    "./img/github-qr.png",
+    "./img/logo.webp",
+    "./img/orion-nebula-nasa.webp"
 ];
 
 const LAZYLOAD_URLS = [
@@ -88,22 +87,11 @@ const LAZYLOAD_URLS = [
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(PRECACHE)
-      .then(cache => {
-        var urlsToCache = [];
-        for (var i = 0; i < PRECACHE_URLS.length; i++) {
-
-          urlsToCache[i] = PRECACHE_URLS[i] + "?" + gameVersion;
-        }
-        cache.addAll(urlsToCache);
+      .then(async cache => {
+        cache.addAll(PRECACHE_URLS);
       })
-      .then(() => { return caches.open(LAZYLOAD).then(cache => {
-        
-        var urlsToCache = [];
-        for (var i = 0; i < LAZYLOAD_URLS.length; i++) {
-
-          urlsToCache[i] = LAZYLOAD_URLS[i] + "?" + gameVersion;
-        }
-        cache.addAll(urlsToCache)
+      .then(() => { return caches.open(LAZYLOAD).then(cache => {       
+        cache.addAll(LAZYLOAD_URLS)
       }); })
       .then(self.skipWaiting())
   );
@@ -139,8 +127,6 @@ self.addEventListener("fetch", event => {
 
     return;
   }
-
-  event.request.url += "?" + gameVersion;
 
   // Skip cross-origin requests, like those for Google Analytics.
   if (event.request.url.startsWith(self.location.origin)) {
