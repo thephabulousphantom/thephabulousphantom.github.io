@@ -126,7 +126,10 @@ export default class screenMenu extends Screen {
         super.afterShow();
 
         this.controlConfig.style.display = "";
-        this.controlToggleFullScreen.style.display = "";
+        if (!Screen.runningAsPWA) {
+
+            this.controlToggleFullScreen.style.display = "";
+        }
         this.buttonPlay.style.display = "";
     }
 
