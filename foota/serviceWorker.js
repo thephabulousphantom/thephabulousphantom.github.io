@@ -1,9 +1,10 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'foota-precache-v1.7';
-const LAZYLOAD = 'foota-lazyload-v1.7';
-const RUNTIME = 'foota-runtime';
+const gameVersion = "v1.8";
+const PRECACHE = "astroPirouette-precache-" + gameVersion;
+const LAZYLOAD = 'astroPirouette-lazyload-' + gameVersion;
+const RUNTIME = 'astroPirouette-runtime';
 
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
@@ -87,8 +88,23 @@ const LAZYLOAD_URLS = [
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(PRECACHE)
-      .then(cache => cache.addAll(PRECACHE_URLS))
-      .then(() => { return caches.open(LAZYLOAD).then(cache => cache.addAll(LAZYLOAD_URLS)); })
+      .then(cache => {
+        var urlsToCache = [];
+        for (var i = 0; i < PRECACHE_URLS.length; i++) {
+
+          urlsToCache[i] = PRECACHE_URLS[i] + "?" + gameVersion;
+        }
+        cache.addAll(PRECACHEurlsToCache_URLS);
+      })
+      .then(() => { return caches.open(LAZYLOAD).then(cache => {
+        
+        var urlsToCache = [];
+        for (var i = 0; i < LAZYLOAD_URLS.length; i++) {
+
+          urlsToCache[i] = LAZYLOAD_URLS[i] + "?" + gameVersion;
+        }
+        cache.addAll(urlsToCache)
+      }); })
       .then(self.skipWaiting())
   );
 });
