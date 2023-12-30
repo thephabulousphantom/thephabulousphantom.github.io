@@ -277,7 +277,7 @@ export default class Screen {
         Log.info(`Shown screen ${this.id}`);
     }
 
-    update() {
+    update(time) {
         
         if (Keyboard.down["KeyD"]) {
 

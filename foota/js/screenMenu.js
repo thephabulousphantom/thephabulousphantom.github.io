@@ -2,6 +2,7 @@ import { Tween } from "./lib/tween/tween.esm.js";
 import Game from "./game.js";
 import Screen from "./screen.js";
 import { screen as screenPlay } from "./screenPlay.js";
+import { screen as screenConfig } from "./screenConfig.js";
 import World from "./world.js";
 
 export default class screenMenu extends Screen {
@@ -19,10 +20,13 @@ export default class screenMenu extends Screen {
 
         super.init();
 
-        this.buttonPlay = document.getElementById("buttonPlay");
+        this.buttonPlay = document.querySelector("#screenMenu #buttonPlay");
         this.buttonPlay.addEventListener("click", this.onPlayClicked.bind(this));
 
-        this.controlToggleFullScreen = document.getElementById("controlToggleFullScreen");
+        this.controlConfig = document.querySelector("#screenMenu #controlConfig");
+        this.controlConfig.addEventListener("click", this.onConfig.bind(this));
+
+        this.controlToggleFullScreen = document.querySelector("#screenMenu #controlToggleFullScreen");
         this.controlToggleFullScreen.addEventListener("click", this.onToggleFullScreen.bind(this));
 
         if (Screen.runningAsPWA) {
@@ -34,6 +38,12 @@ export default class screenMenu extends Screen {
     onPlayClicked(evt) {
 
         Screen.transition(screenPlay);
+        evt.preventDefault();
+    }
+
+    onConfig(evt) {
+
+        Screen.transition(screenConfig);
         evt.preventDefault();
     }
 
@@ -64,6 +74,8 @@ export default class screenMenu extends Screen {
 
         super.beforeShow();
 
+        this.controlConfig.style.display = "none";
+        this.controlToggleFullScreen.style.display = "none";
         this.buttonPlay.style.display = "none";
 
         World.things.protagonist.object.visible = true;
@@ -113,11 +125,15 @@ export default class screenMenu extends Screen {
 
         super.afterShow();
 
+        this.controlConfig.style.display = "";
+        this.controlToggleFullScreen.style.display = "";
         this.buttonPlay.style.display = "";
     }
 
     beforeHide() {
 
+        this.controlConfig.style.display = "none";
+        this.controlToggleFullScreen.style.display = "none";
         this.buttonPlay.style.display = "none";
 
         const animation = {

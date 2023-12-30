@@ -236,7 +236,21 @@
                 filter: drop-shadow(0 0 1vmin var(--colorSecondary));
             }
 
-            #controlToggleFullScreen {
+            #screenMenu #controlConfig {
+
+                z-index: 2000;
+
+                width: 10vh;
+                height: 10vh;
+                top: calc(5vh);
+                left: calc(5vh);
+
+                color: var(--colorPrimary);
+
+                font-size: 10vmin;
+            }
+
+            #screenMenu #controlToggleFullScreen {
 
                 z-index: 2000;
 
@@ -250,7 +264,7 @@
                 font-size: 10vmin;
             }
 
-            .glowOn #controlToggleFullScreen {
+            .glowOn #screenMenu #controlToggleFullScreen {
 
                 filter: drop-shadow(0 0 1vmin var(--colorPrimary));
             }
@@ -259,9 +273,11 @@
 
         <div id="screenMenu" class="screen">
 
+            <div id="controlConfig" class="control material-icons">menu</div>
+            <div id="controlToggleFullScreen" class="control material-icons">fullscreen</div>
+
             <img id="imageLogo" src="./img/logo.png">
 
-            <div id="controlToggleFullScreen" class="control material-icons">fullscreen</div>
             <button id="buttonPlay"><span class="material-icons">play_arrow</span></button>
 
             <img id="imageQrCode" src="./img/github-qr.png">
@@ -279,13 +295,13 @@
             #screenPlay .touchArea {
 
                 width: 100vw;
-                height: 40vh;
+                height: 50vh;
                 left: 0vw;
             }
 
             #screenPlay #areaAccellerate {
 
-                top: 10vh;
+                top: 0vh;
             }
 
             #screenPlay #areaShoot {
@@ -379,7 +395,7 @@
 
                 width: 100vw;
                 height: 10vmin;
-                top: calc(50vh - 15vmin);
+                top: calc(50vh - 5vmin);
                 left: 0vw;
 
                 font-size: 10vmin;
@@ -392,12 +408,14 @@
 
             #screenGameOver #buttonMenu {
 
-                width: 100vw;
-                height: 10vmin;
-                top: calc(50vh + 5vmin);
-                left: 0vw;
+                z-index: 2000;
 
-                font-size: 10vmin;
+                width: 10vh;
+                height: 10vh;
+                top: calc(5vh);
+                left: calc(5vh);
+
+                color: var(--colorPrimary);
             }
 
             .glowOn #screenGameOver #buttonMenu {
@@ -405,10 +423,14 @@
                 filter: drop-shadow(0 0 1vmin var(--colorPrimary));
             }
 
-            #screenGameOver #buttonReplay span,
-            #screenGameOver #buttonMenu span {
+            #screenGameOver #buttonReplay span {
 
                 font-size: 16vmin;
+            }
+
+            #screenGameOver #buttonMenu span {
+
+                font-size: 10vmin;
             }
 
             #screenGameOver #labelScore, 
@@ -419,7 +441,6 @@
             #screenGameOver #labelLevel label {
 
                 display: inline-block;
-                
             }
 
             #screenGameOver #labelLevel span,
@@ -440,7 +461,7 @@
                 padding-right: 5vmin;
                 width: 45vw;
                 height: 20vmin;
-                top: calc(50vh - 15vmin - 25vmin);
+                top: calc(50vh - 35vmin);
                 color: var(--colorSecondary);
             }
 
@@ -473,7 +494,7 @@
         <div id="screenGameOver" class="screen">
 
             <button id="buttonReplay"><span class="material-icons">refresh</span></button>
-            <button id="buttonMenu"><span class="material-icons">menu_open</span></button>
+            <button id="buttonMenu"><span class="material-icons">arrow_back</span></button>
 
             <div id="labelLevel" class="control"><label></label><span class="material-icons">line_weight</span></div>
             <div id="labelScore" class="control"><span class="material-icons">grade</span><label></label></div>
@@ -481,6 +502,90 @@
         </div>
 
         <script src="js/screenGameOver.js" type="module"></script>
+
+
+
+        <!-- config screen -->
+
+        <style type="text/css">
+
+            #screenConfig #buttonMenu {
+
+                z-index: 2000;
+
+                width: 10vh;
+                height: 10vh;
+                top: calc(5vh);
+                left: calc(5vh);
+
+                color: var(--colorPrimary);
+            }
+
+            #screenConfig #buttonMenu span {
+
+                font-size: 10vmin;
+            }
+
+            #screenConfig #buttonSound,
+            #screenConfig #buttonCloud,
+            #screenConfig #buttonGlow {
+
+                width: 10vw;
+                height: 10vmin;
+                top: calc(50vh - 5vmin);
+
+                font-size: 10vmin;
+            }
+
+            #screenConfig #buttonSound {
+
+                left: calc(50vw - 25vmin);
+            }
+
+            #screenConfig #buttonCloud {
+
+                left: calc(50vw - 5vmin);
+            }
+
+            #screenConfig #buttonGlow {
+
+                left: calc(50vw + 15vmin);
+            }
+
+            .glowOn #screenConfig #buttonMenu,
+            .glowOn #screenConfig #buttonSound,
+            .glowOn #screenConfig #buttonCloud,
+            .glowOn #screenConfig #buttonGlow {
+
+                filter: drop-shadow(0 0 1vmin var(--colorPrimary));
+            }
+
+            #screenConfig #buttonMenu span {
+
+                font-size: 10vmin;
+            }
+
+            #screenConfig #buttonSound span,
+            #screenConfig #buttonCloud span,
+            #screenConfig #buttonGlow span {
+
+                font-size: 16vmin;
+            }
+
+        </style>
+
+        <div id="screenConfig" class="screen">
+
+            <button id="buttonSound"><span class="material-icons">volume_up</span></button>
+            <button id="buttonCloud"><span class="material-icons">cloud</span></button>
+            <button id="buttonGlow"><span class="material-icons">blur_on</span></button>
+            <button id="buttonMenu"><span class="material-icons">arrow_back</span></button>
+
+        </div>
+
+        <script src="js/screenConfig.js" type="module"></script>
+
+
 
         <!-- the app -->
 

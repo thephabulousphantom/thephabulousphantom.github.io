@@ -3,7 +3,7 @@ import World from "./world.js";
 
 export default class StarField extends Thing {
 
-    defaultColor = 0x881b0e;//0xed7f65;
+    defaultColor = 0xa24a31;//0x881b0e;//0xed7f65;
     objects = [];
 
     size = {

@@ -1,5 +1,7 @@
 export default class Sound {
 
+    static mute = false;
+
     sound = null;
 
     constructor(file, loop) {
@@ -11,6 +13,11 @@ export default class Sound {
     }
 
     play(volume) {
+
+        if (Sound.mute) {
+
+            return -1;
+        }
 
         const soundId = this.sound.play();
 
