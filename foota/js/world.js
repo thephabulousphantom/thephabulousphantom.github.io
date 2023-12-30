@@ -60,7 +60,7 @@ class World {
         this.things.protagonist = Factory.getProtagonist();
         this.things.protagonist.object.visible = false;
         this.scene.add(this.things.protagonist.object);
-        this.sounds.engine = new Sound("spaceEngineLow_001.ogg", true);
+        this.sounds.engine = new Sound("engine.ogg", true);
 
         Log.info("Adding trail...");
         this.things.trail = Factory.getTrail();
