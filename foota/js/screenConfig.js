@@ -142,7 +142,7 @@ export default class screenConfig extends Screen {
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
         
-        document.documentElement.style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
+        document.getElementByTagName("body").style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
 
         //World.camera.position.y = 0;
     }
