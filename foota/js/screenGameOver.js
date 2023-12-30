@@ -1,5 +1,3 @@
-import { Tween } from "./lib/tween/tween.esm.js";
-import Game from "./game.js";
 import Screen from "./screen.js";
 import { screen as screenPlay } from "./screenPlay.js";
 import { screen as screenMenu } from "./screenMenu.js";

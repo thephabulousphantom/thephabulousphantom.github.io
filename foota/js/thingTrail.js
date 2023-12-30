@@ -1,5 +1,4 @@
 import Thing from "./thing.js";
-import Colors from "./colors.js";
 
 export default class Trail extends Thing {
 
@@ -59,7 +58,7 @@ export default class Trail extends Thing {
         segment.position.x = x;
         segment.position.y = y;
         segment.position.z = z;
-        segment.material.rotation = 2 * Math.PI * Math.random();//direction;
+        segment.material.rotation = 2 * Math.PI * Math.random();
         segment.scale.x = 
         segment.scale.y = 
         segment.scale.z = this.size;

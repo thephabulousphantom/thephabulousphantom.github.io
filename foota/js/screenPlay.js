@@ -2,7 +2,6 @@ import Screen from "./screen.js";
 import { screen as screenGameOver } from "./screenGameOver.js";
 import World from "./world.js";
 import Keyboard from "./keyboard.js";
-import Sound from "./sound.js";
 
 export default class screenPlay extends Screen {
 
@@ -318,8 +317,6 @@ export default class screenPlay extends Screen {
                     const bullet = World.things.bullets.objects[j];
                     if (this.bulletAndAsteroidCollision(bullet, asteroid)) {
 
-                        console.log(`asteroid ${asteroid.uuid} and bullet ${bullet.uuid} collided.`);
-
                         bullet.visible = false;
                         this.explode(asteroid, time);
                         break;
@@ -380,19 +377,9 @@ export default class screenPlay extends Screen {
     
                 if (!this.gunCoolingDown && (!this.lastBulletShootTime || (time - this.lastBulletShootTime) > this.rapidFirePeriod)) {
     
-                    if (!this.lastBulletShootTime) {
-
-                        console.log("--- first shot --- ");
-                    }
-                    else {
-
-                        console.log("--- rapid fire --- ");
-                    }
-
                     this.gunHeat = Math.min(this.gunHeat + this.gunHeatIncrement, this.gunHeatMax);
                     if (this.gunHeat == this.gunHeatMax) {
 
-                        console.log("--- overheated --- ");
                         this.gunCoolingDown = true;                        
                     }
 
@@ -416,16 +403,12 @@ export default class screenPlay extends Screen {
                     this.onGunOverheatUpdated();
                 }
             }
-            else if (this.lastBulletShootTime) {
+            else {
+
+                if (this.lastBulletShootTime) {
     
-                console.log("--- stopped shooting --- ");
-
-                this.lastBulletShootTime = null;
-            }
-
-            if (!fired) {
-
-                World.things.protagonist.object.children[2].visible = false;
+                    this.lastBulletShootTime = null;
+                }
 
                 if (this.gunHeat > 0) {
 
@@ -436,6 +419,11 @@ export default class screenPlay extends Screen {
                     }
                     this.onGunOverheatUpdated();
                 }
+            }
+
+            if (!fired) {
+
+                World.things.protagonist.object.children[2].visible = false;
             }
 
             const exhaustVector = new THREE.Vector3(0, 2, 0);

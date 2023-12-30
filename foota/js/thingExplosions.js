@@ -56,7 +56,6 @@ export default class Explosions extends Thing {
             const explosion = this.object.children[i];
             if (!explosion.visible) {
 
-                console.log(`explosion ${explosion.uuid} starting.`)
                 explosion.position.x = x;
                 explosion.position.y = y;
                 explosion.position.z = z;

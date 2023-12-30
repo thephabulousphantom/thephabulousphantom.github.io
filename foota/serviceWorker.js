@@ -1,17 +1,81 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'foota-precache-v1.0';
-const LAZYLOAD = 'foota-lazyload-v1.0';
+const PRECACHE = 'foota-precache-v1.1';
+const LAZYLOAD = 'foota-lazyload-v1.1';
 const RUNTIME = 'foota-runtime';
 
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
 
-    // app
-    "/browserconfig.xml",
-    "/manifest.json",
-    "/index.html"
+    // manifest
+    "./browserconfig.xml",
+    "./manifest.json",
+
+    // web entry point
+    "./index.html",
+    "./game.css",
+
+    // 3d
+    "./3d/asteroid.glb",
+    "./3d/rocket.glb",
+
+    // fonts
+    "./font/MaterialIcons-Regular.ttf",
+
+    // grafix
+    "./img/exhaust.png",
+    "./img/explosion.png",
+    "./img/fire.png",
+    "./img/github-qr.png",
+    "./img/logo.png",
+    "./img/orion-nebula-nasa.jpg",
+
+    // icons
+    "./img/icon/safari-pinned-tab.svg",
+    "./img/icon/favicon.ico",
+    "./img/icon/apple-touch-icon.png",
+    "./img/icon/favicon-16x16.png",
+    "./img/icon/favicon-32x32.png",
+    "./img/icon/android-chrome-maskable.png",
+    "./img/icon/mstile-150x150.png",
+    "./img/icon/android-chrome-192x192.png",
+    "./img/icon/android-chrome-384x384.png",
+    "./img/icon/android-chrome-512x512.png",
+
+    // js
+    "./js/colors.js",
+    "./js/factory.js",
+    "./js/game.js",
+    "./js/keyboard.js",
+    "./js/log.js",
+    "./js/screen.js",
+    "./js/screenConfig.js",
+    "./js/screenGameOver.js",
+    "./js/screenLoading.js",
+    "./js/screenMenu.js",
+    "./js/screenPlay.js",
+    "./js/sound.js",
+    "./js/thing.js",
+    "./js/thingAsteroids.js",
+    "./js/thingBullets.js",
+    "./js/thingExplosions.js",
+    "./js/thingProtagonist.js",
+    "./js/thingStarField.js",
+    "./js/thingTrail.js",
+    "./js/world.js",
+
+    // third party libs
+    "./js/lib/howler/howler.core.min.js",
+    "./js/lib/sprite-mixer/sprite-mixer.js",
+    "./js/lib/three/GLTFLoader.js",
+    "./js/lib/three/three.min.js",
+    "./js/lib/tween/tween.esm.js",
+
+    // sounds
+    "./sfx/engine.ogg",
+    "./sfx/explosion.ogg",
+    "./sfx/laser.ogg"
 ];
 
 const LAZYLOAD_URLS = [

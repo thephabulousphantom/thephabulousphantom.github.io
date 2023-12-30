@@ -165,7 +165,6 @@ export default class screenMenu extends Screen {
 
         World.camera.rotation.z = this.directionCurrent;
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
-        /*World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);*/
         World.camera.position.y = 0;
 
         document.documentElement.style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
