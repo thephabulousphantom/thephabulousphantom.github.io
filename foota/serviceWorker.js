@@ -1,7 +1,7 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const gameVersion = "v1.11";
+const gameVersion = "v1.12";
 const PRECACHE = "astroPirouette-precache-" + gameVersion;
 const LAZYLOAD = 'astroPirouette-lazyload-' + gameVersion;
 const RUNTIME = 'astroPirouette-runtime';
@@ -148,11 +148,18 @@ self.addEventListener("fetch", event => {
           return cachedResponse;
         }
 
-        return caches.open(RUNTIME).then(cache => {
-          return fetch(event.request).then(response => {
-            // Put a copy of the response in the runtime cache.
-            return cache.put(event.request, response.clone()).then(() => {
-              return response;
+        event.request.url += "?" + gameVersion;
+        caches.match(event.request).then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          return caches.open(RUNTIME).then(cache => {
+            return fetch(event.request).then(response => {
+              // Put a copy of the response in the runtime cache.
+              return cache.put(event.request, response.clone()).then(() => {
+                return response;
+              });
             });
           });
         });
