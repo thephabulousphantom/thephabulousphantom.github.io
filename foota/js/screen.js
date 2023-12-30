@@ -7,7 +7,7 @@ export default class Screen {
     static transitionScreenId = "transitionBlackScreen";
     static current = null;
     static transitioning = false;
-    static transitionMilliseconds = 600;
+    static transitionMilliseconds = 500;
     
     zVector = null;
 
