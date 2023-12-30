@@ -1,7 +1,7 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const gameVersion = "v1.12";
+const gameVersion = "v1.14";
 const PRECACHE = "astroPirouette-precache-" + gameVersion;
 const LAZYLOAD = 'astroPirouette-lazyload-' + gameVersion;
 const RUNTIME = 'astroPirouette-runtime';
@@ -32,18 +32,6 @@ const PRECACHE_URLS = [
     "./img/logo.webp",
     "./img/orion-nebula-nasa.webp",
 
-    // icons
-    "./img/icon/safari-pinned-tab.svg",
-    "./img/icon/favicon.ico",
-    "./img/icon/apple-touch-icon.png",
-    "./img/icon/favicon-16x16.png",
-    "./img/icon/favicon-32x32.png",
-    "./img/icon/android-chrome-maskable.png",
-    "./img/icon/mstile-150x150.png",
-    "./img/icon/android-chrome-192x192.png",
-    "./img/icon/android-chrome-384x384.png",
-    "./img/icon/android-chrome-512x512.png",
-
     // js
     "./js/colors.js",
     "./js/factory.js",
@@ -67,21 +55,33 @@ const PRECACHE_URLS = [
     "./js/world.js",
 
     // third party libs
-    "./js/lib/howler/howler.core.min.js",
     "./js/lib/sprite-mixer/sprite-mixer.js",
     "./js/lib/three/GLTFLoader.js",
     "./js/lib/three/three.min.js",
     "./js/lib/tween/tween.esm.js",
+];
+
+const LAZYLOAD_URLS = [
+
+    // icons
+    "./img/icon/safari-pinned-tab.svg",
+    "./img/icon/favicon.ico",
+    "./img/icon/apple-touch-icon.png",
+    "./img/icon/favicon-16x16.png",
+    "./img/icon/favicon-32x32.png",
+    "./img/icon/android-chrome-maskable.png",
+    "./img/icon/mstile-150x150.png",
+    "./img/icon/android-chrome-192x192.png",
+    "./img/icon/android-chrome-384x384.png",
+    "./img/icon/android-chrome-512x512.png",
+
+    // third party libs
+    "./js/lib/howler/howler.core.min.js",
 
     // sounds
     "./sfx/engine.ogg",
     "./sfx/explosion.ogg",
     "./sfx/laser.ogg"
-];
-
-const LAZYLOAD_URLS = [
-
-    // libraries
 ];
 
 // The install handler takes care of precaching the resources we always need.
@@ -148,18 +148,11 @@ self.addEventListener("fetch", event => {
           return cachedResponse;
         }
 
-        event.request.url += "?" + gameVersion;
-        caches.match(event.request).then(cachedResponse => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-
-          return caches.open(RUNTIME).then(cache => {
-            return fetch(event.request).then(response => {
-              // Put a copy of the response in the runtime cache.
-              return cache.put(event.request, response.clone()).then(() => {
-                return response;
-              });
+        return caches.open(RUNTIME).then(cache => {
+          return fetch(event.request).then(response => {
+            // Put a copy of the response in the runtime cache.
+            return cache.put(event.request, response.clone()).then(() => {
+              return response;
             });
           });
         });
