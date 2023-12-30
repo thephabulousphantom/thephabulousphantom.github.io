@@ -1,7 +1,7 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const gameVersion = "v1.17";
+const gameVersion = "v1.18";
 const PRECACHE = "astroPirouette-precache-" + gameVersion;
 const LAZYLOAD = 'astroPirouette-lazyload-' + gameVersion;
 const RUNTIME = 'astroPirouette-runtime';
@@ -83,15 +83,31 @@ const LAZYLOAD_URLS = [
     "./sfx/laser.ogg"
 ];
 
+async function addAllBypassCache(cacheName, urls) {
+  const cache = await caches.open(cacheName);
+  const requests = urls.map((url) => new Request(url, {
+    cache: 'reload',
+  }));
+  await cache.addAll(requests);
+}
+
 // The install handler takes care of precaching the resources we always need.
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(PRECACHE)
-      .then(async cache => {
-        cache.addAll(PRECACHE_URLS);
+      .then(cache => {
+        //cache.addAll(PRECACHE_URLS);
+        const requests = PRECACHE_URLS.map((url) => new Request(url, {
+          cache: 'reload',
+        }));
+        cache.addAll(requests);
       })
       .then(() => { return caches.open(LAZYLOAD).then(cache => {       
-        cache.addAll(LAZYLOAD_URLS)
+        //cache.addAll(LAZYLOAD_URLS);
+        const requests = LAZYLOAD_URLS.map((url) => new Request(url, {
+          cache: 'reload',
+        }));
+        cache.addAll(requests);
       }); })
       .then(self.skipWaiting())
   );
