@@ -75,7 +75,7 @@ export default class screenGameOver extends Screen {
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
 
         World.camera.rotation.z = this.directionCurrent;
-        document.documentElement.style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
+        document.getElementsByTagName("body")[0].style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
     }
 }
 
