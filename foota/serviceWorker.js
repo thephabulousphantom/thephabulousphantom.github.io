@@ -1,7 +1,7 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const gameVersion = "v1.15";
+const gameVersion = "v1.16";
 const PRECACHE = "astroPirouette-precache-" + gameVersion;
 const LAZYLOAD = 'astroPirouette-lazyload-' + gameVersion;
 const RUNTIME = 'astroPirouette-runtime';
@@ -140,13 +140,15 @@ self.addEventListener("fetch", event => {
     return;
   }
 
+  event.request.url += "?" + gameVersion;
+
   // Skip cross-origin requests, like those for Google Analytics.
   if (event.request.url.startsWith(self.location.origin)) {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         if (cachedResponse) {
 
-          console.log(`Service Worker returning ${event.request.url} from cache.`);
+          console.log(`Service Worker returning ${event.request.url} from a cache.`);
           return cachedResponse;
         }
 
