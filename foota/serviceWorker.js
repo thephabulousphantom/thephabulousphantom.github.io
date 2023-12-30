@@ -1,8 +1,8 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'foota-precache-v1.4';
-const LAZYLOAD = 'foota-lazyload-v1.4';
+const PRECACHE = 'foota-precache-v1.5';
+const LAZYLOAD = 'foota-lazyload-v1.5';
 const RUNTIME = 'foota-runtime';
 
 // A list of local resources we always want to be cached.
@@ -28,8 +28,8 @@ const PRECACHE_URLS = [
     "./img/explosion.png",
     "./img/fire.png",
     "./img/github-qr.png",
-    "./img/logo.png",
-    "./img/orion-nebula-nasa.jpg",
+    "./img/logo.webp",
+    "./img/orion-nebula-nasa.webp",
 
     // icons
     "./img/icon/safari-pinned-tab.svg",

@@ -46,12 +46,12 @@ export default class screenPlay extends Screen {
         super.init();
 
         this.areaAccellerate = document.getElementById("areaAccellerate");
-        this.areaAccellerate.addEventListener("touchstart", this.onAccelleratePress.bind(this));
-        this.areaAccellerate.addEventListener("touchend", this.onAccellerateRelease.bind(this));
+        this.areaAccellerate.addEventListener("touchstart", this.onAccelleratePress.bind(this), {passive: true});
+        this.areaAccellerate.addEventListener("touchend", this.onAccellerateRelease.bind(this), {passive: true});
 
         this.areaShoot = document.getElementById("areaShoot");
-        this.areaShoot.addEventListener("touchstart", this.onShootPress.bind(this));
-        this.areaShoot.addEventListener("touchend", this.onShootRelease.bind(this));
+        this.areaShoot.addEventListener("touchstart", this.onShootPress.bind(this), {passive: true});
+        this.areaShoot.addEventListener("touchend", this.onShootRelease.bind(this), {passive: true});
 
         this.labelLevel = document.querySelector("#screenPlay #labelLevel label");
         this.labelScore = document.querySelector("#screenPlay #labelScore label");
