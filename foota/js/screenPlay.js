@@ -198,7 +198,7 @@ export default class screenPlay extends Screen {
 
         this.barOverheat.style.width = `${(80 * (this.gunHeat / this.gunHeatMax) | 0)}vw`;
         this.barOverheat.style.backgroundColor = this.gunCoolingDown
-            ? "var(--colorOverheat)"
+            ? "var(--colorSecondary)"
             : "var(--colorPrimary)";
     }
 
@@ -248,7 +248,7 @@ export default class screenPlay extends Screen {
         this.score += ((scoreTimeMultiplier * 100) / asteroid.scale.x) | 0;
         this.onScoreUpdated();
 
-        World.things.explosions.explode(asteroid.position.x, asteroid.position.y, asteroid.position.z + asteroid.scale.x, asteroid.scale.x * 6);
+        World.things.explosions.explode(asteroid.position.x, asteroid.position.y, asteroid.position.z + asteroid.scale.x, asteroid.scale.x * 8);
 
         if (asteroid.scale.x > 1) {
 
@@ -275,7 +275,7 @@ export default class screenPlay extends Screen {
                 if (!World.things.protagonist.killed && this.protagonistAndAsteroidCollision(protagonist, asteroid)) {
 
                     World.things.protagonist.killed = true;
-                    World.things.explosions.explode(protagonist.position.x, protagonist.position.y, protagonist.position.z - 2, 16);
+                    World.things.explosions.explode(protagonist.position.x, protagonist.position.y, protagonist.position.z - 2, 24);
                     World.sounds.explosion.play(1);
                     if (this.engineSoundId) {
 

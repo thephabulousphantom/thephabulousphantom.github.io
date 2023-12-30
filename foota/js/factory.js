@@ -50,7 +50,7 @@ class Factory {
 
         return new Thing(new THREE.AmbientLight(
             Colors.lightAmbient,
-            0.2
+            0.5
         ));
     }
 
@@ -58,7 +58,7 @@ class Factory {
 
         const lightSpot = new Thing(new THREE.SpotLight(
             Colors.lightSpot,
-            5
+            1.1
         ));
 
         lightSpot.object.penumbra = 1;
