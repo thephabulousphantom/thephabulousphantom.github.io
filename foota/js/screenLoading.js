@@ -20,7 +20,7 @@ export default class screenLoading extends Screen {
 
         super.init();
 
-        this.labelLevel = document.getElementById("labelLoading");
+        this.labelLoading = document.getElementById("labelLoading");
 
         this.gltfLoader = new THREE.GLTFLoader();
 
@@ -90,7 +90,7 @@ export default class screenLoading extends Screen {
 
         super.beforeHide();
 
-        this.labelLevel.style.display = "none";
+        this.labelLoading.style.display = "none";
     }
 
     afterHide() {
@@ -102,13 +102,19 @@ export default class screenLoading extends Screen {
 
         super.beforeShow();
 
-        this.labelLevel.style.display = "";
+        this.labelLoading.style.display = "";
     }
 
     afterShow() {
 
         super.afterShow();
     }
+
+    update(time) {
+
+        document.getElementsByTagName("body")[0].style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
+    }
+
 }
 
 export const screen = new screenLoading();

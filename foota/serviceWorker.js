@@ -1,8 +1,8 @@
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'foota-precache-v1.5';
-const LAZYLOAD = 'foota-lazyload-v1.5';
+const PRECACHE = 'foota-precache-v1.6';
+const LAZYLOAD = 'foota-lazyload-v1.6';
 const RUNTIME = 'foota-runtime';
 
 // A list of local resources we always want to be cached.
