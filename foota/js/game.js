@@ -33,7 +33,8 @@ export default class Game {
 
         //Log.debugLabel = document.getElementById("labelDebug");
 
-        requestAnimationFrame(this.boundAnimateFunction);
+        //requestAnimationFrame(this.boundAnimateFunction);
+        World.renderer.setAnimationLoop(this.boundAnimateFunction);
     }
 
 
@@ -41,6 +42,11 @@ export default class Game {
     // process single frame
 
     animate(time, force, single) {
+
+        if (!time) {
+
+            time = Performance.now();
+        }
 
         Game.time = time;
 
