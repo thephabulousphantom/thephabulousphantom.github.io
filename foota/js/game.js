@@ -50,10 +50,10 @@ export default class Game {
 
         Game.time = time;
 
-        if (!single) {
+        /*if (!single) {
 
             requestAnimationFrame(this.boundAnimateFunction);
-        }
+        }*/
 
         if (this.lastFrameTime == null) {
 
