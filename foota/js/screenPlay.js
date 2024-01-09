@@ -373,7 +373,14 @@ export default class screenPlay extends Screen {
             }
     
             var fired = false;
-            if (Keyboard.down["Space"] || this.touch.shooting) {
+            if (Keyboard.down["Space"]
+                || this.touch.shooting
+                || Keyboard.down["Enter"]
+                || Keyboard.down["NumpadEnter"]
+                || Keyboard.down["Numpad5"]
+                || Keyboard.down["KeyS"]
+                || Keyboard.down["Digit5"]
+                || Keyboard.down["ArrowDown"]) {
     
                 if (!this.gunCoolingDown && (!this.lastBulletShootTime || (time - this.lastBulletShootTime) > this.rapidFirePeriod)) {
     
@@ -429,7 +436,11 @@ export default class screenPlay extends Screen {
             const exhaustVector = new THREE.Vector3(0, 2, 0);
             exhaustVector.applyAxisAngle(new THREE.Vector3(0, 0, 1), this.directionCurrent);
     
-            if (Keyboard.down["KeyW"] || this.touch.accellerating) {
+            if (Keyboard.down["KeyW"]
+                || this.touch.accellerating
+                || Keyboard.down["Numpad8"]
+                || Keyboard.down["Digit1"]
+                || Keyboard.down["ArrowUp"]) {
     
                 if (!this.engineSoundId) {
 

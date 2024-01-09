@@ -1,3 +1,4 @@
+import Keyboard from "./keyboard.js";
 import Screen from "./screen.js";
 import { screen as screenPlay } from "./screenPlay.js";
 import { screen as screenMenu } from "./screenMenu.js";
@@ -8,6 +9,7 @@ export default class screenGameOver extends Screen {
     buttonReplay = null;
     buttonMenu = null;
     rotationRadius = 4;
+    startTime = null;
 
     constructor() {
 
@@ -51,6 +53,8 @@ export default class screenGameOver extends Screen {
         World.things.trail.object.visible = false;
         this.labelLevel.innerText = screenPlay.level;
         this.labelScore.innerText = screenPlay.score;
+
+        this.startTime = null;
     }
 
     afterShow() {
@@ -71,11 +75,40 @@ export default class screenGameOver extends Screen {
         
         super.update(time);
 
+        if (!this.startTime) {
+
+            this.startTime = time;
+        }
+
         World.camera.position.x = this.rotationRadius * Math.sin(time / 2000);
         World.camera.position.y = this.rotationRadius * Math.cos(time / 2000);
 
         World.camera.rotation.z = this.directionCurrent;
         document.getElementsByTagName("body")[0].style.setProperty('--backgroundAngle', `${this.directionCurrent / 0.0174532925}deg`);
+
+        if ((time - this.startTime) < 2000) {
+
+            return;
+        }
+
+        if (Keyboard.down["KeyW"]
+            || Keyboard.down["Numpad8"]
+            || Keyboard.down["Digit1"]
+            || Keyboard.down["ArrowUp"]) {
+
+            Screen.transition(screenPlay);
+        }
+        else if (Keyboard.down["Space"]
+            || Keyboard.down["Enter"]
+            || Keyboard.down["NumpadEnter"]
+            || Keyboard.down["Numpad5"]
+            || Keyboard.down["KeyS"]
+            || Keyboard.down["Digit5"]
+            || Keyboard.down["ArrowDown"]) {
+
+            Screen.transition(screenMenu);
+        }
+
     }
 }
 

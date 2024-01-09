@@ -6,7 +6,7 @@ export default class Screen {
 
     static transitionScreenId = "transitionBlackScreen";
     static current = null;
-    static transitioning = false;
+    static transitioning = null;
     static transitionMilliseconds = 500;
     
     zVector = null;
@@ -134,7 +134,12 @@ export default class Screen {
     
     static transition(screen) {
 
-        Screen.transitioning = true;
+        if (Screen.transitioning && Screen.transitioning == screen) {
+
+            return false;
+        }
+
+        Screen.transitioning = screen;
 
         if (Screen.current) {
 
@@ -186,10 +191,12 @@ export default class Screen {
                         screen.afterShow();
                         Screen.current.transitionIn = false;
 
-                        Screen.transitioning = false;
+                        Screen.transitioning = null;
                     })
             )
             .start();
+
+        return true;
     }
 
     // device orientation support
@@ -279,13 +286,19 @@ export default class Screen {
 
     update(time) {
         
-        if (Keyboard.down["KeyD"]) {
+        if (Keyboard.down["KeyD"]
+            || Keyboard.down["ArrowRight"]
+            || Keyboard.down["Numpad6"]
+            || Keyboard.down["Digit4"]) {
 
             this.directionKeyboard -= 0.05;
             this.updateDirection();
         }
         
-        if (Keyboard.down["KeyA"]) {
+        if (Keyboard.down["KeyA"]
+            || Keyboard.down["ArrowLeft"]
+            || Keyboard.down["Numpad4"]
+            || Keyboard.down["Digit6"]) {
 
             this.directionKeyboard += 0.05;
             this.updateDirection();

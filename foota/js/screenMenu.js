@@ -1,4 +1,5 @@
 import { Tween } from "./lib/tween/tween.esm.js";
+import Keyboard from "./keyboard.js";
 import Game from "./game.js";
 import Screen from "./screen.js";
 import { screen as screenPlay } from "./screenPlay.js";
@@ -38,7 +39,6 @@ export default class screenMenu extends Screen {
     onPlayClicked(evt) {
 
         Screen.transition(screenPlay);
-        evt.preventDefault();
     }
 
     onConfig(evt) {
@@ -178,6 +178,17 @@ export default class screenMenu extends Screen {
         World.things.protagonist.object.position.x = World.camera.position.x + 3 * Math.sin(+ time / 1000);
         World.things.protagonist.object.position.y = 3 * Math.cos( time / 1000);
         World.things.protagonist.object.rotateOnWorldAxis(this.zVector, - time / 1000);
+
+        if (Keyboard.down["Enter"]
+            || Keyboard.down["NumpadEnter"]
+            || Keyboard.down["Space"]
+            || Keyboard.down["Numpad5"]
+            || Keyboard.down["Digit5"]
+            || Keyboard.down["KeyS"]
+            || Keyboard.down["ArrowDown"]) {
+
+            Screen.transition(screenPlay);
+        }
     }
 }
 
