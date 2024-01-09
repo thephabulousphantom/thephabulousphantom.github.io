@@ -45,7 +45,6 @@ class World {
 
         Log.info(`Initialising renderer...`);
         this.renderer = Factory.getRenderer();
-        this.renderer.xr.enabled = true;
         this.htmlElement.appendChild( this.renderer.domElement );
 
         this.updateRendererSize();

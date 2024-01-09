@@ -2,7 +2,6 @@ import Screen from "./screen.js";
 import World from "./world.js";
 import Sound from "./sound.js";
 import { screen as screenMenu } from "./screenMenu.js";
-import { VRButton } from './lib/three/VRButton.js';
 
 export default class screenConfig extends Screen {
 
@@ -28,9 +27,6 @@ export default class screenConfig extends Screen {
 
         this.buttonGlow = document.querySelector("#screenConfig #buttonGlow");
         this.buttonGlow.addEventListener("click", this.onGlowClicked.bind(this));
-
-        this.vrButtonPlaceholder = document.querySelector("#screenConfig #VrButtonPlaceholder");
-        this.vrButtonPlaceholder.appendChild(VRButton.createButton( World.renderer ));
     }
 
     onMenuClicked(evt) {

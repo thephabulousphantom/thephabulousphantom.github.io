@@ -33,8 +33,7 @@ export default class Game {
 
         //Log.debugLabel = document.getElementById("labelDebug");
 
-        //requestAnimationFrame(this.boundAnimateFunction);
-        World.renderer.setAnimationLoop(this.boundAnimateFunction);
+        requestAnimationFrame(this.boundAnimateFunction);
     }
 
 
@@ -50,10 +49,10 @@ export default class Game {
 
         Game.time = time;
 
-        /*if (!single) {
+        if (!single) {
 
             requestAnimationFrame(this.boundAnimateFunction);
-        }*/
+        }
 
         if (this.lastFrameTime == null) {
 
