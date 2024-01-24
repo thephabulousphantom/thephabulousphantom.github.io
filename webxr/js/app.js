@@ -60,6 +60,7 @@ class App {
         camera.position.x = 0;
         camera.position.y = 0;
         camera.position.z = 0;
+        camera.up.set( 0, 0, 1 );
 
         return camera;
     }
