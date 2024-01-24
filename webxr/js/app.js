@@ -49,7 +49,6 @@ class App {
 
         Log.info(`Initialising camera...`);
 
-        
         const camera =
             new THREE.PerspectiveCamera(
                 50,
@@ -57,10 +56,6 @@ class App {
                 0.1,
                 1000
             );
-
-        camera.position.x = 0;
-        camera.position.y = 0;
-        camera.position.z = 0;
 
         return camera;
     }
@@ -93,8 +88,8 @@ class App {
             });
 
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.BasicShadowMap;
-        renderer.outputColorSpace  = THREE.SRGBColorSpace;
+        //renderer.shadowMap.type = THREE.BasicShadowMap;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setClearColor(Colors.transparent, 0);
         renderer.physicallyCorrectLights = true;

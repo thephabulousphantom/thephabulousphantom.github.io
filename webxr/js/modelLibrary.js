@@ -33,7 +33,7 @@ class ModelLibrary {
 
         for (var i = 0; i < this.modelNames.length; i++) {
 
-            this.loadModel(this.modelNames[i]);
+            this.loadModel(this.modelNames[i], true);
         }
     }
 
@@ -69,39 +69,14 @@ class ModelLibrary {
                     child.castShadow = shadow;
                     child.receiveShadow = shadow;
                 }
+                else {
+
+                    child.castShadow = shadow;
+                }
             });
         }
         
         this.models[modelName] = gltf.scene;
-        /*if (gltf.scene.children.length == 1) {
-
-            this.models[modelName] = gltf.scene.children[0];
-        }
-        else {
-
-            const model = new THREE.Group();
-            for (var i = 0; i < gltf.scene.children.length; i++) {
-    
-                const object3d = gltf.scene.children[i];
-                switch (object3d.type.toLowerCase()) {
-
-                    case "mesh":
-                        model.add( object3d );
-                        break;
-
-                    case "point":
-                        const light = new THREE.PointLight( 0xff0000, 1, 100 );
-
-                        light.position.set(object3d.position.x, object3d.position.y, object3d.position.z);
-
-                        model.add( light );
-                        break;
-                }
-            }
-    
-            this.models[modelName] = model;
-        }*/
-
 
         this.modelsLoaded++;
 
