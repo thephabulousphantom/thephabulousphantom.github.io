@@ -36,7 +36,6 @@ export default class World extends Thing {
         App.camera.up.set(0, 0, 1);
 
         App.controls.target.set(0, 0, 1.8);
-        App.controls.screenSpacePanning = false;
         App.controls.update();
 
         Log.info(`Scene set up.`);
