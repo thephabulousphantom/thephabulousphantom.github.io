@@ -31,20 +31,23 @@ export default class World extends Thing {
         App.scene.add(this.models.room);
 
         App.camera.position.x = 0;
-        App.camera.position.y = 0;
+        App.camera.position.y = -0.5;
         App.camera.position.z = 1.8;
-        App.camera.lookAt(0, 10, 1.8);
-        //this.models.room.rotation.x = -Math.PI / 2;
+
+        App.controls.target.set(0, 0, 1.8);
+        App.controls.update();
+
         Log.info(`Scene set up.`);
     }
 
     update(time, elapsed) {
         
         super.update(time, elapsed);
+        
+        if (App.controls) {
 
-        //this.models.room.rotation.x = time / 100;
-        //this.models.room.rotation.y = time / 500;
-        //this.models.room.rotation.z = time / 1000;
+            App.controls.update();
+        }
 
         if (App.renderer) {
 

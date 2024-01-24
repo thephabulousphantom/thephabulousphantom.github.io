@@ -1,7 +1,9 @@
 import Log from "./log.js";
+import * as THREE from "three";
+import { VRButton } from "three/addons/webxr/VRButton.js";
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import Tween from "./lib/tween/tween.esm.js";
 import Colors from "./colors.js";
-import { VRButton } from "./lib/three/VRButton.js";
 import World from "./world.js";
 
 class App {
@@ -25,6 +27,7 @@ class App {
         this.scene = App.getScene();
         this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
+        this.controls = App.getControls(this.camera, this.renderer.domElement);
         this.vrButton = App.getVrButton(document.body);
         this.world = App.getWorld();
 
@@ -61,6 +64,14 @@ class App {
         return camera;
     }
 
+    static getControls(camera, container) {
+
+        var controls = new OrbitControls(camera, container);
+        controls.update();
+
+        return controls;
+    }
+
     static getWorld() {
 
         Log.info(`Initialising world...`);
@@ -82,7 +93,7 @@ class App {
 
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.BasicShadowMap;
-        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.outputColorSpace  = THREE.SRGBColorSpace;
         renderer.setPixelRatio( window.devicePixelRatio );
         //renderer.setClearColor(Colors.transparent, 0);
         renderer.physicallyCorrectLights = true;

@@ -1,4 +1,5 @@
 import Log from "./log.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 class ModelLibrary {
 
@@ -26,7 +27,7 @@ class ModelLibrary {
 
         Log.info(`Initialising model library...`);
 
-        this.gltfLoader = new THREE.GLTFLoader();
+        this.gltfLoader = new GLTFLoader();
         this.modelsLoaded = 0;
         this.models = {};
 
