@@ -25,7 +25,11 @@ class App {
             || (window.navigator && window.navigator.standalone === true);
 
         this.scene = App.getScene();
-        this.camera = App.getCamera();
+        this.cameraRig = new THREE.Group();
+        this.cameraRig.up.set(0, 0, 1);
+        this.scene.add(this.cameraRig);
+        this.camera = App.getCamera(this.cameraRig);
+
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
         this.vrButton = App.getVrButton(document.body, this.renderer);
@@ -45,11 +49,12 @@ class App {
         return scene;
     }
 
-    static getCamera() {
+    static getCamera(rig) {
 
         Log.info(`Initialising camera...`);
 
-        var camera =
+        
+        const camera =
             new THREE.PerspectiveCamera(
                 50,
                 window.innerWidth / window.innerHeight,
@@ -61,6 +66,11 @@ class App {
         camera.position.y = 0;
         camera.position.z = 0;
         camera.up.set(0, 0, 1);
+
+        if (rig) {
+
+            rig.add(camera);
+        }
 
         return camera;
     }
