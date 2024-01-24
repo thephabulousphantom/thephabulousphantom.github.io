@@ -30,11 +30,8 @@ export default class World extends Thing {
         this.models.room.position.z = 0;
         App.scene.add(this.models.room);
 
-        App.cameraRig.position.x = 0;
-        App.cameraRig.position.y = -0.5;
-        App.cameraRig.position.z = 1.8;
-
-        App.controls.target.set(0, 0, 1.8);
+        App.camera.position.set(0, 1.8, 0.5);
+        App.controls.target.set(0, 1.8, 0);
         App.controls.update();
 
         Log.info(`Scene set up.`);

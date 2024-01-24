@@ -25,11 +25,7 @@ class App {
             || (window.navigator && window.navigator.standalone === true);
 
         this.scene = App.getScene();
-        this.cameraRig = new THREE.Group();
-        this.cameraRig.up.set(0, 0, 1);
-        this.scene.add(this.cameraRig);
-        this.camera = App.getCamera(this.cameraRig);
-
+        this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
         this.vrButton = App.getVrButton(document.body, this.renderer);
@@ -49,7 +45,7 @@ class App {
         return scene;
     }
 
-    static getCamera(rig) {
+    static getCamera() {
 
         Log.info(`Initialising camera...`);
 
@@ -65,12 +61,6 @@ class App {
         camera.position.x = 0;
         camera.position.y = 0;
         camera.position.z = 0;
-        camera.up.set(0, 0, 1);
-
-        if (rig) {
-
-            rig.add(camera);
-        }
 
         return camera;
     }
