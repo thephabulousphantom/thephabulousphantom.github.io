@@ -1,7 +1,7 @@
 import Log from "./log.js";
 import * as THREE from "three";
 import { VRButton } from "three/addons/webxr/VRButton.js";
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import Tween from "./lib/tween/tween.esm.js";
 import Colors from "./colors.js";
 import World from "./world.js";
@@ -28,7 +28,7 @@ class App {
         this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
-        this.vrButton = App.getVrButton(document.body);
+        this.vrButton = App.getVrButton(document.body, this.renderer);
         this.world = App.getWorld();
 
         this.updateViewDimensions();
@@ -88,16 +88,15 @@ class App {
             new THREE.WebGLRenderer({
                 precision: "lowp",
                 powerPreference: "high-performance",
-                alpha: true
+                antialias: true
             });
 
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.BasicShadowMap;
         renderer.outputColorSpace  = THREE.SRGBColorSpace;
         renderer.setPixelRatio( window.devicePixelRatio );
-        //renderer.setClearColor(Colors.transparent, 0);
+        renderer.setClearColor(Colors.transparent, 0);
         renderer.physicallyCorrectLights = true;
-        renderer.setClearColor(Colors.primary);
         renderer.xr.enabled = true;
 
         container.appendChild( renderer.domElement );
@@ -106,10 +105,10 @@ class App {
         return renderer;
     }
 
-    static getVrButton(container) {
+    static getVrButton(container, renderer) {
 
-        var vrButton = VRButton.createButton( this.renderer );
-        container.appendChild( vrButton );
+        const vrButton = VRButton.createButton(renderer);
+        container.appendChild(vrButton);
 
         return vrButton;
     }
