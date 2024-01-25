@@ -28,6 +28,7 @@ class App {
         this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
+        this.controllers = App.getControllers(this.scene, this.renderer);
         this.vrButton = App.getVrButton(document.body, this.renderer);
         this.world = App.getWorld();
 
@@ -66,6 +67,31 @@ class App {
         controls.update();
 
         return controls;
+    }
+
+    static getControllers(scene, renderer) {
+
+        const controllers = [];
+        controllers.push(renderer.xr.getController(0));
+        controllers.push(renderer.xr.getController(1));
+
+        scene.add(controllers[0]);
+        scene.add(controllers[1]);
+
+        //
+
+        const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
+
+        const line = new THREE.Line( geometry );
+        line.name = 'line';
+        line.scale.z = 5;
+
+        controllers[0].add( line.clone() );
+        controllers[1].add( line.clone() );
+
+        //
+
+        return controllers;
     }
 
     static getWorld() {
