@@ -31,17 +31,20 @@ export default class World extends Thing {
         this.ambientLight = new THREE.AmbientLight(Colors.lightAmbient);
         App.scene.add(this.ambientLight);
 
-        this.models.room = ModelLibrary.get("soba");
+        this.models.room = ModelLibrary.get("soba", THREE.MeshLambertMaterial, false);
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
-        this.models.pah2Logo = ModelLibrary.get("pah2logo");
+        this.models.pah2Logo = ModelLibrary.get("pah2logo", THREE.MeshLambertMaterial, false);
         this.models.pah2Logo.position.set(4.5, 1, -4.5);
         App.scene.add(this.models.pah2Logo);
 
-        this.models.funky = ModelLibrary.get("funky");
+        this.models.funky = ModelLibrary.get("funky", undefined, false);
         this.models.funky.position.set(0, 0, 2);
         App.scene.add(this.models.funky);
+
+        App.controllers.controller1.controller.addEventListener("selectstart", this.onControllerSelectStart.bind(App.controllers.controller1));
+        App.controllers.controller2.controller.addEventListener("selectend", this.onControllerSelectEnd.bind(App.controllers.controller2));
 
         App.camera.position.set(0, 1.8, 0.5);
         App.controls.target.set(0, 1.8, 0);
@@ -50,6 +53,16 @@ export default class World extends Thing {
         Log.info(`Scene set up.`);
 
         this.sceneInitialised = true;
+    }
+
+    onControllerSelectStart() {
+
+        this.controller.children[0].visible = true;
+    }
+
+    onControllerSelectEnd() {
+
+        this.controller.children[0].visible = false;
     }
 
     update(time, elapsed) {

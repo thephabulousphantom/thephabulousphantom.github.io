@@ -28,14 +28,23 @@ class App {
         this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
-        this.controllers = App.getControllers(this.scene, this.renderer);
+        this.controllers = this.getControllers(this.scene, this.renderer);
         this.vrButton = App.getVrButton(document.body, this.renderer);
         this.world = App.getWorld();
 
         this.updateViewDimensions();
+
         window.addEventListener("resize", this.updateViewDimensions.bind(this));
 
+        this.renderer.xr.addEventListener( "sessionstart", this.onXrSessionStart.bind(this));
+        this.renderer.xr.enabled = true;
+
         Log.info(`App initialised.`);
+    }
+
+    onXrSessionStart() {
+
+        this.baseXrReferenceSpace = this.renderer.xr.getReferenceSpace();
     }
 
     static getScene() {
@@ -69,40 +78,68 @@ class App {
         return controls;
     }
 
-    static getControllers(scene, renderer) {
+    onControllerConnected() {
+
+        this.controller.visible = true;
+        this.controllerGrip.visible = true;
+    }
+
+    onControllerDisconnected() {
+
+        this.controller.visible = false;
+        this.controllerGrip.visible = false;
+    }
+
+    getController(x, controllerModel, rayModel) {
+
+        const controller = {};
+        controller.controller = this.renderer.xr.getController(x);
+        controller.controller.add(rayModel.clone());
+        this.scene.add(controller.controller);
+
+        controller.controllerGrip = this.renderer.xr.getControllerGrip(x);
+        controller.controllerGrip.add(controllerModel.clone());
+        this.scene.add(controller.controllerGrip);
+
+        controller.controller.addEventListener("connected", this.onControllerConnected.bind(controller));
+        controller.controller.addEventListener("disconnected", this.onControllerDisconnected.bind(controller));
+
+        return controller;
+    }
+
+    getControllers() {
 
         const controllers = {};
 
-        controllers.controller1 = renderer.xr.getController( 0 );
-        scene.add( controllers.controller1 );
+        // controller model
 
-        controllers.controller2 = renderer.xr.getController( 1 );
-        scene.add( controllers.controller2 );
+        const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
+        const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
+        const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
 
-        const handGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
-        const handMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
-        const cube = new THREE.Mesh( handGeometry, handMaterial ); 
 
-        // Hand 1
-        controllers.controllerGrip1 = renderer.xr.getControllerGrip( 0 );
-        controllers.controllerGrip1.add( cube.clone() );
-        scene.add( controllers.controllerGrip1 );
-
-        // Hand 2
-        controllers.controllerGrip2 = renderer.xr.getControllerGrip( 1 );
-        controllers.controllerGrip2.add( cube.clone() );
-        scene.add( controllers.controllerGrip2 );
-
-        //
+        // ray model
 
         const rayGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -5 ) ] );
         const rayMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
-        const ray = new THREE.Line( rayGeometry, rayMaterial );
-        ray.name = 'line';
-        ray.scale.z = 5;
+        const rayModel = new THREE.Line( rayGeometry, rayMaterial );
+        rayModel.scale.z = 10;
 
-        controllers.controller1.add( ray.clone() );
-        controllers.controller2.add( ray.clone() );
+
+        // controllers
+
+        controllers.controller1 = this.getController(0, controllerModel, rayModel);
+        controllers.controller2 = this.getController(1, controllerModel, rayModel);
+
+
+        // teleport marker
+
+        const markerGeometry = new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 );
+        const markerMaterial = new THREE.MeshBasicMaterial( { color: 0xbcbcbc } );
+        controllers.markerModel = new THREE.Mesh(markerGeometry, markerMaterial);       
+        controllers.markerModel.position.set(0, 1, 0);
+        controllers.markerModel.visible = false;
+        this.scene.add(controllers.markerModel);
 
         return controllers;
     }
@@ -132,9 +169,9 @@ class App {
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setClearColor(Colors.transparent, 0);
         renderer.physicallyCorrectLights = true;
-        renderer.xr.enabled = true;
 
         container.appendChild( renderer.domElement );
+
         renderer.setAnimationLoop(update);
         
         return renderer;

@@ -1,4 +1,4 @@
-import { MeshLambertMaterial } from "three";
+import * as THREE from "three";
 import Log from "./log.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
@@ -50,7 +50,7 @@ class ModelLibrary {
         }
     }
 
-    async loadModel(modelName, shadow) {
+    async loadModel(modelName) {
 
         Log.info(`Loading model: ${modelName}`);
 
@@ -63,35 +63,7 @@ class ModelLibrary {
 
         Log.info(`GLTF loaded: ${modelName}`);
 
-        gltf.scene.traverse( function(child) { 
-
-            if (child.isMesh) {
         
-                if (shadow !== undefined) {
-
-                    child.castShadow = shadow;
-                    child.receiveShadow = shadow;
-                }
-
-                var prevMaterial = child.material;
-
-                try {
-
-                    child.material = new MeshLambertMaterial();
-                    MeshLambertMaterial.prototype.copy.call( child.material, prevMaterial );
-                }
-                catch {
-
-                }
-            }
-            else {
-
-                if (shadow !== undefined) {
-
-                    child.castShadow = shadow;
-                }
-            }
-        });
         
         this.models[modelName] = gltf.scene;
 
@@ -128,11 +100,46 @@ class ModelLibrary {
         }
     }
 
-    get(modelName) {
+    get(modelName, forceMaterial, shadow) {
 
         Log.info(`Instantiating model ${modelName}.`);
 
-        return this.models[modelName].clone();
+        const model = this.models[modelName].clone();
+
+        model.traverse( function(child) { 
+
+            if (child.isMesh) {
+        
+                if (shadow !== undefined) {
+
+                    child.castShadow = shadow;
+                    child.receiveShadow = shadow;
+                }
+
+                if (forceMaterial !== undefined) {
+
+                    try {
+
+                        var prevMaterial = child.material;
+                        child.material = new forceMaterial();
+                        forceMaterial.prototype.copy.call( child.material, prevMaterial );
+                    }
+                    catch (ex) {
+    
+                        Log.warning(`Unable to force material: ${ex}`);
+                    }
+                }
+            }
+            else {
+
+                if (shadow !== undefined) {
+
+                    child.castShadow = shadow;
+                }
+            }
+        });
+
+        return model;
     }
 }
 
