@@ -2,10 +2,14 @@ import Log from "./log.js";
 import App from "./app.js";
 import Thing from "./thing.js";
 import ModelLibrary from "./modelLibrary.js";
+import Colors from "./colors.js";
+import * as THREE from "three";
 
 export default class World extends Thing {
 
     models = {};
+    ambientLight = null;
+    sceneInitialised = false;
 
     constructor() {
 
@@ -24,22 +28,40 @@ export default class World extends Thing {
 
         Log.info(`Setting up scene...`);
 
+        this.ambientLight = new THREE.AmbientLight(Colors.lightAmbient);
+        App.scene.add(this.ambientLight);
+
         this.models.room = ModelLibrary.get("soba");
-        this.models.room.position.x = 0;
-        this.models.room.position.y = 0;
-        this.models.room.position.z = 0;
+        this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
+
+        this.models.pah2Logo = ModelLibrary.get("pah2logo");
+        this.models.pah2Logo.position.set(4.5, 1, -4.5);
+        App.scene.add(this.models.pah2Logo);
+
+        this.models.funky = ModelLibrary.get("funky");
+        this.models.funky.position.set(0, 0, 2);
+        App.scene.add(this.models.funky);
 
         App.camera.position.set(0, 1.8, 0.5);
         App.controls.target.set(0, 1.8, 0);
         App.controls.update();
 
         Log.info(`Scene set up.`);
+
+        this.sceneInitialised = true;
     }
 
     update(time, elapsed) {
         
         super.update(time, elapsed);
+
+        if (!this.sceneInitialised) {
+
+            return;
+        }
+
+        this.models.pah2Logo.rotation.y = time / 1000;
         
         if (App.controls) {
 

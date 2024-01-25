@@ -1,10 +1,13 @@
+import { MeshLambertMaterial } from "three";
 import Log from "./log.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 class ModelLibrary {
 
     modelNames = [
-        "soba"
+        "soba",
+        "pah2logo",
+        "funky"
     ];
 
     modelsCount = this.modelNames.length;
@@ -60,21 +63,35 @@ class ModelLibrary {
 
         Log.info(`GLTF loaded: ${modelName}`);
 
-        if (shadow !== undefined) {
+        gltf.scene.traverse( function(child) { 
 
-            gltf.scene.traverse( function(child) { 
+            if (child.isMesh) {
+        
+                if (shadow !== undefined) {
 
-                if (child.isMesh) {
-            
                     child.castShadow = shadow;
                     child.receiveShadow = shadow;
                 }
-                else {
+
+                var prevMaterial = child.material;
+
+                try {
+
+                    child.material = new MeshLambertMaterial();
+                    MeshLambertMaterial.prototype.copy.call( child.material, prevMaterial );
+                }
+                catch {
+
+                }
+            }
+            else {
+
+                if (shadow !== undefined) {
 
                     child.castShadow = shadow;
                 }
-            });
-        }
+            }
+        });
         
         this.models[modelName] = gltf.scene;
 

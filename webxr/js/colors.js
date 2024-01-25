@@ -6,7 +6,7 @@ export default {
     primary: 0x00ff00,
     secondary: 0xb67db0,
 
-    lightAmbient: 0xff5240,
+    lightAmbient: 0xffffff,
     lightSpot: 0xffffff,
     
     transparent: 0x000000
