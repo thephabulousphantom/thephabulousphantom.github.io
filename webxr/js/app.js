@@ -71,7 +71,7 @@ class App {
 
     static getControllers(scene, renderer) {
 
-        const controllers = [];
+        /*const controllers = [];
         controllers.push(renderer.xr.getController(0));
         controllers.push(renderer.xr.getController(1));
 
@@ -88,6 +88,32 @@ class App {
 
         controllers[0].add( line.clone() );
         controllers[1].add( line.clone() );
+
+        //
+
+        return controllers;*/
+
+        const controllers = {};
+
+        controllers.controller1 = renderer.xr.getController( 0 );
+        scene.add( controllers.controller1 );
+
+        controllers.controller2 = renderer.xr.getController( 1 );
+        scene.add( controllers.controller2 );
+
+        const geometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
+        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
+        const cube = new THREE.Mesh( geometry, material ); 
+
+        // Hand 1
+        controllers.controllerGrip1 = renderer.xr.getControllerGrip( 0 );
+        controllers.controllerGrip1.add( cube.clone() );
+        scene.add( controllers.controllerGrip1 );
+
+        // Hand 2
+        controllers.controllerGrip2 = renderer.xr.getControllerGrip( 1 );
+        controllers.controllerGrip2.add( cube.clone() );
+        scene.add( controllers.controllerGrip2 );
 
         //
 
