@@ -95,16 +95,16 @@ export default class World extends Thing {
         this.controller.children[0].visible = false;
         this.selecting = false;
 
-        if (this.teleportTarget) {
+        if (App.world.teleportTarget) {
 
-            const offsetPosition = { x: - this.teleportTarget.x, y: - this.teleportTarget.y, z: - this.teleportTarget.z, w: 1 };
+            const offsetPosition = { x: - App.world.teleportTarget.x, y: - App.world.teleportTarget.y, z: - App.world.teleportTarget.z, w: 1 };
             const offsetRotation = new THREE.Quaternion();
             const transform = new XRRigidTransform( offsetPosition, offsetRotation );
             const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
     
             App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
 
-            this.teleportTarget = null;
+            App.world.teleportTarget = null;
         }
     }
 
