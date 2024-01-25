@@ -101,9 +101,9 @@ class App {
         controllers.controller2 = renderer.xr.getController( 1 );
         scene.add( controllers.controller2 );
 
-        const geometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
-        const cube = new THREE.Mesh( geometry, material ); 
+        const handGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
+        const handMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
+        const cube = new THREE.Mesh( handGeometry, handMaterial ); 
 
         // Hand 1
         controllers.controllerGrip1 = renderer.xr.getControllerGrip( 0 );
@@ -116,6 +116,15 @@ class App {
         scene.add( controllers.controllerGrip2 );
 
         //
+
+        const rayGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -5 ) ] );
+        const rayMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        const ray = new THREE.Line( rayGeometry, rayMaterial );
+        ray.name = 'line';
+        ray.scale.z = 5;
+
+        controllers.controller1.add( ray.clone() );
+        controllers.controller2.add( ray.clone() );
 
         return controllers;
     }
