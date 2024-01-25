@@ -26,6 +26,21 @@ export default class World extends Thing {
 
     findChild(model, name) {
 
+        for (var i = 0; i < model.children.length; i++) {
+
+            if (model.children[i].name == name) {
+
+                return model.children[i];
+            }
+            
+            const matchingChild = this.findChild(model.children[i], name);
+            if (matchingChild) {
+
+                return matchingChild;
+            }
+        }
+
+        return null;
     }
 
     setupScene() {
@@ -56,6 +71,7 @@ export default class World extends Thing {
         App.controllers.controller2.controller.addEventListener("selectend", this.onControllerSelectEnd.bind(App.controllers.controller2));
 
         this.raycaster = new THREE.Raycaster();
+        this.tempMatrix = new THREE.Matrix4();
 
         App.camera.position.set(0, 1.8, 0.5);
         App.controls.target.set(0, 1.8, 0);
@@ -80,10 +96,10 @@ export default class World extends Thing {
 
     updateTeleportMarker(controller) {
 
-        tempMatrix.identity().extractRotation( controller.matrixWorld );
+        this.tempMatrix.identity().extractRotation( controller.matrixWorld );
 
         this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
-        this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
+        this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.tempMatrix );
 
         const intersects = this.raycaster.intersectObjects([ this.floor ]);
 
