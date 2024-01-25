@@ -32,7 +32,7 @@ export default class World extends Thing {
 
                 return model.children[i];
             }
-            
+
             const matchingChild = this.findChild(model.children[i], name);
             if (matchingChild) {
 
@@ -96,6 +96,8 @@ export default class World extends Thing {
 
     updateTeleportMarker(controller) {
 
+        controller.scale.set(1.1, 1.1, 1.1);
+
         this.tempMatrix.identity().extractRotation( controller.matrixWorld );
 
         this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
@@ -105,7 +107,14 @@ export default class World extends Thing {
 
         if (intersects.length > 0) {
 
+            controller.scale.set(1.2, 1.2, 1.2);
+
+            App.controllers.marker.visible = true;
             App.controllers.marker.position.set(intersects[0].point.x, 0.1, intersects[0].point.z);
+        }
+        else {
+
+            App.controllers.marker.visible = false;
         }
     }
 
@@ -120,28 +129,25 @@ export default class World extends Thing {
 
         this.models.pah2Logo.rotation.y = time / 1000;
         
-        if (App.controls) {
+        App.controls.update();
 
-            App.controls.update();
+        if (App.controllers.controller1.selecting) {
 
-            if (App.controllers.controller1.selecting) {
+            this.updateTeleportMarker(App.controllers.controller1.controller);   
+        }
+        else if (App.controllers.controller2.selecting) {
 
-                this.updateTeleportMarker(App.controllers.controller1.controller);   
-            }
-            else if (App.controllers.controller2.selecting) {
+            this.updateTeleportMarker(App.controllers.controller2.controller);
+            
+        }
+        else if (App.controllers.marker.visible) {
 
-                this.updateTeleportMarker(App.controllers.controller2.controller);
-                
-            }
-            else if (App.controllers.marker.visible) {
-
-                App.controllers.marker.visible = false;
-            }
+            App.controllers.marker.visible = false;
+            
+            App.controllers.controller1.controller.scale.set(1, 1, 1);
+            App.controllers.controller2.controller.scale.set(1, 1, 1);
         }
 
-        if (App.renderer) {
-
-            App.renderer.render(App.scene, App.camera);
-        }
+        App.renderer.render(App.scene, App.camera);
     }
 };
