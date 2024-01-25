@@ -54,7 +54,7 @@ export default class World extends Thing {
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
-        this.floor = this.findChild(this.models.room, "floor");
+        this.floor = this.findChild(this.models.room, "teleport_target");
 
         this.models.pah2Logo = ModelLibrary.get("pah2logo", THREE.MeshLambertMaterial, false);
         this.models.pah2Logo.position.set(4.5, 1, -4.5);
@@ -77,6 +77,8 @@ export default class World extends Thing {
         App.controls.target.set(0, 1.8, 0);
         App.controls.update();
 
+        this.teleportTarget = null;
+
         Log.info(`Scene set up.`);
 
         this.sceneInitialised = true;
@@ -92,11 +94,21 @@ export default class World extends Thing {
 
         this.controller.children[0].visible = false;
         this.selecting = false;
+
+        if (this.teleportTarget) {
+
+            const offsetPosition = { x: - this.teleportTarget.x, y: - this.teleportTarget.y, z: - this.teleportTarget.z, w: 1 };
+            const offsetRotation = new THREE.Quaternion();
+            const transform = new XRRigidTransform( offsetPosition, offsetRotation );
+            const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
+    
+            App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
+
+            this.teleportTarget = null;
+        }
     }
 
-    updateTeleportMarker(controller) {
-
-        controller.scale.set(1.1, 1.1, 1.1);
+    updateTeleportTarget(controller) {
 
         this.tempMatrix.identity().extractRotation( controller.matrixWorld );
 
@@ -107,10 +119,9 @@ export default class World extends Thing {
 
         if (intersects.length > 0) {
 
-            controller.scale.set(1.2, 1.2, 1.2);
-
+            this.teleportTarget = intersects[0].point;
             App.controllers.marker.visible = true;
-            App.controllers.marker.position.set(intersects[0].point.x, 0.1, intersects[0].point.z);
+            App.controllers.marker.position.set(this.teleportTarget.x, this.teleportTarget.y + 0.01, this.teleportTarget.z);
         }
         else {
 
@@ -133,19 +144,15 @@ export default class World extends Thing {
 
         if (App.controllers.controller1.selecting) {
 
-            this.updateTeleportMarker(App.controllers.controller1.controller);   
+            this.updateTeleportTarget(App.controllers.controller1.controller);   
         }
         else if (App.controllers.controller2.selecting) {
 
-            this.updateTeleportMarker(App.controllers.controller2.controller);
-            
+            this.updateTeleportTarget(App.controllers.controller2.controller);
         }
         else if (App.controllers.marker.visible) {
 
             App.controllers.marker.visible = false;
-            
-            App.controllers.controller1.controller.scale.set(1, 1, 1);
-            App.controllers.controller2.controller.scale.set(1, 1, 1);
         }
 
         App.renderer.render(App.scene, App.camera);
