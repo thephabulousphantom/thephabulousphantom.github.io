@@ -24,6 +24,10 @@ export default class World extends Thing {
         ModelLibrary.onLoaded(this.setupScene.bind(this));
     }
 
+    findChild(model, name) {
+
+    }
+
     setupScene() {
 
         Log.info(`Setting up scene...`);
@@ -35,6 +39,8 @@ export default class World extends Thing {
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
+        this.floor = this.findChild(this.models.room, "floor");
+
         this.models.pah2Logo = ModelLibrary.get("pah2logo", THREE.MeshLambertMaterial, false);
         this.models.pah2Logo.position.set(4.5, 1, -4.5);
         App.scene.add(this.models.pah2Logo);
@@ -44,7 +50,12 @@ export default class World extends Thing {
         App.scene.add(this.models.funky);
 
         App.controllers.controller1.controller.addEventListener("selectstart", this.onControllerSelectStart.bind(App.controllers.controller1));
+        App.controllers.controller1.controller.addEventListener("selectend", this.onControllerSelectEnd.bind(App.controllers.controller1));
+
+        App.controllers.controller2.controller.addEventListener("selectstart", this.onControllerSelectStart.bind(App.controllers.controller2));
         App.controllers.controller2.controller.addEventListener("selectend", this.onControllerSelectEnd.bind(App.controllers.controller2));
+
+        this.raycaster = new THREE.Raycaster();
 
         App.camera.position.set(0, 1.8, 0.5);
         App.controls.target.set(0, 1.8, 0);
@@ -58,11 +69,28 @@ export default class World extends Thing {
     onControllerSelectStart() {
 
         this.controller.children[0].visible = true;
+        this.selecting = true;
     }
 
     onControllerSelectEnd() {
 
         this.controller.children[0].visible = false;
+        this.selecting = false;
+    }
+
+    updateTeleportMarker(controller) {
+
+        tempMatrix.identity().extractRotation( controller.matrixWorld );
+
+        this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+        this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
+
+        const intersects = this.raycaster.intersectObjects([ this.floor ]);
+
+        if (intersects.length > 0) {
+
+            App.controllers.marker.position.set(intersects[0].point.x, 0.1, intersects[0].point.z);
+        }
     }
 
     update(time, elapsed) {
@@ -79,6 +107,20 @@ export default class World extends Thing {
         if (App.controls) {
 
             App.controls.update();
+
+            if (App.controllers.controller1.selecting) {
+
+                this.updateTeleportMarker(App.controllers.controller1.controller);   
+            }
+            else if (App.controllers.controller2.selecting) {
+
+                this.updateTeleportMarker(App.controllers.controller2.controller);
+                
+            }
+            else if (App.controllers.marker.visible) {
+
+                App.controllers.marker.visible = false;
+            }
         }
 
         if (App.renderer) {

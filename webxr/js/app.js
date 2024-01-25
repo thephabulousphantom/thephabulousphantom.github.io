@@ -93,8 +93,10 @@ class App {
     getController(x, controllerModel, rayModel) {
 
         const controller = {};
+        controller.selecting = false;
         controller.controller = this.renderer.xr.getController(x);
         controller.controller.add(rayModel.clone());
+        controller.controller.children[0].visible = false;
         this.scene.add(controller.controller);
 
         controller.controllerGrip = this.renderer.xr.getControllerGrip(x);
@@ -136,10 +138,10 @@ class App {
 
         const markerGeometry = new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 );
         const markerMaterial = new THREE.MeshBasicMaterial( { color: 0xbcbcbc } );
-        controllers.markerModel = new THREE.Mesh(markerGeometry, markerMaterial);       
-        controllers.markerModel.position.set(0, 1, 0);
-        controllers.markerModel.visible = false;
-        this.scene.add(controllers.markerModel);
+        controllers.marker = new THREE.Mesh(markerGeometry, markerMaterial);       
+        controllers.marker.position.set(0, 1, 0);
+        controllers.marker.visible = false;
+        this.scene.add(controllers.marker);
 
         return controllers;
     }
