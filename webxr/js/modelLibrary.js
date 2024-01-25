@@ -33,7 +33,7 @@ class ModelLibrary {
 
         for (var i = 0; i < this.modelNames.length; i++) {
 
-            this.loadModel(this.modelNames[i], true);
+            this.loadModel(this.modelNames[i]);
         }
     }
 
