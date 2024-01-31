@@ -43,6 +43,19 @@ export default class World extends Thing {
         return null;
     }
 
+    findChildren(model, name, childrenArray) {
+
+        for (var i = 0; i < model.children.length; i++) {
+
+            if (model.children[i].name == name) {
+
+                childrenArray.push(model.children[i]);
+            }
+
+            this.findChildren(model.children[i], name, childrenArray);
+        }
+    }
+
     setupScene() {
 
         Log.info(`Setting up scene...`);
@@ -54,10 +67,12 @@ export default class World extends Thing {
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
-        this.floor = this.findChild(this.models.room, "teleport_target");
+
+        this.floor = [];
+        this.findChildren(this.models.room, "teleport_target", this.floor);
 
         this.models.pah2Logo = ModelLibrary.get("pah2logo", THREE.MeshLambertMaterial, false);
-        this.models.pah2Logo.position.set(4.5, 1, -4.5);
+        this.models.pah2Logo.position.set(0, 1, -4.5);
         App.scene.add(this.models.pah2Logo);
 
         this.models.funky = ModelLibrary.get("funky", undefined, false);
@@ -115,7 +130,7 @@ export default class World extends Thing {
         this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
         this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.tempMatrix );
 
-        const intersects = this.raycaster.intersectObjects([ this.floor ]);
+        const intersects = this.raycaster.intersectObjects(this.floor);
 
         if (intersects.length > 0) {
 

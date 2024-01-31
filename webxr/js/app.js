@@ -162,6 +162,7 @@ class App {
             new THREE.WebGLRenderer({
                 precision: "lowp",
                 powerPreference: "high-performance",
+                alpha: false,
                 antialias: true
             });
 
