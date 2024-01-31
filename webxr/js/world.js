@@ -47,7 +47,8 @@ export default class World extends Thing {
 
         for (var i = 0; i < model.children.length; i++) {
 
-            if (model.children[i].name == name) {
+            
+            if (model.children[i].name.indexOf(name) != -1) {
 
                 childrenArray.push(model.children[i]);
             }
@@ -69,7 +70,7 @@ export default class World extends Thing {
 
 
         this.floor = [];
-        this.findChildren(this.models.room, "teleport_target", this.floor);
+        this.findChildren(this.models.room, "walkable", this.floor);
 
         this.models.pah2Logo = ModelLibrary.get("pah2logo", THREE.MeshLambertMaterial, false);
         this.models.pah2Logo.position.set(0, 1, -4.5);
@@ -78,12 +79,6 @@ export default class World extends Thing {
         this.models.funky = ModelLibrary.get("funky", undefined, false);
         this.models.funky.position.set(0, 0, 2);
         App.scene.add(this.models.funky);
-
-        App.controllers.controller1.controller.addEventListener("selectstart", this.onControllerSelectStart.bind(App.controllers.controller1));
-        App.controllers.controller1.controller.addEventListener("selectend", this.onControllerSelectEnd.bind(App.controllers.controller1));
-
-        App.controllers.controller2.controller.addEventListener("selectstart", this.onControllerSelectStart.bind(App.controllers.controller2));
-        App.controllers.controller2.controller.addEventListener("selectend", this.onControllerSelectEnd.bind(App.controllers.controller2));
 
         this.raycaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
@@ -97,30 +92,6 @@ export default class World extends Thing {
         Log.info(`Scene set up.`);
 
         this.sceneInitialised = true;
-    }
-
-    onControllerSelectStart() {
-
-        this.controller.children[0].visible = true;
-        this.selecting = true;
-    }
-
-    onControllerSelectEnd() {
-
-        this.controller.children[0].visible = false;
-        this.selecting = false;
-
-        if (App.world.teleportTarget) {
-
-            const offsetPosition = { x: - App.world.teleportTarget.x, y: - App.world.teleportTarget.y, z: - App.world.teleportTarget.z, w: 1 };
-            const offsetRotation = new THREE.Quaternion();
-            const transform = new XRRigidTransform( offsetPosition, offsetRotation );
-            const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
-    
-            App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
-
-            App.world.teleportTarget = null;
-        }
     }
 
     updateTeleportTarget(controller) {
@@ -144,6 +115,59 @@ export default class World extends Thing {
         }
     }
 
+    move(direction, strafe) {
+
+        if (App.baseXrReferenceSpace) {
+
+            const offsetPosition = { x: x, y: 0, z: y, w: 1 };
+            const offsetRotation = new THREE.Quaternion();
+            const transform = new XRRigidTransform(offsetPosition, offsetRotation);
+            const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace(transform);
+    
+            App.renderer.xr.setReferenceSpace(teleportSpaceOffset);
+        }
+        else {
+
+            var cameraDirection = new THREE.Vector3();
+            App.camera.getWorldDirection(cameraDirection);
+
+            var strafeDirection = new THREE.Vector3();
+            strafeDirection.copy(cameraDirection);
+            strafeDirection.applyAxisAngle(App.camera.up, Math.PI / 2);
+
+            cameraDirection.x *= direction;
+            cameraDirection.y *= direction;
+            cameraDirection.z *= direction;
+
+            strafeDirection.x *= strafe;
+            strafeDirection.y *= strafe;
+            strafeDirection.z *= strafe;
+
+            var moveDirection = new THREE.Vector3(
+                (1 - Math.abs(App.camera.up.x)) * (cameraDirection.x + strafeDirection.x),
+                (1 - Math.abs(App.camera.up.y)) * (cameraDirection.y + strafeDirection.y),
+                (1 - Math.abs(App.camera.up.z)) * (cameraDirection.z + strafeDirection.z)
+            );
+
+            var newPosition = new THREE.Vector3();
+            newPosition.copy(App.camera.position);
+            newPosition.add(moveDirection);
+            newPosition.add(moveDirection);
+
+            this.raycaster.ray.origin.copy(newPosition);
+            this.raycaster.ray.direction.copy(App.camera.up).multiplyScalar(-1);
+    
+            const intersects = this.raycaster.intersectObjects(this.floor);
+    
+            if (intersects.length > 0) {
+
+                App.camera.position.add(moveDirection);
+                App.controls.target.add(moveDirection);
+                App.controls.update();
+            }
+        }
+    }
+
     update(time, elapsed) {
         
         super.update(time, elapsed);
@@ -157,17 +181,49 @@ export default class World extends Thing {
         
         App.controls.update();
 
-        if (App.controllers.controller1.selecting) {
+        if (App.controller.hand1.selecting) {
 
-            this.updateTeleportTarget(App.controllers.controller1.controller);   
+            this.updateTeleportTarget(App.controller.hand1.controller);   
         }
-        else if (App.controllers.controller2.selecting) {
+        else if (App.controller.hand2.selecting) {
 
-            this.updateTeleportTarget(App.controllers.controller2.controller);
+            this.updateTeleportTarget(App.controller.hand2.controller);
         }
-        else if (App.controllers.marker.visible) {
+        else if (App.controller.marker.visible) {
+
+            if (App.world.teleportTarget) {
+
+                const offsetPosition = { x: - App.world.teleportTarget.x, y: - App.world.teleportTarget.y, z: - App.world.teleportTarget.z, w: 1 };
+                const offsetRotation = new THREE.Quaternion();
+                const transform = new XRRigidTransform( offsetPosition, offsetRotation );
+                const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
+        
+                App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
+    
+                App.world.teleportTarget = null;
+            }
 
             App.controllers.marker.visible = false;
+        }
+
+        if (App.controller.direction.Up) {
+
+            this.move(.1, 0);
+        }
+
+        if (App.controller.direction.Down) {
+
+            this.move(-.1, 0);
+        }
+
+        if (App.controller.direction.Left) {
+
+            this.move(0, .1);
+        }
+
+        if (App.controller.direction.Right) {
+
+            this.move(0, -.1);
         }
 
         App.renderer.render(App.scene, App.camera);

@@ -5,6 +5,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import Tween from "./lib/tween/tween.esm.js";
 import Colors from "./colors.js";
 import World from "./world.js";
+import Controller from "./controller.js";
 
 class App {
 
@@ -28,7 +29,12 @@ class App {
         this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
-        this.controllers = this.getControllers(this.scene, this.renderer);
+        
+        this.controller = new Controller();
+        this.controller.init(this.renderer.xr);
+        this.controller.addControllersToScene(this.scene);
+
+        //this.controllers = this.getControllers(this.scene, this.renderer);
         this.vrButton = App.getVrButton(document.body, this.renderer);
         this.world = App.getWorld();
 
@@ -78,7 +84,7 @@ class App {
         return controls;
     }
 
-    onControllerConnected() {
+    /*onControllerConnected() {
 
         this.controller.visible = true;
         this.controllerGrip.visible = true;
@@ -144,7 +150,7 @@ class App {
         this.scene.add(controllers.marker);
 
         return controllers;
-    }
+    }*/
 
     static getWorld() {
 
