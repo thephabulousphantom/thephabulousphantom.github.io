@@ -106,12 +106,12 @@ export default class World extends Thing {
         if (intersects.length > 0) {
 
             this.teleportTarget = intersects[0].point;
-            App.controllers.marker.visible = true;
-            App.controllers.marker.position.set(this.teleportTarget.x, this.teleportTarget.y + 0.01, this.teleportTarget.z);
+            App.controller.marker.visible = true;
+            App.controller.marker.position.set(this.teleportTarget.x, this.teleportTarget.y + 0.01, this.teleportTarget.z);
         }
         else {
 
-            App.controllers.marker.visible = false;
+            App.controller.marker.visible = false;
         }
     }
 
@@ -203,7 +203,7 @@ export default class World extends Thing {
                 App.world.teleportTarget = null;
             }
 
-            App.controllers.marker.visible = false;
+            App.controller.marker.visible = false;
         }
 
         if (App.controller.direction.Up) {
