@@ -64,7 +64,7 @@ export default class World extends Thing {
         /*this.ambientLight = new THREE.AmbientLight(Colors.lightAmbient);
         App.scene.add(this.ambientLight);*/
 
-        this.models.room = ModelLibrary.get("soba", THREE./*MeshBasicMaterial*/MeshLambertMaterial, false);
+        this.models.room = ModelLibrary.get("soba", THREE.MeshLambertMaterial, false);
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
