@@ -61,16 +61,20 @@ export default class World extends Thing {
 
         Log.info(`Setting up scene...`);
 
-        this.ambientLight = new THREE.AmbientLight(Colors.lightAmbient);
-        App.scene.add(this.ambientLight);
+        /*this.ambientLight = new THREE.AmbientLight(Colors.lightAmbient);
+        App.scene.add(this.ambientLight);*/
 
-        this.models.room = ModelLibrary.get("soba", THREE.MeshLambertMaterial, false);
+        this.models.room = ModelLibrary.get("soba", THREE./*MeshBasicMaterial*/MeshLambertMaterial, false);
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
 
         this.floor = [];
         this.findChildren(this.models.room, "walkable", this.floor);
+        for (var i = 0; i < this.floor.length; i++) {
+
+            this.floor[i].visible = false;
+        }
 
         this.models.pah2Logo = ModelLibrary.get("pah2logo", THREE.MeshLambertMaterial, false);
         this.models.pah2Logo.position.set(0, 1, -4.5);
@@ -78,6 +82,7 @@ export default class World extends Thing {
 
         this.models.funky = ModelLibrary.get("funky", undefined, false);
         this.models.funky.position.set(0, 0, 2);
+        this.models.funky.scale.set(0.7,0.7,0.7);
         App.scene.add(this.models.funky);
 
         this.raycaster = new THREE.Raycaster();

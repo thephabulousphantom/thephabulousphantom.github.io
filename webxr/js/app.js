@@ -177,7 +177,7 @@ class App {
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setClearColor(Colors.transparent, 0);
-        renderer.physicallyCorrectLights = true;
+        //renderer.physicallyCorrectLights = true;
 
         container.appendChild( renderer.domElement );
 

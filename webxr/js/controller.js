@@ -132,7 +132,16 @@ export default class Controller {
         return hand;
     }
 
-    onControllerConnected() {
+    onControllerConnected(evt) {
+
+        this.handedness = evt.data.handedness;
+        
+        if (this.handedness == "right") {
+
+            this.controller.children[0].scale.x = 
+            this.controller.children[0].scale.y = 
+            this.controller.children[0].scale.z = 1.5;
+        }
 
         this.controller.connected = true;
         this.controller.visible = true;
