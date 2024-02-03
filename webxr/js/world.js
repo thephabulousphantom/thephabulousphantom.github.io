@@ -7,6 +7,9 @@ import * as THREE from "three";
 
 export default class World extends Thing {
 
+    upVector = new THREE.Vector3(0, 1, 0);
+    downVector = new THREE.Vector3(0, -1, 0);
+
     models = {};
     ambientLight = null;
     sceneInitialised = false;
@@ -64,7 +67,7 @@ export default class World extends Thing {
         /*this.ambientLight = new THREE.AmbientLight(Colors.lightAmbient);
         App.scene.add(this.ambientLight);*/
 
-        this.models.room = ModelLibrary.get("soba", THREE.MeshLambertMaterial, false);
+        this.models.room = ModelLibrary.get("soba", THREE.MeshBasicMaterial, false);
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
@@ -135,10 +138,13 @@ export default class World extends Thing {
 
             var cameraDirection = new THREE.Vector3();
             App.camera.getWorldDirection(cameraDirection);
+            cameraDirection.y = 0;
+            cameraDirection.normalize();
+
 
             var strafeDirection = new THREE.Vector3();
             strafeDirection.copy(cameraDirection);
-            strafeDirection.applyAxisAngle(App.camera.up, Math.PI / 2);
+            strafeDirection.applyAxisAngle(this.downVector, Math.PI / 2);
 
             cameraDirection.x *= direction;
             cameraDirection.y *= direction;
@@ -149,9 +155,9 @@ export default class World extends Thing {
             strafeDirection.z *= strafe;
 
             var moveDirection = new THREE.Vector3(
-                (1 - Math.abs(App.camera.up.x)) * (cameraDirection.x + strafeDirection.x),
-                (1 - Math.abs(App.camera.up.y)) * (cameraDirection.y + strafeDirection.y),
-                (1 - Math.abs(App.camera.up.z)) * (cameraDirection.z + strafeDirection.z)
+                (1 - Math.abs(this.upVector.x)) * (cameraDirection.x + strafeDirection.x),
+                (1 - Math.abs(this.upVector.y)) * (cameraDirection.y + strafeDirection.y),
+                (1 - Math.abs(this.upVector.z)) * (cameraDirection.z + strafeDirection.z)
             );
 
             var newPosition = new THREE.Vector3();
@@ -160,7 +166,7 @@ export default class World extends Thing {
             newPosition.add(moveDirection);
 
             this.raycaster.ray.origin.copy(newPosition);
-            this.raycaster.ray.direction.copy(App.camera.up).multiplyScalar(-1);
+            this.raycaster.ray.direction.copy(this.downVector);
     
             const intersects = this.raycaster.intersectObjects(this.floor);
     
@@ -223,12 +229,12 @@ export default class World extends Thing {
 
         if (App.controller.direction.Left) {
 
-            this.move(0, .1);
+            this.move(0, -.1);
         }
 
         if (App.controller.direction.Right) {
 
-            this.move(0, -.1);
+            this.move(0, .1);
         }
 
         App.renderer.render(App.scene, App.camera);
