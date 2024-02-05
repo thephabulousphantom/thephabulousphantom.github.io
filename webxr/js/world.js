@@ -71,9 +71,13 @@ export default class World extends Thing {
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
+        this.models.exterior = ModelLibrary.get("exterior", THREE.MeshBasicMaterial, false);
+        this.models.exterior.position.set(0, 0, 0);
+        App.scene.add(this.models.exterior);
+
 
         this.floor = [];
-        this.findChildren(this.models.room, "walkable", this.floor);
+        this.findChildren(App.scene, "walkable", this.floor);
         for (var i = 0; i < this.floor.length; i++) {
 
             this.floor[i].visible = false;
