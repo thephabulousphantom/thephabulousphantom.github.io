@@ -161,7 +161,7 @@ export default class World extends Thing {
             );
 
             var newPosition = new THREE.Vector3();
-            newPosition.copy(App.camera.position);
+            newPosition.copy(App.controls.target);
             newPosition.add(moveDirection);
             newPosition.add(moveDirection);
 
