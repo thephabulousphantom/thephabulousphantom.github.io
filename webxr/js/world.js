@@ -4,6 +4,7 @@ import Thing from "./thing.js";
 import ModelLibrary from "./modelLibrary.js";
 import Colors from "./colors.js";
 import * as THREE from "three";
+import * as Shaders from "./shaders/shaders.js";
 
 export default class World extends Thing {
 
@@ -60,14 +61,55 @@ export default class World extends Thing {
         }
     }
 
+    coloriseModel(model, color) {
+
+        if (model.material && model.material.map) {
+
+
+            model.material.color = color;
+            model.material.lightMap = model.material.map;
+            model.material.map = null;
+        }
+
+        for (var i = 0; i < model.children.length; i++) {
+
+            this.coloriseModel(model.children[i], color);
+        }
+    }
+
+    applyCustomMaterial(model, materialName, uv) {
+
+        var loader = new THREE.TextureLoader();
+
+        model.traverse( function(child) { 
+
+            if (child.isMesh && child.material.name == materialName) {
+
+                try {
+
+                    var customMaterial = Shaders.NoiseShader.getMaterial();
+                    customMaterial.uniforms.map.value = child.material.map/*loader.load("./3d/src/texture/light-map-512-denoised.png")*/;
+                    customMaterial.uniforms.map.value.colorSpace = THREE.LinearSRGBColorSpace;
+                    customMaterial.uniforms.map.value.flipY = false;
+                    //customMaterial.uniforms.map.value.needsUpdate = true;
+
+                    child.material = customMaterial;
+                }
+                catch (ex) {
+
+                    Log.warning(`Unable to force material: ${ex}`);
+                }
+            }
+        });
+    }
+
     setupScene() {
 
         Log.info(`Setting up scene...`);
 
-        /*this.ambientLight = new THREE.AmbientLight(Colors.lightAmbient);
-        App.scene.add(this.ambientLight);*/
-
-        this.models.room = ModelLibrary.get("soba", THREE.MeshBasicMaterial, false);
+        this.models.room = ModelLibrary.get("soba", undefined/*THREE.MeshBasicMaterial*/, false);
+        this.applyCustomMaterial(this.models.room, "interior", "uv1");
+        //this.coloriseModel(this.models.room, new THREE.Color(0, 0.5, 1));
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 

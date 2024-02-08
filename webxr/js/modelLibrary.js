@@ -122,7 +122,9 @@ class ModelLibrary {
                     try {
 
                         var prevMaterial = child.material;
-                        child.material = new forceMaterial();
+                        child.material = (forceMaterial instanceof THREE.Material)
+                            ? forceMaterial
+                            : new forceMaterial();
                         forceMaterial.prototype.copy.call( child.material, prevMaterial );
                     }
                     catch (ex) {
