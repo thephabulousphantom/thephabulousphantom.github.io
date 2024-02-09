@@ -214,7 +214,7 @@ export const NoiseShader = new Shader(
             vec3 rgbColor = texture2D(map, vUv).rgb;
             vec3 hsvColor = rgb2hsv(rgbColor);
             
-            float noise = snoise(vUv * 500.0);
+            float noise = snoise(vUv * 250.0);
             if (noise < 0.90) {
 
                 noise = 1.0;
