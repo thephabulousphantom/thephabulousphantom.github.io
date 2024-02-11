@@ -77,9 +77,22 @@ export default class World extends Thing {
         }
     }
 
-    applyCustomMaterial(model, materialName, uv) {
+    applyCustomMaterial(model, materialName) {
 
         var loader = new THREE.TextureLoader();
+
+        const pointLight = [];
+        model.traverse( function(child) { 
+
+            if (child.isPointLight) {
+
+                pointLight.push({
+                    position: child.position,
+                    color: child.color,
+                    intensity: child.intensity
+                });
+            }
+        });
 
         model.traverse( function(child) { 
 

@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import Shader from "./shader.js";
 
 export const BasicShader = new Shader(
@@ -103,7 +104,6 @@ export const StripedShader = new Shader(
 
             vec3 rgbTexture = texture2D(map, vUv).rgb;
             gl_FragColor = vec4(rgbTexture.r + pattern, rgbTexture.g + pattern, rgbTexture.b + pattern, 1.0);
-            //gl_FragColor = vec4(rgbTexture.r, rgbTexture.g, rgbTexture.b, 1.0);
         }
     `
 );
@@ -111,9 +111,12 @@ export const StripedShader = new Shader(
 export const NoiseShader = new Shader(
     {
         map: { type: "t", value: null },
+        pointLightPosition: { type: "v3v", value: new THREE.Vector3(0, 0, 0)},
+        pointLightColor: { type: "v3v", value: new THREE.Vector3(0, 0, 0)},
     },
     `
         varying vec2 vUv;
+        varying vec4 ecPos;
 
         void main() {
 
@@ -124,6 +127,7 @@ export const NoiseShader = new Shader(
     `
         varying vec2 vUv;
         uniform sampler2D map;
+
 
         vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
         vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -214,8 +218,8 @@ export const NoiseShader = new Shader(
             vec3 rgbColor = texture2D(map, vUv).rgb;
             vec3 hsvColor = rgb2hsv(rgbColor);
             
-            float noise = snoise(vUv * 250.0);
-            if (noise < 0.90) {
+            float noise = snoise(vUv * 50.0);
+            if (noise < 0.0) {
 
                 noise = 1.0;
             }
