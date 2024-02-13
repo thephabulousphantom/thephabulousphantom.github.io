@@ -108,7 +108,7 @@ export const StripedShader = new Shader(
     `
 );
 
-export const NoiseShader = new Shader(
+export const Noise2dShader = new Shader(
     {
         map: { type: "t", value: null },
         pointLightPosition: { type: "v3v", value: new THREE.Vector3(0, 0, 0)},
@@ -127,7 +127,6 @@ export const NoiseShader = new Shader(
     `
         varying vec2 vUv;
         uniform sampler2D map;
-
 
         vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
         vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -162,61 +161,9 @@ export const NoiseShader = new Shader(
             return 130.0 * dot(m, g);
         }
 
-        vec3 convertRGBtoHSV(vec3 rgbColor) {
-            float r = rgbColor[0];
-            float g = rgbColor[1];
-            float b = rgbColor[2];
-            float colorMax = max(max(r,g), b);
-            float colorMin = min(min(r,g), b);
-            float delta = colorMax - colorMin;
-            float h = 0.0;
-            float s = 0.0;
-            float v = colorMax;
-            vec3 hsv = vec3(0.0);
-            if (colorMax != 0.0) {
-              s = (colorMax - colorMin ) / colorMax;
-            }
-            if (delta != 0.0) {
-                if (r == colorMax) {
-                    h = (g - b) / delta;
-                } else if (g == colorMax) {        
-                    h = 2.0 + (b - r) / delta;
-                } else {    
-                    h = 4.0 + (r - g) / delta;
-                }
-                h *= 60.0;
-                if (h < 0.0) {
-                    h += 360.0;
-                }
-            }
-            hsv[0] = h;
-            hsv[1] = s;
-            hsv[2] = v;
-            return hsv;
-        }
-
-        vec3 rgb2hsv(vec3 c)
-        {
-            vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-            vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
-            vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-
-            float d = q.x - min(q.w, q.y);
-            float e = 1.0e-10;
-            return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-        }
-
-        vec3 hsv2rgb(vec3 c)
-        {
-            vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-            vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-            return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-        }
-
         void main() {
 
             vec3 rgbColor = texture2D(map, vUv).rgb;
-            vec3 hsvColor = rgb2hsv(rgbColor);
             
             float noise = snoise(vUv * 50.0);
             if (noise < 0.0) {
@@ -230,15 +177,12 @@ export const NoiseShader = new Shader(
 
             noise = 0.8 + noise * 0.2;
 
-            hsvColor.y = hsvColor.y + ((1.0 - noise) / 2.0);
-            hsvColor.z = hsvColor.z * noise;
-            rgbColor = hsv2rgb(hsvColor);
-            gl_FragColor = vec4(rgbColor.r, rgbColor.g, rgbColor.b, 1.0);
+            gl_FragColor = vec4(rgbColor.r * noise, rgbColor.g * noise, rgbColor.b * noise, 1.0);
         }
     `
 );
 
-export const PerlinNoiseShader = new Shader(
+export const Noise3dShader = new Shader(
     {
         map: { type: "t", value: null },
         pointLightPosition: { type: "v3v", value: new THREE.Vector3(0, 0, 0)},
@@ -341,6 +285,72 @@ export const PerlinNoiseShader = new Shader(
             
             float noise = cnoise(vPosition * 5.0);
             if (noise < 0.0) {
+
+                noise = 1.0;
+            }
+            else {
+
+                noise = 0.0;
+            }
+
+            noise = 0.8 + noise * 0.2;
+
+            gl_FragColor = vec4(rgbColor.r * noise, rgbColor.g * noise, rgbColor.b * noise, 1.0);
+        }
+    `
+);
+
+export const NoiseShader = new Shader(
+    {
+        map: { type: "t", value: null },
+        pointLightPosition: { type: "v3v", value: new THREE.Vector3(0, 0, 0)},
+        pointLightColor: { type: "v3v", value: new THREE.Vector3(0, 0, 0)},
+    },
+    `
+        varying vec2 vUv;
+        varying vec3 vPosition;
+
+        void main() {
+
+            vUv = uv1;
+            vPosition = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    `
+        varying vec2 vUv;
+        varying vec3 vPosition;
+        uniform sampler2D map;
+
+        // Precision-adjusted variations of https://www.shadertoy.com/view/4djSRW
+        float hash(float p) { p = fract(p * 0.011); p *= p + 7.5; p *= p + p; return fract(p); }
+        float hash(vec2 p) {vec3 p3 = fract(vec3(p.xyx) * 0.13); p3 += dot(p3, p3.yzx + 3.333); return fract((p3.x + p3.y) * p3.z); }
+
+        float noise(vec3 x) {
+
+            const vec3 step = vec3(110, 241, 171);
+
+            vec3 i = floor(x);
+            vec3 f = fract(x);
+        
+            // For performance, compute the base input to a 1D hash from the integer part of the argument and the 
+            // incremental change to the 1D based on the 3D -> 1D wrapping
+            float n = dot(i, step);
+
+            vec3 u = f * f * (3.0 - 2.0 * f);
+            return mix(mix(mix( hash(n + dot(step, vec3(0, 0, 0))), hash(n + dot(step, vec3(1, 0, 0))), u.x),
+                        mix( hash(n + dot(step, vec3(0, 1, 0))), hash(n + dot(step, vec3(1, 1, 0))), u.x), u.y),
+                    mix(mix( hash(n + dot(step, vec3(0, 0, 1))), hash(n + dot(step, vec3(1, 0, 1))), u.x),
+                        mix( hash(n + dot(step, vec3(0, 1, 1))), hash(n + dot(step, vec3(1, 1, 1))), u.x), u.y), u.z);
+        }
+
+
+        void main() {
+
+            vec3 rgbColor = texture2D(map, vUv).rgb;
+            
+            float noise = noise(vPosition * 10.0);
+            if (noise < 0.5) {
 
                 noise = 1.0;
             }

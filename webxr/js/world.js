@@ -100,7 +100,7 @@ export default class World extends Thing {
 
                 try {
 
-                    var customMaterial = Shaders.PerlinNoiseShader.getMaterial();
+                    var customMaterial = Shaders.NoiseShader.getMaterial();
                     customMaterial.uniforms.map.value = child.material.map/*loader.load("./3d/src/texture/light-map-512-denoised.png")*/;
                     customMaterial.uniforms.map.value.colorSpace = THREE.LinearSRGBColorSpace;
                     customMaterial.uniforms.map.value.flipY = false;
