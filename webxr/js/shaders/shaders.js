@@ -433,8 +433,8 @@ export const NoiseShader = new Shader(
 
             vec3 rgbColor = texture2D(map, vUv).rgb;
             
-            float noise = simplex3d(vPosition * 5.0);
-            if (noise < 0.5) {
+            float noise = simplex3d_fractal(vPosition * 5.0);
+            if (noise < 0.0) {
 
                 noise = 1.0;
             }
