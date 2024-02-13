@@ -104,7 +104,6 @@ export default class World extends Thing {
                     customMaterial.uniforms.map.value = child.material.map/*loader.load("./3d/src/texture/light-map-512-denoised.png")*/;
                     customMaterial.uniforms.map.value.colorSpace = THREE.LinearSRGBColorSpace;
                     customMaterial.uniforms.map.value.flipY = false;
-                    //customMaterial.uniforms.map.value.needsUpdate = true;
 
                     child.material = customMaterial;
                 }

@@ -228,13 +228,14 @@ export const NoiseShader = new Shader(
                 noise = 0.0;
             }
 
-            noise = 0.8 + noise * 0.2;
+            noise = 0.5 + noise * 0.5;
 
             hsvColor.y = hsvColor.y + ((1.0 - noise) / 2.0);
             hsvColor.z = hsvColor.z * noise;
-            rgbColor = hsv2rgb(hsvColor);
+            //rgbColor = hsv2rgb(hsvColor);
+            //gl_FragColor = vec4(rgbColor.r, rgbColor.g, rgbColor.b, 1.0);
 
-            gl_FragColor = vec4(rgbColor.r, rgbColor.g, rgbColor.b, 1.0);
+            gl_FragColor = vec4(rgbColor.r * noise, rgbColor.g * noise, rgbColor.b * noise, 1.0);
         }
     `
 );
