@@ -327,7 +327,6 @@ export const NoiseShader = new Shader(
         varying vec3 vPosition;
         uniform sampler2D map;
 
-
         //	Classic Perlin 3D Noise 
         //	by Stefan Gustavson
         //
@@ -407,8 +406,8 @@ export const NoiseShader = new Shader(
 
             vec3 rgbColor = texture2D(map, vUv).rgb;
             
-            float noise = cnoise(vPosition * 5.0);
-            if (noise < 0.0) {
+            float noise = cnoise(vPosition * 30.0);
+            if (noise < 0.8) {
 
                 noise = 1.0;
             }
@@ -417,7 +416,7 @@ export const NoiseShader = new Shader(
                 noise = 0.0;
             }
 
-            noise = 0.8 + noise * 0.2;
+            noise = 0.9 + noise * 0.1;
 
             gl_FragColor = vec4(rgbColor.r * noise, rgbColor.g * noise, rgbColor.b * noise, 1.0);
         }
