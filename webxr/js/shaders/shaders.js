@@ -322,76 +322,40 @@ export const NoiseShader = new Shader(
         varying vec3 vPosition;
         uniform sampler2D map;
 
-        float r(float n)
-        {
-            return fract(cos(n*89.42)*343.42);
-        }
-        vec2 r(vec2 n)
-        {
-            return vec2(r(n.x*23.62-300.0+n.y*34.35),r(n.x*45.13+256.0+n.y*38.89)); 
-        }
-        float worley(vec2 n,float s)
-        {
-            float dis = 2.0;
-            for(int x = -1;x<=1;x++)
-            {
-                for(int y = -1;y<=1;y++)
-                {
-                    vec2 p = floor(n/s)+vec2(x,y);
-                    float d = length(r(p)+vec2(x,y)-fract(n/s));
-                    if (dis>d)
-                    {
-                        dis = d;   
-                    }
-                }
-            }
-            return 1.0 - dis;
-            
+        float hash( ivec3 p )    // this hash is not production ready, please
+        {                        // replace this by something better
+
+            // 3D -> 1D
+            int n = p.x*3 + p.y*113 + p.z*311;
+
+            // 1D hash by Hugo Elias
+            n = (n << 13) ^ n;
+            n = n * (n * n * 15731 + 789221) + 1376312589;
+            return float( n & ivec3(0x0fffffff))/float(0x0fffffff);
         }
 
-        // copy from https://www.shadertoy.com/view/4sc3z2
-
-        #define MOD3 vec3(.1031,.11369,.13787)
-
-        vec3 hash33(vec3 p3)
+        float noise( in vec3 x )
         {
-            p3 = fract(p3 * MOD3);
-            p3 += dot(p3, p3.yxz+19.19);
-            return -1.0 + 2.0 * fract(vec3((p3.x + p3.y)*p3.z, (p3.x+p3.z)*p3.y, (p3.y+p3.z)*p3.x));
-        }
-        float perlin_noise(vec3 p)
-        {
-            vec3 pi = floor(p);
-            vec3 pf = p - pi;
+            ivec3 i = ivec3(floor(x));
+            vec3 f = fract(x);
+            f = f*f*(3.0-2.0*f);
             
-            vec3 w = pf * pf * (3.0 - 2.0 * pf);
-            
-            return 	mix(
-                        mix(
-                            mix(dot(pf - vec3(0, 0, 0), hash33(pi + vec3(0, 0, 0))), 
-                                dot(pf - vec3(1, 0, 0), hash33(pi + vec3(1, 0, 0))),
-                                w.x),
-                            mix(dot(pf - vec3(0, 0, 1), hash33(pi + vec3(0, 0, 1))), 
-                                dot(pf - vec3(1, 0, 1), hash33(pi + vec3(1, 0, 1))),
-                                w.x),
-                            w.z),
-                        mix(
-                            mix(dot(pf - vec3(0, 1, 0), hash33(pi + vec3(0, 1, 0))), 
-                                dot(pf - vec3(1, 1, 0), hash33(pi + vec3(1, 1, 0))),
-                                w.x),
-                            mix(dot(pf - vec3(0, 1, 1), hash33(pi + vec3(0, 1, 1))), 
-                                dot(pf - vec3(1, 1, 1), hash33(pi + vec3(1, 1, 1))),
-                                w.x),
-                            w.z),
-                        w.y);
+            return mix(mix(mix( hash(i+ivec3(0,0,0)), 
+                                hash(i+ivec3(1,0,0)),f.x),
+                        mix( hash(i+ivec3(0,1,0)), 
+                                hash(i+ivec3(1,1,0)),f.x),f.y),
+                    mix(mix( hash(i+ivec3(0,0,1)), 
+                                hash(i+ivec3(1,0,1)),f.x),
+                        mix( hash(i+ivec3(0,1,1)), 
+                                hash(i+ivec3(1,1,1)),f.x),f.y),f.z);
         }
 
         void main() {
 
             vec3 rgbColor = texture2D(map, vUv).rgb;
             
-            float noise = perlin_noise(vPosition * 5.0);
-            if (noise < 0.0) {
+            float noise = noise(vPosition * 5.0);
+            if (noise < 0.5) {
 
                 noise = 1.0;
             }
