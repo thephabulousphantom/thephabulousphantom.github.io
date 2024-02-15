@@ -15,11 +15,20 @@ export default class Shader {
 
     getMaterial() {
 
-        return new THREE.ShaderMaterial({
+        const material = new THREE.ShaderMaterial({
 
             uniforms: this.uniforms,
             vertexShader: this.vertexShader,
             fragmentShader: this.fragmentShader
         });
+
+        material.copy = function(srcMaterial) {
+
+            this.uniforms.map.value = srcMaterial.map;
+            this.uniforms.map.value.colorSpace = THREE.LinearSRGBColorSpace;
+            this.uniforms.map.value.flipY = false;
+        }
+
+        return material;
     }
 }

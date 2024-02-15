@@ -61,71 +61,21 @@ export default class World extends Thing {
         }
     }
 
-    coloriseModel(model, color) {
-
-        if (model.material && model.material.map) {
-
-
-            model.material.color = color;
-            model.material.lightMap = model.material.map;
-            model.material.map = null;
-        }
-
-        for (var i = 0; i < model.children.length; i++) {
-
-            this.coloriseModel(model.children[i], color);
-        }
-    }
-
-    applyCustomMaterial(model, materialName) {
-
-        var loader = new THREE.TextureLoader();
-
-        const pointLight = [];
-        model.traverse( function(child) { 
-
-            if (child.isPointLight) {
-
-                pointLight.push({
-                    position: child.position,
-                    color: child.color,
-                    intensity: child.intensity
-                });
-            }
-        });
-
-        model.traverse( function(child) { 
-
-            if (child.isMesh && child.material.name == materialName) {
-
-                try {
-
-                    var customMaterial = Shaders.NoiseShader.getMaterial();
-                    customMaterial.uniforms.map.value = child.material.map/*loader.load("./3d/src/texture/light-map-512-denoised.png")*/;
-                    customMaterial.uniforms.map.value.colorSpace = THREE.LinearSRGBColorSpace;
-                    customMaterial.uniforms.map.value.flipY = false;
-
-                    child.material = customMaterial;
-                }
-                catch (ex) {
-
-                    Log.warning(`Unable to force material: ${ex}`);
-                }
-            }
-        });
-    }
-
     setupScene() {
 
         Log.info(`Setting up scene...`);
 
-        this.models.room = ModelLibrary.get("soba", undefined/*THREE.MeshBasicMaterial*/, false);
-        this.applyCustomMaterial(this.models.room, "interior", "uv1");
-        //this.coloriseModel(this.models.room, new THREE.Color(0, 0.5, 1));
+        this.models.room = ModelLibrary.get("soba", {
+            shader: Shaders.NoiseShader,
+            materialToOverride: "interior",
+            /*material: THREE.MeshBasicMaterial,
+            color: new THREE.Color(0, 0.5, 1),*/
+            shadow: false
+        });
         this.models.room.position.set(0, 0, 0);
         App.scene.add(this.models.room);
 
-        this.models.exterior = ModelLibrary.get("exterior", THREE.MeshBasicMaterial, false);
+        this.models.exterior = ModelLibrary.get("exterior", { material: THREE.MeshBasicMaterial, shadow: false });
         this.models.exterior.position.set(0, 0, 0);
         App.scene.add(this.models.exterior);
 
@@ -137,11 +87,11 @@ export default class World extends Thing {
             this.floor[i].visible = false;
         }
 
-        this.models.pah2Logo = ModelLibrary.get("pah2logo", THREE.MeshLambertMaterial, false);
+        this.models.pah2Logo = ModelLibrary.get("pah2logo", { material: THREE.MeshLambertMaterial, shadow: false });
         this.models.pah2Logo.position.set(0, 1, -4.5);
         App.scene.add(this.models.pah2Logo);
 
-        this.models.funky = ModelLibrary.get("funky", undefined, false);
+        this.models.funky = ModelLibrary.get("funky", { shadow: false });
         this.models.funky.position.set(0, 0, 2);
         this.models.funky.scale.set(0.7,0.7,0.7);
         App.scene.add(this.models.funky);

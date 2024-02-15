@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Log from "./log.js";
+import Shader from "./shaders/shader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 class ModelLibrary {
@@ -101,9 +102,15 @@ class ModelLibrary {
         }
     }
 
-    get(modelName, forceMaterial, shadow) {
+    get(modelName, options) {
 
         Log.info(`Instantiating model ${modelName}.`);
+
+        const materialName = options.materialToOverride;
+        const forceShader = options.shader;
+        const forceMaterial = options.material;
+        const forceColor = options.color;
+        const shadow = options.shadow;
 
         const model = this.models[modelName].clone();
 
@@ -111,26 +118,41 @@ class ModelLibrary {
 
             if (child.isMesh) {
         
-                if (shadow !== undefined) {
+                try {
 
-                    child.castShadow = shadow;
-                    child.receiveShadow = shadow;
+                    if (!materialName || materialName == child.material.name) {
+
+                        if (shadow !== undefined) {
+
+                            child.castShadow = shadow;
+                            child.receiveShadow = shadow;
+                        }
+
+                        if (forceMaterial !== undefined) {
+
+                                var prevMaterial = child.material;
+                                child.material = new forceMaterial();
+                                forceMaterial.prototype.copy.call( child.material, prevMaterial );
+                        }
+
+                        if (forceShader !== undefined) {
+
+                            var prevMaterial = child.material;
+                            child.material = forceShader.getMaterial();
+                            child.material.copy.call( child.material, prevMaterial );
+                        }
+
+                        if (forceColor !== undefined) {
+                            
+                            child.material.color = forceColor;
+                            child.material.lightMap = child.material.map;
+                            child.material.map = null;
+                        }
+                    }
                 }
+                catch (ex) {
 
-                if (forceMaterial !== undefined) {
-
-                    try {
-
-                        var prevMaterial = child.material;
-                        child.material = (forceMaterial instanceof THREE.Material)
-                            ? forceMaterial
-                            : new forceMaterial();
-                        forceMaterial.prototype.copy.call( child.material, prevMaterial );
-                    }
-                    catch (ex) {
-    
-                        Log.warning(`Unable to force material: ${ex}`);
-                    }
+                    Log.warning(`Unable to force material: ${ex}`);
                 }
             }
             else {
