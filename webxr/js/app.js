@@ -166,8 +166,17 @@ class App {
         this.elapsed = this.time - this.previousTime;
 
         Tween.update(this.time);
+
+        const prevX = this.controls.target.x;
+        const prevY = this.controls.target.y;
+        const prevZ = this.controls.target.z;
+
         this.physics.update(this.time, this.elapsed);
         this.world.update(this.time, this.elapsed);
+
+        this.camera.position.x += this.controls.target.x - prevX;
+        this.camera.position.y += this.controls.target.y - prevY;
+        this.camera.position.z += this.controls.target.z - prevZ;
     }
 }
 
