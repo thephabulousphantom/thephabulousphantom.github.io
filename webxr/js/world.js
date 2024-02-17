@@ -61,9 +61,7 @@ export default class World extends Thing {
         }
     }
 
-    setupScene() {
-
-        Log.info(`Setting up scene...`);
+    setupModels() {
 
         this.models.room = ModelLibrary.get("soba", {
             shader: Shaders.NoiseShader,
@@ -95,6 +93,64 @@ export default class World extends Thing {
         this.models.funky.position.set(0, 0, 2);
         this.models.funky.scale.set(0.7,0.7,0.7);
         App.scene.add(this.models.funky);
+    }
+
+    setupPhysics() {
+
+        App.physics.objects.floor = new CANNON.Body({
+            mass: 0,
+            shape: new CANNON.Plane(),
+            position: new CANNON.Vec3(0, 0, 0)
+        });
+        App.physics.objects.floor.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+        App.physics.world.addBody(App.physics.objects.floor);
+
+        App.physics.objects.user = new CANNON.Body({
+            mass: 70, // kg
+            position: new CANNON.Vec3(0, 0.3, 0.3), // m
+            shape: new CANNON.Sphere(0.3)
+        });
+        App.physics.world.addBody(App.physics.objects.user);
+
+        App.physics.bindings.push({
+            src: App.physics.objects.user.position,
+            dest: App.controls.target,
+            offset: { x: 0, y: 1.5, z: 0 }
+        });
+
+        App.physics.world.addBody(new CANNON.Body({
+            mass: 0,
+            shape: new CANNON.Box(new CANNON.Vec3(5, 1.5, .25)),
+            position: new CANNON.Vec3(0, 1.5, -5.25)
+        }));
+        App.physics.world.addBody(new CANNON.Body({
+            mass: 0,
+            shape: new CANNON.Box(new CANNON.Vec3(2.3, 1.5, .25)),
+            position: new CANNON.Vec3(-2.7, 1.5, 5.25)
+        }));
+        App.physics.world.addBody(new CANNON.Body({
+            mass: 0,
+            shape: new CANNON.Box(new CANNON.Vec3(2.3, 1.5, .25)),
+            position: new CANNON.Vec3(+2.7, 1.5, 5.25)
+        }));
+        App.physics.world.addBody(new CANNON.Body({
+            mass: 0,
+            shape: new CANNON.Box(new CANNON.Vec3(.25, 1.5, 5)),
+            position: new CANNON.Vec3(-5.25, 1.5, 0)
+        }));
+        App.physics.world.addBody(new CANNON.Body({
+            mass: 0,
+            shape: new CANNON.Box(new CANNON.Vec3(.25, 1.5, 5)),
+            position: new CANNON.Vec3(5.25, 1.5, 0)
+        }));
+    }
+
+    setupScene() {
+
+        Log.info(`Setting up scene...`);
+
+        this.setupModels();
+        this.setupPhysics();
 
         this.raycaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
@@ -133,22 +189,12 @@ export default class World extends Thing {
 
     move(direction, strafe) {
 
-        if (App.baseXrReferenceSpace) {
-
-            const offsetPosition = { x: x, y: 0, z: y, w: 1 };
-            const offsetRotation = new THREE.Quaternion();
-            const transform = new XRRigidTransform(offsetPosition, offsetRotation);
-            const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace(transform);
-    
-            App.renderer.xr.setReferenceSpace(teleportSpaceOffset);
-        }
-        else {
+        if (!App.baseXrReferenceSpace) {
 
             var cameraDirection = new THREE.Vector3();
             App.camera.getWorldDirection(cameraDirection);
             cameraDirection.y = 0;
             cameraDirection.normalize();
-
 
             var strafeDirection = new THREE.Vector3();
             strafeDirection.copy(cameraDirection);
@@ -168,22 +214,11 @@ export default class World extends Thing {
                 (1 - Math.abs(this.upVector.z)) * (cameraDirection.z + strafeDirection.z)
             );
 
-            var newPosition = new THREE.Vector3();
-            newPosition.copy(App.controls.target);
-            newPosition.add(moveDirection);
-            newPosition.add(moveDirection);
+            App.physics.objects.user.position.x += moveDirection.x;
+            App.physics.objects.user.position.y += moveDirection.y;
+            App.physics.objects.user.position.z += moveDirection.z;
 
-            this.raycaster.ray.origin.copy(newPosition);
-            this.raycaster.ray.direction.copy(this.downVector);
-    
-            const intersects = this.raycaster.intersectObjects(this.floor);
-    
-            if (intersects.length > 0) {
-
-                App.camera.position.add(moveDirection);
-                App.controls.target.add(moveDirection);
-                App.controls.update();
-            }
+            App.physics.objects.user.velocity.set(0,0,0);
         }
     }
 

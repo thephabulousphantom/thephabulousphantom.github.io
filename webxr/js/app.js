@@ -5,6 +5,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import Tween from "./lib/tween/tween.esm.js";
 import Colors from "./colors.js";
 import World from "./world.js";
+import Physics from "./physics.js";
 import Controller from "./controller.js";
 
 class App {
@@ -36,6 +37,8 @@ class App {
 
         //this.controllers = this.getControllers(this.scene, this.renderer);
         this.vrButton = App.getVrButton(document.body, this.renderer);
+
+        this.physics = App.getPhysics();
         this.world = App.getWorld();
 
         this.updateViewDimensions();
@@ -78,17 +81,25 @@ class App {
 
     static getControls(camera, container) {
 
-        var controls = new OrbitControls(camera, container);
+        const controls = new OrbitControls(camera, container);
         controls.update();
 
         return controls;
+    }
+
+    static getPhysics() {
+
+        Log.info(`Initialising physics...`);
+
+        const physics = new Physics();
+        return physics;
     }
 
     static getWorld() {
 
         Log.info(`Initialising world...`);
 
-        var world = new World();
+        const world = new World();
         return world;
     }
 
@@ -155,6 +166,7 @@ class App {
         this.elapsed = this.time - this.previousTime;
 
         Tween.update(this.time);
+        this.physics.update(this.time, this.elapsed);
         this.world.update(this.time, this.elapsed);
     }
 }
