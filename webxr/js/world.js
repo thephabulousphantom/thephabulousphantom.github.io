@@ -25,6 +25,8 @@ export default class World extends Thing {
 
         super.init();
 
+        this.previousTeleportTarget = new THREE.Vector3(0, 0, 0);
+
         ModelLibrary.onLoaded(this.setupScene.bind(this));
     }
 
@@ -247,12 +249,45 @@ export default class World extends Thing {
 
             if (App.world.teleportTarget) {
 
-                const offsetPosition = { x: - App.world.teleportTarget.x, y: - App.world.teleportTarget.y, z: - App.world.teleportTarget.z, w: 1 };
+                var averageCameraPosition = new THREE.Vector3(0, 0, 0);
+
+                try {
+
+                    for (var i = 0; i < App.renderer.xr.camera.cameras.length; i++) {
+
+                        const camera = App.renderer.xr.camera.cameras[i];
+                        const cameraPosition = new THREE.Vector3();
+                        cameraPosition.setFromMatrixPosition(camera.matrixWorld);
+                        averageCameraPosition.x += cameraPosition.x;
+                        averageCameraPosition.y += cameraPosition.y;
+                        averageCameraPosition.z += cameraPosition.z;
+                    }
+                    averageCameraPosition.x /= App.renderer.xr.camera.cameras.length;
+                    averageCameraPosition.y /= App.renderer.xr.camera.cameras.length;
+                    averageCameraPosition.z /= App.renderer.xr.camera.cameras.length;
+                }
+                catch (ex) {
+
+                }
+
+                var userXrRelativePosition = new THREE.Vector3(
+                    this.previousTeleportTarget.x - averageCameraPosition.x,
+                    this.previousTeleportTarget.y - averageCameraPosition.y,
+                    this.previousTeleportTarget.z - averageCameraPosition.z
+                );
+
+                const offsetPosition = {
+                    x: - App.world.teleportTarget.x - userXrRelativePosition.x,
+                    y: - App.world.teleportTarget.y - userXrRelativePosition.y,
+                    z: - App.world.teleportTarget.z - userXrRelativePosition.z,
+                    w: 1
+                };
                 const offsetRotation = new THREE.Quaternion();
                 const transform = new XRRigidTransform( offsetPosition, offsetRotation );
                 const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
         
                 App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
+                this.previousTeleportTarget.copy( App.world.teleportTarget );
     
                 App.world.teleportTarget = null;
             }
