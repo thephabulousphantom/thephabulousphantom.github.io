@@ -277,9 +277,9 @@ export default class World extends Thing {
                 );
 
                 const offsetPosition = {
-                    x: - App.world.teleportTarget.x - userXrRelativePosition.x,
-                    y: - App.world.teleportTarget.y - userXrRelativePosition.y,
-                    z: - App.world.teleportTarget.z - userXrRelativePosition.z,
+                    x: - App.world.teleportTarget.x - averageCameraPosition.x,
+                    y: - App.world.teleportTarget.y - averageCameraPosition.y,
+                    z: - App.world.teleportTarget.z - averageCameraPosition.z,
                     w: 1
                 };
                 const offsetRotation = new THREE.Quaternion();
