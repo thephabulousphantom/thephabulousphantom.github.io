@@ -273,7 +273,7 @@ export default class World extends Thing {
 
                 var userXrRelativePosition = new THREE.Vector3(
                     this.previousTeleportTarget.x - averageCameraPosition.x,
-                    this.previousTeleportTarget.y - averageCameraPosition.y,
+                    0, //this.previousTeleportTarget.y - averageCameraPosition.y,
                     this.previousTeleportTarget.z - averageCameraPosition.z
                 );
 
