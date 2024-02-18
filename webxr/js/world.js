@@ -253,7 +253,7 @@ export default class World extends Thing {
 
                 try {
 
-                    const xrCameras = App.renderer.xr.getCamera().cameras;
+                    /*const xrCameras = App.renderer.xr.getCamera().cameras;
                     for (var i = 0; i < xrCameras.length; i++) {
 
                         const camera = xrCameras[i];
@@ -265,7 +265,8 @@ export default class World extends Thing {
                     }
                     averageCameraPosition.x /= App.renderer.xr.camera.cameras.length;
                     averageCameraPosition.y /= App.renderer.xr.camera.cameras.length;
-                    averageCameraPosition.z /= App.renderer.xr.camera.cameras.length;
+                    averageCameraPosition.z /= App.renderer.xr.camera.cameras.length;*/
+                    averageCameraPosition.setFromMatrixPosition(App.camera.matrixWorld);
                 }
                 catch (ex) {
 
@@ -315,7 +316,5 @@ export default class World extends Thing {
 
             this.move(0, .1);
         }
-
-        App.renderer.render(App.scene, App.camera);
     }
 };

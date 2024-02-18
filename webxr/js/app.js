@@ -177,6 +177,8 @@ class App {
         this.camera.position.x += this.controls.target.x - prevX;
         this.camera.position.y += this.controls.target.y - prevY;
         this.camera.position.z += this.controls.target.z - prevZ;
+
+        this.renderer.render(this.scene, this.camera);
     }
 }
 
