@@ -253,9 +253,10 @@ export default class World extends Thing {
 
                 try {
 
-                    for (var i = 0; i < App.renderer.xr.camera.cameras.length; i++) {
+                    const xrCameras = App.renderer.xr.getCamera().cameras;
+                    for (var i = 0; i < xrCameras.length; i++) {
 
-                        const camera = App.renderer.xr.camera.cameras[i];
+                        const camera = xrCameras[i];
                         const cameraPosition = new THREE.Vector3();
                         cameraPosition.setFromMatrixPosition(camera.matrixWorld);
                         averageCameraPosition.x += cameraPosition.x;
@@ -277,9 +278,9 @@ export default class World extends Thing {
                 );
 
                 const offsetPosition = {
-                    x: - App.world.teleportTarget.x - averageCameraPosition.x,
-                    y: - App.world.teleportTarget.y - averageCameraPosition.y,
-                    z: - App.world.teleportTarget.z - averageCameraPosition.z,
+                    x: - App.world.teleportTarget.x - userXrRelativePosition.x,
+                    y: - App.world.teleportTarget.y - userXrRelativePosition.y,
+                    z: - App.world.teleportTarget.z - userXrRelativePosition.z,
                     w: 1
                 };
                 const offsetRotation = new THREE.Quaternion();
