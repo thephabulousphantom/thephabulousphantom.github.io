@@ -221,24 +221,30 @@ export default class World extends Thing {
             App.controller.marker.visible = false;
         }
 
+        var movex = 0, movey = 0;
         if (App.controller.direction.Up) {
 
-            this.move(.1, 0);
+            movex = 0.1;
         }
 
         if (App.controller.direction.Down) {
 
-            this.move(-.1, 0);
+            movex = -0.1;
         }
 
         if (App.controller.direction.Left) {
 
-            this.move(0, -.1);
+            movey = -0.1;
         }
 
         if (App.controller.direction.Right) {
 
-            this.move(0, .1);
+            movey = 0.1;
+        }
+
+        if (movex != 0 || movey != 0) {
+
+            this.move(movex, movey);
         }
     }
 };

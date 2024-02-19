@@ -102,7 +102,7 @@ class App {
                 1000
             );
 
-        camera.position.set(0, 1.8, 0.3);
+        camera.position.set(0, 2, 0.3);
 
         return camera;
     }
@@ -123,7 +123,7 @@ class App {
 
         physics.objects.user = new CANNON.Body({
             mass: 70, // kg
-            position: new CANNON.Vec3(0, 0.3, 0), // m
+            position: new CANNON.Vec3(0, 0.5, 0), // m
             shape: new CANNON.Sphere(0.3)
         });
 
@@ -219,34 +219,32 @@ class App {
             var cameraWorldPosition = new THREE.Vector3();
             cameraWorldPosition.setFromMatrixPosition(this.camera.matrixWorld);
 
-            this.user.position.set(
-                cameraWorldPosition.x,
-                this.user.position.y,
-                cameraWorldPosition.z
-            );
+            this.physics.objects.user.position.x = cameraWorldPosition.x;
+            //this.physics.objects.user.position.y = cameraWorldPosition.y;
+            this.physics.objects.user.position.z = cameraWorldPosition.z;
         }
 
         const previousUserPosition = new THREE.Vector3();
-        previousUserPosition.copy(this.user.position);
+        previousUserPosition.copy(this.physics.objects.user.position);
 
         this.physics.update(this.time, this.elapsed);
         this.world.update(this.time, this.elapsed);
 
         if (this.renderer.xr.isPresenting) {
 
-            const cameraDirection = new THREE.Vector3();
+            /*const cameraDirection = new THREE.Vector3();
             this.camera.getWorldDirection(cameraDirection);
             this.user.lookAt(
                 this.user.position.x + cameraDirection.x,
                 this.user.position.y,
                 this.user.position.z + cameraDirection.z,
-            );
+            );*/
         }
         else {
 
-            this.camera.position.x += this.user.position.x - previousUserPosition.x;
-            this.camera.position.y += this.user.position.y - previousUserPosition.y;
-            this.camera.position.z += this.user.position.z - previousUserPosition.z;
+            this.camera.position.x += this.physics.objects.user.position.x - previousUserPosition.x;
+            this.camera.position.y += this.physics.objects.user.position.y - previousUserPosition.y;
+            this.camera.position.z += this.physics.objects.user.position.z - previousUserPosition.z;
 
             const cameraDirection = new THREE.Vector3();
             this.camera.getWorldDirection(cameraDirection);
