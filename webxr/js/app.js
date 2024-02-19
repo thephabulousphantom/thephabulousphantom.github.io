@@ -159,11 +159,9 @@ class App {
             });
 
         renderer.shadowMap.enabled = true;
-        //renderer.shadowMap.type = THREE.BasicShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setClearColor(Colors.transparent, 0);
-        //renderer.physicallyCorrectLights = true;
 
         container.appendChild( renderer.domElement );
 
@@ -232,8 +230,8 @@ class App {
 
         if (this.renderer.xr.isPresenting) {
 
-            const cameraDirection = new THREE.Vector3();
-            this.camera.getWorldDirection(cameraDirection);
+            const el = this.camera.matrixWorld.elements;
+            const cameraDirection = new THREE.Vector3(-el[8], -el[9], -el[10]).normalize();
             this.user.lookAt(
                 this.user.position.x + cameraDirection.x,
                 this.user.position.y,
