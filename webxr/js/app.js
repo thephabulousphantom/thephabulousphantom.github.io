@@ -217,23 +217,44 @@ class App {
         const previousUserPosition = new THREE.Vector3();
         previousUserPosition.copy(this.user.position);
 
+        if (this.renderer.xr.isPresenting) {
+
+            this.user.position.set(
+                this.camera.position.x,
+                this.user.position.y,
+                this.camera.position.z
+            );
+        }
+
         this.physics.update(this.time, this.elapsed);
         this.world.update(this.time, this.elapsed);
 
-        this.camera.position.x += this.user.position.x - previousUserPosition.x;
-        this.camera.position.y += this.user.position.y - previousUserPosition.y;
-        this.camera.position.z += this.user.position.z - previousUserPosition.z;
+        if (this.renderer.xr.isPresenting) {
 
-        const cameraDirection = new THREE.Vector3();
-        this.camera.getWorldDirection(cameraDirection);
-        this.user.lookAt(
-            this.user.position.x + cameraDirection.x,
-            this.user.position.y,
-            this.user.position.z + cameraDirection.z,
-        );
+            this.camera.position.copy(this.user.position);
 
-        if (!this.baseXrReferenceSpace) {
+            const cameraDirection = new THREE.Vector3();
+            this.camera.getWorldDirection(cameraDirection);
+            this.user.lookAt(
+                this.user.position.x + cameraDirection.x,
+                this.user.position.y,
+                this.user.position.z + cameraDirection.z,
+            );
+        }
+        else {
 
+            this.camera.position.x += this.user.position.x - previousUserPosition.x;
+            this.camera.position.y += this.user.position.y - previousUserPosition.y;
+            this.camera.position.z += this.user.position.z - previousUserPosition.z;
+
+            const cameraDirection = new THREE.Vector3();
+            this.camera.getWorldDirection(cameraDirection);
+            this.user.lookAt(
+                this.user.position.x + cameraDirection.x,
+                this.user.position.y,
+                this.user.position.z + cameraDirection.z,
+            );    
+    
             this.controls.target.set(this.user.position.x, (this.physics.objects.user.position.y - 0.3) + 1.8, this.user.position.z);
             this.controls.update();
         }

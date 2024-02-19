@@ -153,7 +153,7 @@ export default class World extends Thing {
 
     move(direction, strafe) {
 
-        if (App.baseXrReferenceSpace) {
+        if (App.renderer.isPresenting) {
 
             return;
         }
