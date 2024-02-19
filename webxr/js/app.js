@@ -102,7 +102,7 @@ class App {
                 1000
             );
 
-        camera.position.set(0, 2, 0.3);
+        camera.position.set(0, 2.8, 0.3);
 
         return camera;
     }
@@ -123,7 +123,7 @@ class App {
 
         physics.objects.user = new CANNON.Body({
             mass: 70, // kg
-            position: new CANNON.Vec3(0, 0.5, 0), // m
+            position: new CANNON.Vec3(0, 1.3, 0), // m
             shape: new CANNON.Sphere(0.3)
         });
 
@@ -232,13 +232,13 @@ class App {
 
         if (this.renderer.xr.isPresenting) {
 
-            /*const cameraDirection = new THREE.Vector3();
+            const cameraDirection = new THREE.Vector3();
             this.camera.getWorldDirection(cameraDirection);
             this.user.lookAt(
                 this.user.position.x + cameraDirection.x,
                 this.user.position.y,
                 this.user.position.z + cameraDirection.z,
-            );*/
+            );
         }
         else {
 
