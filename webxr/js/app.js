@@ -214,9 +214,6 @@ class App {
         const prevY = this.controls.target.y;
         const prevZ = this.controls.target.z;
 
-        const previousUserPosition = new THREE.Vector3();
-        previousUserPosition.copy(this.user.position);
-
         if (this.renderer.xr.isPresenting) {
 
             this.user.position.set(
@@ -226,12 +223,13 @@ class App {
             );
         }
 
+        const previousUserPosition = new THREE.Vector3();
+        previousUserPosition.copy(this.user.position);
+
         this.physics.update(this.time, this.elapsed);
         this.world.update(this.time, this.elapsed);
 
         if (this.renderer.xr.isPresenting) {
-
-            this.camera.position.copy(this.user.position);
 
             const cameraDirection = new THREE.Vector3();
             this.camera.getWorldDirection(cameraDirection);
