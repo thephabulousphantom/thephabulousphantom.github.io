@@ -216,10 +216,13 @@ class App {
 
         if (this.renderer.xr.isPresenting) {
 
+            var cameraWorldPosition = new THREE.Vector3();
+            cameraWorldPosition.setFromMatrixPosition(this.camera.matrixWorld);
+
             this.user.position.set(
-                this.camera.position.x,
+                cameraWorldPosition.x,
                 this.user.position.y,
-                this.camera.position.z
+                cameraWorldPosition.z
             );
         }
 
