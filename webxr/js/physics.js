@@ -35,4 +35,13 @@ export default class Physics extends Thing {
             this.bindings[i].dest.z = this.bindings[i].src.z + this.bindings[i].offset.z;
         }
     }
+
+    addBox(sx, sy, sz, x, y, z, m) {
+
+        this.world.addBody(new CANNON.Body({
+            mass: m,
+            shape: new CANNON.Box(new CANNON.Vec3(sx, sy, sz)),
+            position: new CANNON.Vec3(x, y, z)
+        }));
+    }
 }

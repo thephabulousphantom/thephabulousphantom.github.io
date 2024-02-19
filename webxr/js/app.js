@@ -27,6 +27,7 @@ class App {
             || (window.navigator && window.navigator.standalone === true);
 
         this.scene = App.getScene();
+        this.user = App.getUser(this.scene);
         this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
@@ -38,7 +39,9 @@ class App {
         //this.controllers = this.getControllers(this.scene, this.renderer);
         this.vrButton = App.getVrButton(document.body, this.renderer);
 
-        this.physics = App.getPhysics();
+        this.physics = App.getPhysics(this.user);
+
+        
         this.world = App.getWorld();
 
         this.updateViewDimensions();
@@ -64,6 +67,29 @@ class App {
         return scene;
     }
 
+    static getUser(scene) {
+
+        Log.info(`Initialising user avatar...`);
+
+        const geometryAvatar = new THREE.ConeGeometry(0.3, 0.6, 6); 
+        const geometryPhysics = new THREE.SphereGeometry(0.3, 6, 6); 
+        const material = new THREE.MeshBasicMaterial( {color: 0xaaaaaa} );
+        const userAvatar = new THREE.Mesh(geometryAvatar, material );
+        const physicsSphere = new THREE.Mesh(geometryPhysics, material );
+
+        physicsSphere.position.set(0, 0.3, 0);
+        physicsSphere.rotation.y = Math.PI / 6;
+        userAvatar.position.set(0, 0.3 * 2 + 0.6 / 2, 0);
+
+        const userContainer = new THREE.Group();
+        userContainer.add(physicsSphere);
+        userContainer.add(userAvatar);
+
+        scene.add(userContainer);
+
+        return userContainer;
+    }
+
     static getCamera() {
 
         Log.info(`Initialising camera...`);
@@ -76,6 +102,8 @@ class App {
                 1000
             );
 
+        camera.position.set(0, 1.8, 0.3);
+
         return camera;
     }
 
@@ -87,11 +115,26 @@ class App {
         return controls;
     }
 
-    static getPhysics() {
+    static getPhysics(user) {
 
         Log.info(`Initialising physics...`);
 
         const physics = new Physics();
+
+        physics.objects.user = new CANNON.Body({
+            mass: 70, // kg
+            position: new CANNON.Vec3(0, 0.3, 0), // m
+            shape: new CANNON.Sphere(0.3)
+        });
+
+        physics.world.addBody(physics.objects.user);
+
+        physics.bindings.push({
+            src: physics.objects.user.position,
+            dest: user.position,
+            offset: { x: 0, y: -0.3, z: 0 }
+        });
+
         return physics;
     }
 
@@ -171,12 +214,29 @@ class App {
         const prevY = this.controls.target.y;
         const prevZ = this.controls.target.z;
 
+        const previousUserPosition = new THREE.Vector3();
+        previousUserPosition.copy(this.user.position);
+
         this.physics.update(this.time, this.elapsed);
         this.world.update(this.time, this.elapsed);
 
-        this.camera.position.x += this.controls.target.x - prevX;
-        this.camera.position.y += this.controls.target.y - prevY;
-        this.camera.position.z += this.controls.target.z - prevZ;
+        this.camera.position.x += this.user.position.x - previousUserPosition.x;
+        this.camera.position.y += this.user.position.y - previousUserPosition.y;
+        this.camera.position.z += this.user.position.z - previousUserPosition.z;
+
+        const cameraDirection = new THREE.Vector3();
+        this.camera.getWorldDirection(cameraDirection);
+        this.user.lookAt(
+            this.user.position.x + cameraDirection.x,
+            this.user.position.y,
+            this.user.position.z + cameraDirection.z,
+        );
+
+        if (!this.baseXrReferenceSpace) {
+
+            this.controls.target.set(this.user.position.x, (this.physics.objects.user.position.y - 0.3) + 1.8, this.user.position.z);
+            this.controls.update();
+        }
 
         this.renderer.render(this.scene, this.camera);
     }

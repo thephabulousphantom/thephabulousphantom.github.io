@@ -25,8 +25,6 @@ export default class World extends Thing {
 
         super.init();
 
-        this.previousTeleportTarget = new THREE.Vector3(0, 0, 0);
-
         ModelLibrary.onLoaded(this.setupScene.bind(this));
     }
 
@@ -68,8 +66,6 @@ export default class World extends Thing {
         this.models.room = ModelLibrary.get("soba", {
             shader: Shaders.NoiseShader,
             materialToOverride: "interior",
-            /*material: THREE.MeshBasicMaterial,
-            color: new THREE.Color(0, 0.5, 1),*/
             shadow: false
         });
         this.models.room.position.set(0, 0, 0);
@@ -78,7 +74,6 @@ export default class World extends Thing {
         this.models.exterior = ModelLibrary.get("exterior", { material: THREE.MeshBasicMaterial, shadow: false });
         this.models.exterior.position.set(0, 0, 0);
         App.scene.add(this.models.exterior);
-
 
         this.floor = [];
         this.findChildren(App.scene, "walkable", this.floor);
@@ -107,44 +102,11 @@ export default class World extends Thing {
         App.physics.objects.floor.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
         App.physics.world.addBody(App.physics.objects.floor);
 
-        App.physics.objects.user = new CANNON.Body({
-            mass: 70, // kg
-            position: new CANNON.Vec3(0, 0.3, 0.3), // m
-            shape: new CANNON.Sphere(0.3)
-        });
-        App.physics.world.addBody(App.physics.objects.user);
-
-        App.physics.bindings.push({
-            src: App.physics.objects.user.position,
-            dest: App.controls.target,
-            offset: { x: 0, y: 1.5, z: 0 }
-        });
-
-        App.physics.world.addBody(new CANNON.Body({
-            mass: 0,
-            shape: new CANNON.Box(new CANNON.Vec3(5, 1.5, .25)),
-            position: new CANNON.Vec3(0, 1.5, -5.25)
-        }));
-        App.physics.world.addBody(new CANNON.Body({
-            mass: 0,
-            shape: new CANNON.Box(new CANNON.Vec3(2.3, 1.5, .25)),
-            position: new CANNON.Vec3(-2.7, 1.5, 5.25)
-        }));
-        App.physics.world.addBody(new CANNON.Body({
-            mass: 0,
-            shape: new CANNON.Box(new CANNON.Vec3(2.3, 1.5, .25)),
-            position: new CANNON.Vec3(+2.7, 1.5, 5.25)
-        }));
-        App.physics.world.addBody(new CANNON.Body({
-            mass: 0,
-            shape: new CANNON.Box(new CANNON.Vec3(.25, 1.5, 5)),
-            position: new CANNON.Vec3(-5.25, 1.5, 0)
-        }));
-        App.physics.world.addBody(new CANNON.Body({
-            mass: 0,
-            shape: new CANNON.Box(new CANNON.Vec3(.25, 1.5, 5)),
-            position: new CANNON.Vec3(5.25, 1.5, 0)
-        }));
+        App.physics.addBox(5.00, 1.5, 0.25, +0.00, 1.5, -5.25, 0);
+        App.physics.addBox(2.30, 1.5, 0.25, -2.70, 1.5, +5.25, 0);
+        App.physics.addBox(2.30, 1.5, 0.25, +2.70, 1.5, +5.25, 0);
+        App.physics.addBox(0.25, 1.5, 5.00, -5.25, 1.5, +0.00, 0);
+        App.physics.addBox(0.25, 1.5, 5.00, +5.25, 1.5, +0.00, 0);
     }
 
     setupScene() {
@@ -157,9 +119,9 @@ export default class World extends Thing {
         this.raycaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
 
-        App.camera.position.set(0, 1.8, 0.5);
+        /*App.camera.position.set(0, 1.8, 0.5);
         App.controls.target.set(0, 1.8, 0);
-        App.controls.update();
+        App.controls.update();*/
 
         this.teleportTarget = null;
 
@@ -191,37 +153,29 @@ export default class World extends Thing {
 
     move(direction, strafe) {
 
-        if (!App.baseXrReferenceSpace) {
+        if (App.baseXrReferenceSpace) {
 
-            var cameraDirection = new THREE.Vector3();
-            App.camera.getWorldDirection(cameraDirection);
-            cameraDirection.y = 0;
-            cameraDirection.normalize();
-
-            var strafeDirection = new THREE.Vector3();
-            strafeDirection.copy(cameraDirection);
-            strafeDirection.applyAxisAngle(this.downVector, Math.PI / 2);
-
-            cameraDirection.x *= direction;
-            cameraDirection.y *= direction;
-            cameraDirection.z *= direction;
-
-            strafeDirection.x *= strafe;
-            strafeDirection.y *= strafe;
-            strafeDirection.z *= strafe;
-
-            var moveDirection = new THREE.Vector3(
-                (1 - Math.abs(this.upVector.x)) * (cameraDirection.x + strafeDirection.x),
-                (1 - Math.abs(this.upVector.y)) * (cameraDirection.y + strafeDirection.y),
-                (1 - Math.abs(this.upVector.z)) * (cameraDirection.z + strafeDirection.z)
-            );
-
-            App.physics.objects.user.position.x += moveDirection.x;
-            App.physics.objects.user.position.y += moveDirection.y;
-            App.physics.objects.user.position.z += moveDirection.z;
-
-            App.physics.objects.user.velocity.set(0,0,0);
+            return;
         }
+
+        const userDirection = new THREE.Vector3();
+        App.user.getWorldDirection(userDirection);
+
+        var strafeDirection = new THREE.Vector3();
+        strafeDirection.copy(userDirection);
+        strafeDirection.applyAxisAngle(this.downVector, Math.PI / 2);
+
+        var moveDirection = new THREE.Vector3(
+            userDirection.x * direction + strafeDirection.x * strafe,
+            0, //cameraDirection.y * direction + strafeDirection.y * strafe,
+            userDirection.z * direction + strafeDirection.z * strafe
+        );
+
+        App.physics.objects.user.position.x += moveDirection.x;
+        App.physics.objects.user.position.y += moveDirection.y;
+        App.physics.objects.user.position.z += moveDirection.z;
+
+        App.physics.objects.user.velocity.set(0,0,0);
     }
 
     update(time, elapsed) {
@@ -249,39 +203,10 @@ export default class World extends Thing {
 
             if (App.world.teleportTarget) {
 
-                var averageCameraPosition = new THREE.Vector3(0, 0, 0);
-
-                try {
-
-                    /*const xrCameras = App.renderer.xr.getCamera().cameras;
-                    for (var i = 0; i < xrCameras.length; i++) {
-
-                        const camera = xrCameras[i];
-                        const cameraPosition = new THREE.Vector3();
-                        cameraPosition.setFromMatrixPosition(camera.matrixWorld);
-                        averageCameraPosition.x += cameraPosition.x;
-                        averageCameraPosition.y += cameraPosition.y;
-                        averageCameraPosition.z += cameraPosition.z;
-                    }
-                    averageCameraPosition.x /= App.renderer.xr.camera.cameras.length;
-                    averageCameraPosition.y /= App.renderer.xr.camera.cameras.length;
-                    averageCameraPosition.z /= App.renderer.xr.camera.cameras.length;*/
-                    averageCameraPosition.setFromMatrixPosition(App.camera.matrixWorld);
-                }
-                catch (ex) {
-
-                }
-
-                var userXrRelativePosition = new THREE.Vector3(
-                    this.previousTeleportTarget.x - averageCameraPosition.x,
-                    0, //this.previousTeleportTarget.y - averageCameraPosition.y,
-                    this.previousTeleportTarget.z - averageCameraPosition.z
-                );
-
                 const offsetPosition = {
-                    x: - App.world.teleportTarget.x - userXrRelativePosition.x,
-                    y: - App.world.teleportTarget.y - userXrRelativePosition.y,
-                    z: - App.world.teleportTarget.z - userXrRelativePosition.z,
+                    x: - App.world.teleportTarget.x,
+                    y: - App.world.teleportTarget.y,
+                    z: - App.world.teleportTarget.z,
                     w: 1
                 };
                 const offsetRotation = new THREE.Quaternion();
@@ -289,7 +214,6 @@ export default class World extends Thing {
                 const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
         
                 App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
-                this.previousTeleportTarget.copy( App.world.teleportTarget );
     
                 App.world.teleportTarget = null;
             }
