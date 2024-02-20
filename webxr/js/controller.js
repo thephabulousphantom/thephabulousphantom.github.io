@@ -135,7 +135,7 @@ export default class Controller {
         const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
         const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
         //const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
-        const controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
+        var controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
 
         if (this.handedness == "left") {
 
