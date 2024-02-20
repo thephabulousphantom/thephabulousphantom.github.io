@@ -132,15 +132,24 @@ export default class Controller {
 
         // controller model
 
-        const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
+        /*const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
         const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
-        //const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
+        const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); */
         const controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
 
-        /*if (this.handedness == "left") {
+        try {
 
-            controllerModel.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
-        }*/
+            if (this.handedness == "left") {
+
+                for (var i = 0; i < controllerModel.children; i++) {
+    
+                    controllerModel.children[i].applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+                }
+            }
+        }
+        catch {
+
+        }
 
         this.controllerGrip.add(controllerModel);
 
