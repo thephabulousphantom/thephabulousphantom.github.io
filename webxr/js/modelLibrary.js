@@ -107,11 +107,11 @@ class ModelLibrary {
 
         Log.info(`Instantiating model ${modelName}.`);
 
-        const materialName = options.materialToOverride;
-        const forceShader = options.shader;
-        const forceMaterial = options.material;
-        const forceColor = options.color;
-        const shadow = options.shadow;
+        const materialName = options && options.materialToOverride;
+        const forceShader = options && options.shader;
+        const forceMaterial = options && options.material;
+        const forceColor = options && options.color;
+        const shadow = options && options.shadow;
 
         const model = this.models[modelName].clone();
 
