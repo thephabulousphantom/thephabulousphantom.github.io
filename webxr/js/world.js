@@ -191,34 +191,37 @@ export default class World extends Thing {
         
         App.controls.update();
 
-        if (App.controller.hand1.selecting) {
+        if (App.controller.initialised) {
+            
+            if (App.controller.hand1.selecting) {
 
-            this.updateTeleportTarget(App.controller.hand1.controller);   
-        }
-        else if (App.controller.hand2.selecting) {
-
-            this.updateTeleportTarget(App.controller.hand2.controller);
-        }
-        else if (App.controller.marker.visible) {
-
-            if (App.world.teleportTarget) {
-
-                const offsetPosition = {
-                    x: - App.world.teleportTarget.x,
-                    y: - App.world.teleportTarget.y,
-                    z: - App.world.teleportTarget.z,
-                    w: 1
-                };
-                const offsetRotation = new THREE.Quaternion();
-                const transform = new XRRigidTransform( offsetPosition, offsetRotation );
-                const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
-        
-                App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
-    
-                App.world.teleportTarget = null;
+                this.updateTeleportTarget(App.controller.hand1.controller);   
             }
-
-            App.controller.marker.visible = false;
+            else if (App.controller.hand2.selecting) {
+    
+                this.updateTeleportTarget(App.controller.hand2.controller);
+            }
+            else if (App.controller.marker.visible) {
+    
+                if (App.world.teleportTarget) {
+    
+                    const offsetPosition = {
+                        x: - App.world.teleportTarget.x,
+                        y: - App.world.teleportTarget.y,
+                        z: - App.world.teleportTarget.z,
+                        w: 1
+                    };
+                    const offsetRotation = new THREE.Quaternion();
+                    const transform = new XRRigidTransform( offsetPosition, offsetRotation );
+                    const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
+            
+                    App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
+        
+                    App.world.teleportTarget = null;
+                }
+    
+                App.controller.marker.visible = false;
+            }
         }
 
         var movex = 0, movey = 0;

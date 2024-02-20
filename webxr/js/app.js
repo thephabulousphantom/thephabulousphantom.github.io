@@ -34,7 +34,6 @@ class App {
         
         this.controller = new Controller();
         this.controller.init(this.renderer.xr);
-        this.controller.addControllersToScene(this.scene);
 
         //this.controllers = this.getControllers(this.scene, this.renderer);
         this.vrButton = App.getVrButton(document.body, this.renderer);

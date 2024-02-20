@@ -7,6 +7,7 @@ class ModelLibrary {
 
     modelNames = [
         "soba",
+        "hand",
         "exterior",
         "pah2logo",
         "funky"

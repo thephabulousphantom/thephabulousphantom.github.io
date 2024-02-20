@@ -1,8 +1,10 @@
 import Log from "./log.js";
 import * as THREE from "three";
+import ModelLibrary from "./modelLibrary.js";
 
 export default class Controller {
 
+    initialised = false;
     marker = null;
     hand1 = null;
     hand2 = null;
@@ -22,11 +24,21 @@ export default class Controller {
 
     init(xr) {
 
+        ModelLibrary.onLoaded(this.setupModels.bind(this));        
+    }
+
+    setupModels() {
+
         // controller model
 
-        const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
+        /*const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
         const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
-        const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
+        const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); */
+        const controllerModel = ModelLibrary.get("hand"/*, {
+            shader: Shaders.NoiseShader,
+            materialToOverride: "interior",
+            shadow: false
+        }*/);
 
 
         // ray model
@@ -51,8 +63,12 @@ export default class Controller {
         this.marker.position.set(0, 1, 0);
         this.marker.visible = false;
 
+        this.addControllersToScene(App.scene);
+
         window.addEventListener("keydown", this.onKeyDown.bind(this));
         window.addEventListener("keyup", this.onKeyUp.bind(this));
+
+        this.initialised = true;
     }
 
     onKeyDown(evt) {
