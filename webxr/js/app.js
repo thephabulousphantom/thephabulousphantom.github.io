@@ -70,7 +70,8 @@ class App {
         const geometryPhysics = new THREE.SphereGeometry(0.3, 6, 6); 
         const material = new THREE.MeshLambertMaterial( {color: 0xaaaaaa} );
         const userAvatar = new THREE.Mesh(geometryAvatar, material );
-        
+        //const userAvatar = ModelLibrary.get("hand");
+
         const physicsSphere = new THREE.Mesh(geometryPhysics, material );
 
         physicsSphere.position.set(0, 0.3, 0);

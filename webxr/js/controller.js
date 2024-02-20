@@ -141,10 +141,7 @@ export default class Controller {
 
             if (this.handedness == "left") {
 
-                for (var i = 0; i < controllerModel.children; i++) {
-    
-                    controllerModel.children[i].applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
-                }
+                controllerModel.scale.x = -1;
             }
         }
         catch {
