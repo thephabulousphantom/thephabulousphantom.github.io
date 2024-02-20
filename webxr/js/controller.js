@@ -25,33 +25,16 @@ export default class Controller {
 
     init(xr) {
 
-        ModelLibrary.onLoaded(this.setupModels.bind(this));        
-        //window.addEventListener("load", this.setupModels.bind(this));
-        //this.setupModels();
+        this.setupModels(xr);
     }
 
-    setupModels() {
-
-        // controller model
-
-        const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
-        const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
-        const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
-        //const controllerModel = ModelLibrary.get("hand");
-
-
-        // ray model
-
-        const rayGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -5 ) ] );
-        const rayMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
-        const rayModel = new THREE.Line( rayGeometry, rayMaterial );
-        rayModel.scale.z = 10;
+    setupModels(xr) {
 
 
         // controllers
 
-        this.hand1 = this.getHand(App.renderer.xr, 0, controllerModel, rayModel);
-        this.hand2 = this.getHand(App.renderer.xr, 1, controllerModel, rayModel);
+        this.hand1 = this.getHand(xr, 0);
+        this.hand2 = this.getHand(xr, 1);
 
 
         // teleport marker
@@ -128,16 +111,12 @@ export default class Controller {
         }
     }
 
-    getHand(xr, x, controllerModel, rayModel) {
+    getHand(xr, x) {
 
         const hand = {};
         hand.selecting = false;
         hand.controller = xr.getController(x);
-        hand.controller.add(rayModel.clone());
-        hand.controller.children[0].visible = false;
-
         hand.controllerGrip = xr.getControllerGrip(x);
-        hand.controllerGrip.add(controllerModel.clone());
 
         hand.controller.addEventListener("connected", this.onControllerConnected.bind(hand));
         hand.controller.addEventListener("disconnected", this.onControllerDisconnected.bind(hand));
@@ -150,6 +129,27 @@ export default class Controller {
     onControllerConnected(evt) {
 
         this.handedness = evt.data.handedness;
+
+        // controller model
+
+        const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
+        const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
+        //const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
+        const controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
+
+        this.controllerGrip.add(controllerModel);
+
+
+        // ray model
+
+        const rayGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -5 ) ] );
+        const rayMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        const rayModel = new THREE.Line( rayGeometry, rayMaterial );
+        rayModel.scale.z = 10;
+
+        this.controller.add(rayModel);
+        this.controller.children[0].visible = false;
+        
         
         if (this.handedness == "right") {
 

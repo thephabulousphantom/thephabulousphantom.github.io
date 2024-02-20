@@ -50,7 +50,7 @@ class ModelLibrary {
             callback();
         }
         else {
-            
+
             this.onLoadCompleteCallbacks.push(callback);
         }
     }
@@ -67,8 +67,6 @@ class ModelLibrary {
         });
 
         Log.info(`GLTF loaded: ${modelName}`);
-
-        
         
         this.models[modelName] = gltf.scene;
 
@@ -101,6 +99,7 @@ class ModelLibrary {
             }
             catch (ex) {
 
+                Log.error(`Callback error: ${ex.toString()}`);
             }
         }
     }

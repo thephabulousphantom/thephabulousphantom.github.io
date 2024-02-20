@@ -18,7 +18,6 @@ export default class World extends Thing {
     constructor() {
 
         super();
-        
     }
 
     init() {

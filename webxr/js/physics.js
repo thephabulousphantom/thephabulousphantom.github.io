@@ -9,11 +9,6 @@ export default class Physics extends Thing {
     constructor() {
 
         super();
-    }
-
-    init() {
-
-        super.init();
 
         this.world = new CANNON.World();
         this.world.gravity.set(0, -9, 0);

@@ -13,8 +13,7 @@ class App {
 
     constructor() {
 
-        window.addEventListener("load", this.init.bind(this));
-        //ModelLibrary.onLoaded(this.init.bind(this));
+        ModelLibrary.onLoaded(this.init.bind(this));
     }
 
     init() {
@@ -69,7 +68,7 @@ class App {
 
         const geometryAvatar = new THREE.ConeGeometry(0.3, 0.6, 6); 
         const geometryPhysics = new THREE.SphereGeometry(0.3, 6, 6); 
-        const material = new THREE.MeshBasicMaterial( {color: 0xaaaaaa} );
+        const material = new THREE.MeshLambertMaterial( {color: 0xaaaaaa} );
         const userAvatar = new THREE.Mesh(geometryAvatar, material );
         
         const physicsSphere = new THREE.Mesh(geometryPhysics, material );

@@ -6,7 +6,7 @@ export default class Thing {
 
         if (document.readyState === "complete") {
 
-            this.init();
+            setTimeout(this.init.bind(this), 0);
         }
         else {
 
