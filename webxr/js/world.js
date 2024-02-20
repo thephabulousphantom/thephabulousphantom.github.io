@@ -106,6 +106,7 @@ export default class World extends Thing {
         App.physics.addBox(2.30, 1.5, 0.25, +2.70, 1.5, +5.25, 0);
         App.physics.addBox(0.25, 1.5, 5.00, -5.25, 1.5, +0.00, 0);
         App.physics.addBox(0.25, 1.5, 5.00, +5.25, 1.5, +0.00, 0);
+        App.physics.addBox(0.24, 0.95, 0.24, 0, 4.5, 0.475, 0);
     }
 
     setupScene() {

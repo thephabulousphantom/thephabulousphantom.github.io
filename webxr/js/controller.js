@@ -116,7 +116,24 @@ export default class Controller {
         const hand = {};
         hand.selecting = false;
         hand.controller = xr.getController(x);
+
+        // ray model
+
+        const rayGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -5 ) ] );
+        const rayMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        const rayModel = new THREE.Line( rayGeometry, rayMaterial );
+        rayModel.scale.z = 10;
+
+        hand.controller.add(rayModel);
+        hand.controller.children[0].visible = false;
+
+
         hand.controllerGrip = xr.getControllerGrip(x);
+
+        // hand model
+
+        const controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
+        hand.controllerGrip.add(controllerModel);
 
         hand.controller.addEventListener("connected", this.onControllerConnected.bind(hand));
         hand.controller.addEventListener("disconnected", this.onControllerDisconnected.bind(hand));
@@ -130,40 +147,12 @@ export default class Controller {
 
         this.handedness = evt.data.handedness;
 
-        // controller model
-
-        const controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
-
         try {
 
-            if (this.handedness == "left") {
-
-                controllerModel.scale.x = -1;
-            }
+            this.controllerGrip.children[0].scale.x = this.handedness == "left" ? -1 : 1;
         }
         catch {
 
-        }
-
-        this.controllerGrip.add(controllerModel);
-
-
-        // ray model
-
-        const rayGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -5 ) ] );
-        const rayMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
-        const rayModel = new THREE.Line( rayGeometry, rayMaterial );
-        rayModel.scale.z = 10;
-
-        this.controller.add(rayModel);
-        this.controller.children[0].visible = false;
-        
-        
-        if (this.handedness == "right") {
-
-            this.controller.children[0].scale.x = 
-            this.controller.children[0].scale.y = 
-            this.controller.children[0].scale.z = 1.5;
         }
 
         this.controller.connected = true;
@@ -202,5 +191,7 @@ export default class Controller {
     }
 
     update(time, elapsed) {
+
+        
     }
 }
