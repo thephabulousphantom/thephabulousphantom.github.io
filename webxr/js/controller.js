@@ -135,12 +135,12 @@ export default class Controller {
         const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
         const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
         //const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
-        var controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
+        const controllerModel = ModelLibrary.get("hand", { forceMaterial: THREE.MeshLambertMaterial });
 
-        if (this.handedness == "left") {
+        /*if (this.handedness == "left") {
 
             controllerModel.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
-        }
+        }*/
 
         this.controllerGrip.add(controllerModel);
 
