@@ -119,10 +119,6 @@ export default class World extends Thing {
         this.raycaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
 
-        /*App.camera.position.set(0, 1.8, 0.5);
-        App.controls.target.set(0, 1.8, 0);
-        App.controls.update();*/
-
         this.teleportTarget = null;
 
         Log.info(`Scene set up.`);
@@ -192,7 +188,7 @@ export default class World extends Thing {
         App.controls.update();
 
         if (App.controller.initialised) {
-            
+
             if (App.controller.hand1.selecting) {
 
                 this.updateTeleportTarget(App.controller.hand1.controller);   

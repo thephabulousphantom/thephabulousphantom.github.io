@@ -45,11 +45,13 @@ class ModelLibrary {
 
     onLoaded(callback) {
 
-        this.onLoadCompleteCallbacks.push(callback);
-
         if (this.modelsLoaded == this.modelsCount) {
 
             callback();
+        }
+        else {
+            
+            this.onLoadCompleteCallbacks.push(callback);
         }
     }
 

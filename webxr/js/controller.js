@@ -1,5 +1,6 @@
 import Log from "./log.js";
 import * as THREE from "three";
+import App from "./app.js";
 import ModelLibrary from "./modelLibrary.js";
 
 export default class Controller {
@@ -25,20 +26,18 @@ export default class Controller {
     init(xr) {
 
         ModelLibrary.onLoaded(this.setupModels.bind(this));        
+        //window.addEventListener("load", this.setupModels.bind(this));
+        //this.setupModels();
     }
 
     setupModels() {
 
         // controller model
 
-        /*const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
+        const controllerGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 ); 
         const controllerMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} ); 
-        const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); */
-        const controllerModel = ModelLibrary.get("hand"/*, {
-            shader: Shaders.NoiseShader,
-            materialToOverride: "interior",
-            shadow: false
-        }*/);
+        const controllerModel = new THREE.Mesh( controllerGeometry, controllerMaterial ); 
+        //const controllerModel = ModelLibrary.get("hand");
 
 
         // ray model
@@ -51,8 +50,8 @@ export default class Controller {
 
         // controllers
 
-        this.hand1 = this.getHand(xr, 0, controllerModel, rayModel);
-        this.hand2 = this.getHand(xr, 1, controllerModel, rayModel);
+        this.hand1 = this.getHand(App.renderer.xr, 0, controllerModel, rayModel);
+        this.hand2 = this.getHand(App.renderer.xr, 1, controllerModel, rayModel);
 
 
         // teleport marker

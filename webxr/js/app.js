@@ -7,12 +7,14 @@ import Colors from "./colors.js";
 import World from "./world.js";
 import Physics from "./physics.js";
 import Controller from "./controller.js";
+import ModelLibrary from "./modelLibrary.js";
 
 class App {
 
     constructor() {
 
         window.addEventListener("load", this.init.bind(this));
+        //ModelLibrary.onLoaded(this.init.bind(this));
     }
 
     init() {
@@ -28,27 +30,22 @@ class App {
 
         this.scene = App.getScene();
         this.user = App.getUser(this.scene);
+        this.physics = App.getPhysics(this.user);
+        this.world = App.getWorld();
         this.camera = App.getCamera();
         this.renderer = App.getRenderer(this.appContainer, this.update.bind(this));
         this.controls = App.getControls(this.camera, this.renderer.domElement);
-        
+
         this.controller = new Controller();
         this.controller.init(this.renderer.xr);
 
-        //this.controllers = this.getControllers(this.scene, this.renderer);
-        this.vrButton = App.getVrButton(document.body, this.renderer);
-
-        this.physics = App.getPhysics(this.user);
-
-        
-        this.world = App.getWorld();
-
-        this.updateViewDimensions();
-
         window.addEventListener("resize", this.updateViewDimensions.bind(this));
+        this.updateViewDimensions();
 
         this.renderer.xr.addEventListener( "sessionstart", this.onXrSessionStart.bind(this));
         this.renderer.xr.enabled = true;
+
+        this.vrButton = App.getVrButton(document.body, this.renderer);
 
         Log.info(`App initialised.`);
     }
@@ -74,6 +71,7 @@ class App {
         const geometryPhysics = new THREE.SphereGeometry(0.3, 6, 6); 
         const material = new THREE.MeshBasicMaterial( {color: 0xaaaaaa} );
         const userAvatar = new THREE.Mesh(geometryAvatar, material );
+        
         const physicsSphere = new THREE.Mesh(geometryPhysics, material );
 
         physicsSphere.position.set(0, 0.3, 0);
