@@ -10,6 +10,7 @@ export default class World extends Thing {
 
     upVector = new THREE.Vector3(0, 1, 0);
     downVector = new THREE.Vector3(0, -1, 0);
+    previousTeleportTarget = new THREE.Vector3(0, 0, 0);
 
     models = {};
     ambientLight = null;
@@ -174,6 +175,33 @@ export default class World extends Thing {
         App.physics.objects.user.velocity.set(0,0,0);
     }
 
+    teleport() {
+
+        var userWorldPosition = new THREE.Vector3();
+        userWorldPosition.setFromMatrixPosition(this.camera.matrixWorld);
+
+        const userMovedOffset = new THREE.Vector3(
+            userWorldPosition.x - this.previousTeleportTarget.x,
+            userWorldPosition.y - this.previousTeleportTarget.y,
+            userWorldPosition.z - this.previousTeleportTarget.z
+        );
+
+        const offsetPosition = {
+            x: - this.teleportTarget.x - userMovedOffset.x,
+            y: - this.teleportTarget.y - userMovedOffset.y,
+            z: - this.teleportTarget.z - userMovedOffset.z,
+            w: 1
+        };
+        const offsetRotation = new THREE.Quaternion();
+        const transform = new XRRigidTransform( offsetPosition, offsetRotation );
+        const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
+
+        App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
+
+        this.previousTeleportTarget.copy(this.teleportTarget);
+        this.teleportTarget = null;
+    }
+
     update(time, elapsed) {
         
         super.update(time, elapsed);
@@ -199,21 +227,9 @@ export default class World extends Thing {
             }
             else if (App.controller.marker.visible) {
     
-                if (App.world.teleportTarget) {
+                if (this.teleportTarget) {
     
-                    const offsetPosition = {
-                        x: - App.world.teleportTarget.x,
-                        y: - App.world.teleportTarget.y,
-                        z: - App.world.teleportTarget.z,
-                        w: 1
-                    };
-                    const offsetRotation = new THREE.Quaternion();
-                    const transform = new XRRigidTransform( offsetPosition, offsetRotation );
-                    const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
-            
-                    App.renderer.xr.setReferenceSpace( teleportSpaceOffset );
-        
-                    App.world.teleportTarget = null;
+                    this.teleport();
                 }
     
                 App.controller.marker.visible = false;
