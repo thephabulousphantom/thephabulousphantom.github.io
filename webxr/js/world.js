@@ -188,7 +188,7 @@ export default class World extends Thing {
 
         const offsetPosition = {
             x: - this.teleportTarget.x - userMovedOffset.x,
-            y: - this.teleportTarget.y - userMovedOffset.y,
+            y: - this.teleportTarget.y/* - userMovedOffset.y*/,
             z: - this.teleportTarget.z - userMovedOffset.z,
             w: 1
         };
