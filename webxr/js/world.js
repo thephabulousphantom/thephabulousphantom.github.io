@@ -178,7 +178,7 @@ export default class World extends Thing {
     teleport() {
 
         var userWorldPosition = new THREE.Vector3();
-        userWorldPosition.setFromMatrixPosition(this.camera.matrixWorld);
+        userWorldPosition.setFromMatrixPosition(App.camera.matrixWorld);
 
         const userMovedOffset = new THREE.Vector3(
             userWorldPosition.x - this.previousTeleportTarget.x,
