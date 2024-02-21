@@ -186,12 +186,16 @@ export default class World extends Thing {
             userWorldPosition.z - this.previousTeleportTarget.z
         );
 
+        this.teleportTarget.x -= userMovedOffset.x;
+        this.teleportTarget.z -= userMovedOffset.z;
+
         const offsetPosition = {
-            x: - this.teleportTarget.x - userMovedOffset.x,
-            y: - this.teleportTarget.y/* - userMovedOffset.y*/,
-            z: - this.teleportTarget.z - userMovedOffset.z,
+            x: - this.teleportTarget.x,
+            y: - this.teleportTarget.y,
+            z: - this.teleportTarget.z,
             w: 1
         };
+        
         const offsetRotation = new THREE.Quaternion();
         const transform = new XRRigidTransform( offsetPosition, offsetRotation );
         const teleportSpaceOffset = App.baseXrReferenceSpace.getOffsetReferenceSpace( transform );
