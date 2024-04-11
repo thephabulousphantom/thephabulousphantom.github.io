@@ -15,7 +15,7 @@
     top: 0vh;
     left: 0vw;
     width: 100vw;
-    height: calc(100vh - (var(--appZoom) * 5));
+    height: calc(100dvh - (var(--appZoom) * 5));
     z-index: 1;
     overflow-x: none;
     overflow-y: auto;
@@ -23,7 +23,7 @@
 
 .console-input {
 
-    top: calc(100vh - (var(--appZoom) * 3));
+    top: calc(100dvh - (var(--appZoom) * 3));
     left: 0vw;
     width: 100vw;
     height: calc(var(--appZoom) * 3);
