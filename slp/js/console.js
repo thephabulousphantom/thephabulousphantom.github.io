@@ -69,7 +69,7 @@ class Console {
 Console.templateString = `
     <div id="{{id}}-content" class="console-content uiElement uiBackground"></div>
     <div id="{{id}}-input" class="console-input uiElement uiBackground uiBorder uiShadowUp">
-        <input id="{{id}}-inputTextBox" type="text" placeholder="Type your input here." enterkeyhint="done">
+        <input id="{{id}}-inputTextBox" type="text" placeholder="Type your input here." enterkeyhint="enter">
     </div>
 `;
 
