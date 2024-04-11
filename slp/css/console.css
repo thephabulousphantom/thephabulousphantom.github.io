@@ -1,0 +1,52 @@
+.console-outputText {
+
+    padding: calc(var(--appZoom) / 6);
+}            
+
+.console-content, .console-input, .console-input input {
+
+    background-color: var(--appColorConsoleBackground);
+    color: var(--appColorConsoleFont);
+}
+
+.console-content {
+
+    padding: var(--appZoom);
+    top: 0vh;
+    left: 0vw;
+    width: 100vw;
+    height: calc(100vh - (var(--appZoom) * 5));
+    z-index: 1;
+    overflow-x: none;
+    overflow-y: auto;
+}
+
+.console-input {
+
+    top: calc(100vh - (var(--appZoom) * 3));
+    left: 0vw;
+    width: 100vw;
+    height: calc(var(--appZoom) * 3);
+    z-index: 10;
+}
+
+.console-input input {
+
+    padding: var(--appZoom);
+    border: none;
+    width: 100%;
+    height: var(--appZoom);
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.console-input input:focus {
+
+    outline: none;
+}
+
+.uiShadowUp:has(> input:focus) {
+
+    box-shadow: 0vmin calc(var(--appZoom) / -3) calc(var(--appZoom) / 3) var(--appColorUiShadowActive);
+}

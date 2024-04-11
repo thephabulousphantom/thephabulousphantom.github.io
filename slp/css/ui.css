@@ -1,0 +1,25 @@
+.uiElement {
+
+    position: fixed;
+}
+
+.uiBorder {
+
+    border: solid 1px;
+    border-color: var(--appColorUiBorder);
+}
+
+.uiBackground {
+
+    background-color: var(--appColorUiBackground);
+}
+
+.uiShadowUp {
+
+    box-shadow: 0vmin calc(var(--appZoom) / -3) calc(var(--appZoom) / 3) var(--appColorUiShadow);
+}
+
+.uiShadowDown {
+
+    box-shadow: 0vmin calc(var(--appZoom) / 3) calc(var(--appZoom) / 3) var(--appColorUiShadow);
+}

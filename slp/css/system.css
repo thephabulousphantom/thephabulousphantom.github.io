@@ -1,0 +1,18 @@
+:root {
+
+    --appColorBackground: #ffffff;
+
+    --appColorUiBorder: #00000022;
+    --appColorUiBackground: #f0f3f3;
+    --appColorUiInputBackground: #ffffff;
+    --appColorUiShadow: #88FF0022;
+    --appColorUiShadowActive: #88FF0044;
+    --appColorUiShadowFull: #88FF00;
+
+    --appColorConsoleBackground: #000000;
+    --appColorConsoleFont: #88ff00;
+    --appColorConsoleActiveBorder: #448800;
+
+    --appFontFamily: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --appZoom: 3vmin;
+}
