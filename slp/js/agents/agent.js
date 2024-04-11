@@ -67,6 +67,9 @@ class Agent {
 
     onTitlePointerDown(evt) {
 
+        App.pointer.x = evt.touches ? evt.touches[0].clientX : evt.clientX;
+        App.pointer.y = evt.touches ? evt.touches[0].clientY : evt.clientY;
+
         this.dragging = {
 
             startUiPosition: {
@@ -74,10 +77,12 @@ class Agent {
                 y: this.dom.getBoundingClientRect().top
             },
             startPointerPosition: {
-                x: evt.touches ? evt.touches[0].clientX : evt.clientX,
-                y: evt.touches ? evt.touches[0].clientY : evt.clientY
+                x: App.pointer.x,
+                y: App.pointer.y
             }
         };
+
+        evt.preventDefault();
     }
 
     onTitlePointerUp(evt) {
