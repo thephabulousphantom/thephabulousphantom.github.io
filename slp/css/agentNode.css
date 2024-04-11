@@ -2,19 +2,25 @@
 
     position: fixed;
     width: calc(var(--appZoom) * 30);
-    opacity: 0.8;
-    border-radius: 2vmin;
+    opacity: 0.85;
+    border-radius: calc(var(--appZoom) * var(--appPadding));
     overflow: hidden;
-    box-shadow: 0vmax 0vmax 4vmin var(--appColorUiShadowFull);
-    padding-bottom: 1vmin;
-
     cursor: default;
+    padding:
+        0
+        0
+        calc(var(--appZoom) * var(--appPadding) * 0.5)
+        0;
 }
 
 .uiAgentNode .nodeTitle {
 
-    width: calc(var(--appZoom) * 28);
-    padding: calc(var(--appZoom) / 3) var(--appZoom) calc(var(--appZoom) / 3) var(--appZoom);
+    width: calc(var(--appZoom) * 30 - (2 * var(--appZoom) * var(--appPadding)));
+    padding:
+        calc(var(--appZoom) * var(--appPadding) * 0.5)
+        calc(var(--appZoom) * var(--appPadding))
+        calc(var(--appZoom) * var(--appPadding) * 0.5)
+        calc(var(--appZoom) * var(--appPadding));
     cursor: pointer;
     user-select: none;
     background-color: var(--appColorConsoleBackground);
@@ -25,9 +31,13 @@
 .uiAgentNode .nodeLabelValue {
 
     display: flex;
-    width: calc(var(--appZoom) * 30);
+    width: calc(var(--appZoom) * 30 - (2 * var(--appZoom) * var(--appPadding)));
     padding: 0px;
-    margin: calc(var(--appZoom) / 6) 0 calc(var(--appZoom) / 6) 0;
+    margin:
+        calc(var(--appZoom) * var(--appPadding) * 0.5)
+        calc(var(--appZoom) * var(--appPadding))
+        calc(var(--appZoom) * var(--appPadding) * 0.5)
+        calc(var(--appZoom) * var(--appPadding));
 }
 
 .uiAgentNode .nodeLabel, .uiAgentNode .nodeValue, .uiAgentNode .nodeTitle {
@@ -39,15 +49,17 @@
 
 .uiAgentNode .nodeLabel {
 
-    width: calc(var(--appZoom) * 8.75);
-    padding: 0vmin calc(var(--appZoom) / 4) 0vmin var(--appZoom);
+    width: calc(var(--appZoom) * 5 - (var(--appZoom) * var(--appPadding)));
 }
 
 .uiAgentNode .nodeValue {
 
-    width: calc(var(--appZoom) * 18.75);
-    padding: 0vmin 0vmin 0vmin calc(var(--appZoom) / 4);
-    margin-right: var(--appZoom);
+    width: calc(var(--appZoom) * 25 - (2 * var(--appZoom) * var(--appPadding)));
+    padding:
+        0
+        0
+        0
+        calc(var(--appZoom) * var(--appPadding));
     border: none;
     background-color: var(--appColorUiBackground);
     box-sizing: content-box;

@@ -14,12 +14,12 @@
     background-color: var(--appColorUiBackground);
 }
 
-.uiShadowUp {
+.uiGlow {
 
-    box-shadow: 0vmin calc(var(--appZoom) / -3) calc(var(--appZoom) / 3) var(--appColorUiShadow);
+    box-shadow: 0 0 calc(var(--appZoom) * var(--appPadding)) var(--appColorUiGlow);    
 }
 
-.uiShadowDown {
+.uiGlow:has(input:focus), .uiGlow:has(select:focus) {
 
-    box-shadow: 0vmin calc(var(--appZoom) / 3) calc(var(--appZoom) / 3) var(--appColorUiShadow);
+    box-shadow: 0 0 calc(var(--appZoom) * var(--appPadding)) var(--appColorUiGlowActive);
 }

@@ -1,6 +1,6 @@
 .console-outputText {
 
-    padding: calc(var(--appZoom) / 6);
+    padding: calc(var(--appZoom) * var(--appPadding) * 0.2);
 }            
 
 .console-content, .console-input, .console-input input {
@@ -11,28 +11,27 @@
 
 .console-content {
 
-    padding: var(--appZoom);
+    padding: calc(var(--appZoom) * var(--appPadding));
     top: 0vh;
     left: 0vw;
     width: 100vw;
-    height: calc(100dvh - (var(--appZoom) * 5));
+    height: calc(100dvh - (var(--appZoom) + var(--appZoom) * var(--appPadding) * 4));
     z-index: 1;
-    overflow-x: none;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 .console-input {
 
-    top: calc(100dvh - (var(--appZoom) * 3));
+    top: calc(100dvh - (var(--appZoom) + var(--appZoom) * var(--appPadding) * 2));
     left: 0vw;
     width: 100vw;
-    height: calc(var(--appZoom) * 3);
+    height: calc(var(--appZoom) + var(--appZoom) * var(--appPadding) * 2);
     z-index: 10;
 }
 
 .console-input input {
 
-    padding: var(--appZoom);
+    padding: calc(var(--appZoom) * var(--appPadding));
     border: none;
     width: 100%;
     height: var(--appZoom);
@@ -44,9 +43,4 @@
 .console-input input:focus {
 
     outline: none;
-}
-
-.uiShadowUp:has(> input:focus) {
-
-    box-shadow: 0vmin calc(var(--appZoom) / -3) calc(var(--appZoom) / 3) var(--appColorUiShadowActive);
 }

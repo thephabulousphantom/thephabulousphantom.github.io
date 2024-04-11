@@ -7,7 +7,7 @@ import DataManager from "./dataManager.js";
 
 class App {
 
-    mouse = {
+    pointer = {
         x: 0,
         y: 0
     }
@@ -24,7 +24,10 @@ class App {
             });
 
         this.dom = document.querySelector("#appContainer");
-        this.dom.addEventListener("mousemove", this.onMouseMove.bind(this));
+        this.dom.addEventListener("mousemove", this.onPointerMove.bind(this));
+        this.dom.addEventListener("touchstart", this.onPointerMove.bind(this));
+        this.dom.addEventListener("touchmove", this.onPointerMove.bind(this));
+        this.dom.addEventListener("touchend", this.onPointerMove.bind(this));
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
     }
@@ -88,10 +91,10 @@ class App {
         }
     }
 
-    onMouseMove(evt) {
+    onPointerMove(evt) {
 
-        this.mouse.x = evt.clientX;
-        this.mouse.y = evt.clientY;
+        this.pointer.x = evt.touches && evt.touches.length ? evt.touches[0].clientX : evt.clientX;
+        this.pointer.y = evt.touches && evt.touches.length ? evt.touches[0].clientY : evt.clientY;
     }
 
     onUpdateFrame() {

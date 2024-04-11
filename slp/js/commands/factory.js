@@ -1,5 +1,6 @@
 import CommandClear from "./clear.js";
 import CommandZoom from "./zoom.js";
+import CommandPadding from "./padding.js";
 import CommandAgentNew from "./agentNew.js";
 import CommandAgentList from "./agentList.js";
 import CommandAgentInvoke from "./agentInvoke.js";
@@ -11,6 +12,7 @@ class CommandFactory {
     commands = {
         "clear": CommandClear,
         "zoom": CommandZoom,
+        "padding": CommandPadding,
         "agentnew": CommandAgentNew,
         "agentlist": CommandAgentList,
         "agentinvoke": CommandAgentInvoke,

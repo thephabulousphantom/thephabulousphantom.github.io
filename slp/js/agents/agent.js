@@ -1,5 +1,4 @@
 import App from "../app.js";
-import Console from "../console.js";
 import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
 
@@ -60,43 +59,38 @@ class Agent {
         this.bindUiElement("name");
 
         const title = this.dom.querySelector(".nodeTitle");
-        title.addEventListener("mousedown", this.onTitleMouseDown.bind(this));
-        title.addEventListener("mouseup", this.onTitleMouseUp.bind(this));
+        title.addEventListener("mousedown", this.onTitlePointerDown.bind(this));
+        title.addEventListener("touchstart", this.onTitlePointerDown.bind(this));
+        title.addEventListener("mouseup", this.onTitlePointerUp.bind(this));
+        title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
     }
 
-    onTitleMouseDown(evt) {
+    onTitlePointerDown(evt) {
 
-        const title = this.dom.querySelector(".nodeTitle");
-        
         this.dragging = {
 
-            active: true,
-            startPosition: {
+            startUiPosition: {
                 x: this.dom.getBoundingClientRect().left,
                 y: this.dom.getBoundingClientRect().top
             },
-            startMousePosition: {
-                x: App.mouse.x,
-                y: App.mouse.y
+            startPointerPosition: {
+                x: evt.touches ? evt.touches[0].clientX : evt.clientX,
+                y: evt.touches ? evt.touches[0].clientY : evt.clientY
             }
         };
-
-        if (!evt) evt = window.event;
-        evt.cancelBubble = true;
-        if (evt.stopPropagation) evt.stopPropagation();        
     }
 
-    onTitleMouseUp(evt) {
+    onTitlePointerUp(evt) {
 
         delete this.dragging;
     }
 
     updateUiFrame() {
 
-        if (this.dragging && this.dragging.active) {
+        if (this.dragging) {
 
-            this.dom.style.left = `${this.dragging.startPosition.x + App.mouse.x - this.dragging.startMousePosition.x}px`;
-            this.dom.style.top = `${this.dragging.startPosition.y + App.mouse.y - this.dragging.startMousePosition.y}px`;
+            this.dom.style.left = `${this.dragging.startUiPosition.x + App.pointer.x - this.dragging.startPointerPosition.x}px`;
+            this.dom.style.top = `${this.dragging.startUiPosition.y + App.pointer.y - this.dragging.startPointerPosition.y}px`;
         }
     }
 }
@@ -119,7 +113,14 @@ Agent.updateUiFrame = function() {
         }
         else if (agent.dom) {
 
-            agent.updateUiFrame();
+            if (!document.body.contains(agent.dom)) {
+
+                delete agent.dom;
+            }
+            else {
+
+                agent.updateUiFrame();
+            }
         }
     }
 }

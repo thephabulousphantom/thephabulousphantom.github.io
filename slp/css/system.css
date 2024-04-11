@@ -5,9 +5,8 @@
     --appColorUiBorder: #00000022;
     --appColorUiBackground: #f0f3f3;
     --appColorUiInputBackground: #ffffff;
-    --appColorUiShadow: #88FF0022;
-    --appColorUiShadowActive: #88FF0044;
-    --appColorUiShadowFull: #88FF00;
+    --appColorUiGlow: #88FF0044;
+    --appColorUiGlowActive: #88FF00FF;
 
     --appColorConsoleBackground: #000000;
     --appColorConsoleFont: #88ff00;
@@ -15,4 +14,5 @@
 
     --appFontFamily: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --appZoom: 3vmin;
+    --appPadding: 1;
 }

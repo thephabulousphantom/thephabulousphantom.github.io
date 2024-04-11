@@ -33,12 +33,20 @@ class Console {
 
         try {
 
-            switch (event.code) {
+            switch (event.code.toLowerCase()) {
 
-                case "Enter":
-                case "NumpadEnter":
+                case "enter":
+                case "numpadenter":
                     await this.processCommandLine();
-                    break;
+                    return;
+            }            
+
+            switch (event.keyCode) {
+
+                case 13:
+                case 10:
+                    await this.processCommandLine();
+                    return;
             }
         }
         catch (ex) {
@@ -68,7 +76,7 @@ class Console {
 
 Console.templateString = `
     <div id="{{id}}-content" class="console-content uiElement uiBackground"></div>
-    <div id="{{id}}-input" class="console-input uiElement uiBackground uiBorder uiShadowUp">
+    <div id="{{id}}-input" class="console-input uiElement uiBackground uiBorder uiGlow">
         <input id="{{id}}-inputTextBox" type="text" placeholder="Type your input here." enterkeyhint="enter">
     </div>
 `;
