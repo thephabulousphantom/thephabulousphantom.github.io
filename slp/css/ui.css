@@ -8,18 +8,17 @@
     background-color: var(--appColorPrimary);
 }
 
-select option:hover, select option:focus {
+.uiHighlighted {
 
-    background-color: var(--appColorAccent2);
     color: var(--appColorSecondary);
 }
 
 .uiGlow {
 
-    box-shadow: 0 0 calc(var(--appZoom) * var(--appPadding)) var(--appColorUiGlow);    
+    box-shadow: 0 0 calc(var(--appZoom) * var(--appPadding) * 0.5) var(--appColorUiGlow);    
 }
 
 .uiGlow:has(input:focus), .uiGlow:has(select:focus) {
 
-    box-shadow: 0 0 calc(var(--appZoom) * var(--appPadding) * 2) var(--appColorUiGlow);
+    box-shadow: 0 0 calc(var(--appZoom) * var(--appPadding) * 1) var(--appColorLight);
 }

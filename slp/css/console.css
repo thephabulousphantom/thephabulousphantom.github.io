@@ -6,7 +6,7 @@
 .console-content, .console-input, .console-input input {
 
     background-color: var(--appColorPrimary);
-    color: var(--appColorDark);
+    color: var(--appColorLight);
 }
 
 .console-content {
@@ -20,6 +20,12 @@
     overflow: auto;
 }
 
+.console-content div::selection {
+
+    color: var(--appColorPrimary);
+    background-color: var(--appColorSecondary);;
+}
+
 .console-input {
 
     top: calc(100dvh - (var(--appZoom) + var(--appZoom) * var(--appPadding) * 2));
@@ -29,9 +35,14 @@
     z-index: 10;
 }
 
+.console-input input::placeholder {
+
+    color: var(--appColorSecondary);
+}
+
 .console-input:has(input:focus), .console-input:has(select:focus) {
 
-    background-color: var(--appColorLight);
+    background-color: var(--appColorLighter);
 }
 
 .console-input input {

@@ -4,14 +4,13 @@ import AgentOpenAi from "./openAi.js";
 
 class AgentOpenAiChat extends AgentOpenAi {
 
-    system = null;
-
     constructor(name, type) {
 
         super(name, type ?? "OpenAiChat");
 
-        this.model = AgentOpenAiChat.defaultModel;
-        this.models = [
+        this.properties.model = AgentOpenAiChat.defaultModel;
+        this.properties.system = null;
+        this.properties._models = [
             "gpt-3.5-turbo",
             "gpt-4",
             "gpt-4-turbo",
@@ -23,7 +22,7 @@ class AgentOpenAiChat extends AgentOpenAi {
 
         await super.initUi();
         
-        const dom = TemplateManager.getDom(AgentOpenAiChat.template, this);
+        const dom = TemplateManager.getDom(AgentOpenAiChat.template, this.properties);
         this.dom.append(...dom.childNodes);
 
         this.bindUiElement("system");
@@ -34,19 +33,19 @@ class AgentOpenAiChat extends AgentOpenAi {
         super.updateUiFrame();
     }
 
-    async saveState() {
+    /*async saveState() {
 
         await super.saveState();
 
-        await DataManager.set(`agent.${this.id}.openAiChat.system`, this.system);
+        await DataManager.set(`agent.${this.properties.id}.openAiChat.system`, this.properties.system);
     }
 
     async loadState() {
 
         await super.loadState();
         
-        this.system = await DataManager.get(`agent.${this.id}.openAiChat.system`, this.system);
-    }
+        this.properties.system = await DataManager.get(`agent.${this.properties.id}.openAiChat.system`, this.properties.system);
+    }*/
 
     async invoke(prompt) {
 
@@ -55,7 +54,7 @@ class AgentOpenAiChat extends AgentOpenAi {
 
             messages.push({
                 "role": "system",
-                "content": this.system
+                "content": this.properties.system
             });
         }
 
@@ -70,10 +69,10 @@ class AgentOpenAiChat extends AgentOpenAi {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${ this.key }`
+                    'Authorization': `Bearer ${ this.properties.key }`
                 },
                 body: JSON.stringify({
-                    model: this.model,
+                    model: this.properties.model,
                     "messages": messages,
                     max_tokens: 2048
                 })

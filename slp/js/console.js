@@ -8,6 +8,7 @@ class Console {
     }
 
     dom = {};
+    lookingAtHistoricalCommand = null;
 
     constructor() {
 
@@ -22,14 +23,14 @@ class Console {
         this.dom.inputTextBox = document.querySelector(`#${this.model.id}-inputTextBox`);
 
         this.dom.inputTextBox.addEventListener(
-            "keypress",
-            this.onInputTextBoxKeyPress.bind(this)
+            "keydown",
+            this.onInputTextBoxKeyDown.bind(this)
         );
 
-        this.write("Console started. Ready for your input.");
+        this.write(null, "Console initialised.");
     }
 
-    async onInputTextBoxKeyPress(event) {
+    async onInputTextBoxKeyDown(event) {
 
         try {
 
@@ -39,6 +40,14 @@ class Console {
                 case "numpadenter":
                     await this.processCommandLine();
                     return;
+
+                case "arrowup":
+                    this.recallHistoricalCommand(-1);
+                    break;
+
+                case "arrowdown":
+                    this.recallHistoricalCommand(1);
+                    break;
             }            
 
             switch (event.keyCode) {
@@ -55,14 +64,45 @@ class Console {
         }
     }
 
-    async write(text) {
+    async write(text, highlightedPrefix) {
 
-        var textBlock = document.createElement("div");
+        const textBlock = document.createElement("div");
+        if (highlightedPrefix) {
+
+            const prefix = document.createElement("span");
+            prefix.className = "uiHighlighted";
+            prefix.innerText = highlightedPrefix;
+            textBlock.appendChild(prefix);
+        }
         textBlock.className = "console-outputText";
-        textBlock.innerText = text;
+
+        if (text) {
+
+            const content = document.createElement("span");
+            content.innerText = text;
+            textBlock.appendChild(content);
+        }
 
         this.dom.content.appendChild(textBlock);
         this.dom.content.scrollTop = this.dom.content.scrollHeight;
+    }
+
+    recallHistoricalCommand(offset) {
+
+        if (this.lookingAtHistoricalCommand === null) {
+
+            this.lookingAtHistoricalCommand =
+                App.commandHistory.length - 1;
+        }
+        else {
+
+            this.lookingAtHistoricalCommand =
+                (this.lookingAtHistoricalCommand + App.commandHistory.length + offset)
+                %
+                App.commandHistory.length;
+        }
+
+        this.dom.inputTextBox.value = App.commandHistory[this.lookingAtHistoricalCommand].command;
     }
 
     async processCommandLine() {
@@ -71,6 +111,8 @@ class Console {
         this.dom.inputTextBox.value = "";
 
         App.processCommand(commandLine);
+
+        this.lookingAtHistoricalCommand = null;
     }
 }
 

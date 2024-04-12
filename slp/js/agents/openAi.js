@@ -4,20 +4,20 @@ import Agent from "./agent.js";
 
 class AgentOpenAi extends Agent {
 
-    key = null;
-    model = AgentOpenAi.defaultModel;
-    models = ["gpt-3.5-turbo-instruct"];
-
     constructor(name, type) {
 
         super(name, type ?? "OpenAi");
+
+        this.properties.key = null;
+        this.properties.model = AgentOpenAi.defaultModel;
+        this.properties._models = ["gpt-3.5-turbo-instruct"];
     }
 
     async initUi() {
 
         await super.initUi();
         
-        const dom = TemplateManager.getDom(AgentOpenAi.template, this);
+        const dom = TemplateManager.getDom(AgentOpenAi.template, this.properties);
         this.dom.append(...dom.childNodes);
 
         this.bindUiElement("key");
@@ -29,21 +29,21 @@ class AgentOpenAi extends Agent {
         super.updateUiFrame();
     }
 
-    async saveState() {
+    /*async saveState() {
 
         await super.saveState();
 
-        await DataManager.set(`agent.${this.id}.openAi.key`, this.key);
-        await DataManager.set(`agent.${this.id}.openAi.model`, this.model);
+        await DataManager.set(`agent.${this.properties.id}.openAi.key`, this.properties.key);
+        await DataManager.set(`agent.${this.properties.id}.openAi.model`, this.properties.model);
     }
 
     async loadState() {
 
         await super.loadState();
         
-        this.key = await DataManager.get(`agent.${this.id}.openAi.key`, this.key);
-        this.model = await DataManager.get(`agent.${this.id}.openAi.model`, this.model);
-    }
+        this.properties.key = await DataManager.get(`agent.${this.properties.id}.openAi.key`, this.properties.key);
+        this.properties.model = await DataManager.get(`agent.${this.properties.id}.openAi.model`, this.properties.model);
+    }*/
 
     async invoke(prompt) {
 
@@ -53,10 +53,10 @@ class AgentOpenAi extends Agent {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${ this.key }`
+                    'Authorization': `Bearer ${ this.properties.key }`
                 },
                 body: JSON.stringify({
-                    model: this.model,
+                    model: this.properties.model,
                     prompt: prompt,
                     max_tokens: 2048
                 })

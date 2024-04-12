@@ -11,7 +11,18 @@
         0
         calc(var(--appZoom) * var(--appPadding) * 0.5)
         0;
-    color: var(--appColorDark);
+    color: var(--appColorLight);
+}
+
+.uiAgentNode .nodeLabelValue option {
+
+    color: var(--appColorSecondary);
+    background-color: var(--appColorLighter);
+}    
+
+.uiAgentNode .nodeLabelValue option:checked {
+
+    color: var(--appColorAccent2);
 }
 
 .uiAgentNode, .uiAgentNode .nodeValue {
@@ -22,7 +33,13 @@
 .uiAgentNode:has(input:focus), .uiAgentNode:has(select:focus),
 .uiAgentNode .nodeValue:has(input:focus), .uiAgentNode .nodeValue:has(select:focus) {
 
-    background-color: var(--appColorLight);
+    background-color: var(--appColorLighter);
+}
+
+.uiAgentNode .nodeValue:focus {
+
+    outline: none;
+    color: var(--appColorAccent2);
 }
 
 .uiAgentNode .nodeTitle {
@@ -36,7 +53,7 @@
     cursor: pointer;
     user-select: none;
     background-color: var(--appColorSecondary);
-    color: var(--appColorDark);
+    color: var(--appColorPrimary);
     font-weight: bold;
 }
 
@@ -74,14 +91,8 @@
         0
         calc(var(--appZoom) * var(--appPadding));
     border: none;
-    color: var(--appColorAccent);
+    color: var(--appColorSecondary);
     box-sizing: content-box;
-}
-
-.uiAgentNode .nodeValue:focus {
-
-    outline: none;
-    color: var(--appColorAccent2);
 }
 
 .uiAgentNode select {

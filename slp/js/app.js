@@ -12,9 +12,11 @@ class App {
         y: 0
     }
 
+    commandHistory = [];
+
     constructor() {
 
-        Console.write("Application started.");
+        Console.write(null, "Application started, ready for your input.");
 
         DataManager.get(`app.zoom`, 3)
             .then((zoom) => {
@@ -106,7 +108,7 @@ class App {
 
     async processCommand(commandLine) {
 
-        Console.write(`< ${commandLine}`);
+        Console.write(commandLine, "< ");
 
         try {
 
@@ -115,12 +117,22 @@ class App {
     
             if (response !== undefined) {
     
-                Console.write(`> ${response}`);
+                Console.write(response, "> ");
             }
+
+            this.commandHistory.push({
+                command: commandLine,
+                response: response
+            });
         }
         catch (ex) {
 
             Console.write(`An error ocurred: ${ex.message}`);
+
+            this.commandHistory.push({
+                command: commandLine,
+                response: ex
+            });
         }
     }
 }
@@ -134,7 +146,7 @@ window.Handlebars.registerHelper('select', function(selected, options) {
 
 const app = new App();
 
-app.processCommand("agentnew openai,instruct");
-app.processCommand("agentnew openaichat,chat,,,\"pretend that you are an actual living and breathing, silly 5 year old kid\"");
+app.processCommand("agentnew openai,robot");
+app.processCommand("agentnew openaichat,kid,\"\",\"\",\"pretend that you are an actual living and breathing, silly 5 year old kid\"");
 
 export default app;

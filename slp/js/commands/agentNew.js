@@ -18,20 +18,19 @@ class CommandNewAgent extends Command {
         switch (type.toLowerCase()) {
             case "openai":
                 {
-                    const openAiKey = this.parameters[2];
-                    const openAiModel = this.parameters[3];
-
                     Console.write(`Constructing OpenAI instruct agent ${name}...`);
                     const agent = new AgentOpenAi(name);
 
+                    const openAiKey = this.parameters[2];
                     if (openAiKey) {
 
-                        agent.key = openAiKey;
+                        agent.properties.key = openAiKey;
                     }
 
+                    const openAiModel = this.parameters[3];
                     if (openAiModel) {
 
-                        agent.model = openAiModel;
+                        agent.properties.model = openAiModel;
                     }
                 }
 
@@ -39,26 +38,25 @@ class CommandNewAgent extends Command {
 
             case "openaichat":
                 {
-                    const openAiKey = this.parameters[2];
-                    const openAiModel = this.parameters[3];
-                    const openAiSystem = this.parameters[4];
-
                     Console.write(`Constructing OpenAI chat agent ${name}...`);
                     const agent = new AgentOpenAiChat(name);
 
+                    const openAiKey = this.parameters[2];
                     if (openAiKey) {
 
-                        agent.key = openAiKey;
+                        agent.properties.key = openAiKey;
                     }
 
+                    const openAiModel = this.parameters[3];
                     if (openAiModel) {
 
-                        agent.model = openAiModel;
+                        agent.properties.model = openAiModel;
                     }
 
+                    const openAiSystem = this.parameters[4];
                     if (openAiSystem) {
 
-                        agent.system = openAiSystem;
+                        agent.properties.system = openAiSystem;
                     }
 
                 }

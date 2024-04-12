@@ -4,35 +4,54 @@ import TemplateManager from "../templateManager.js";
 
 class Agent {
 
-    id = Agent.nextId++;
-    type = null;
-    name = null;
+    properties = {
+
+        id: Agent.nextId++,
+        type: null,
+        name: null
+    }
+
     dom = undefined;
 
     constructor(name, type) {
 
-        this.name = name;
-        this.type = type;
+        this.properties.name = name;
+        this.properties.type = type;
 
-        Agent.lookupId[this.id] = this;
-        Agent.lookupName[this.name] = this;
+        Agent.lookupId[this.properties.id] = this;
+        Agent.lookupName[this.properties.name] = this;
     }
 
     async saveState() {
 
-        await DataManager.set(`agent.${this.id}.name`, this.name);
-        await DataManager.set(`agent.${this.id}.type`, this.type);
+        for (const propertyName in this.properties) {
+
+            if (propertyName.charAt(0) == '_') {
+
+                continue;
+            }
+
+            await DataManager.set(`agent.${this.properties.id}.${propertyName}`, this.properties[propertyName]);
+        }
     }
 
     async loadState() {
 
-        const savedType = await DataManager.get(`agent.${this.id}.type`);
-        if (savedType != this.type) {
+        const savedType = await DataManager.get(`agent.${this.properties.id}.type`);
+        if (savedType != this.properties.type) {
 
-            throw new Error(`Stored agent ${this.id} is of incompatible type ${savedType}. Needs to be of ${this.type} type in order to be loaded.`);
+            throw new Error(`Stored agent ${this.properties.id} is of incompatible type ${savedType}. Needs to be of ${this.properties.type} type in order to be loaded.`);
         }
 
-        this.name = await DataManager.get(`agent.${this.id}.name`, this.name);
+        for (const propertyName in this.properties) {
+
+            if (propertyName.charAt(0) == '_') {
+
+                continue;
+            }
+
+            this.properties[propertyName] = await DataManager.get(`agent.${this.properties.id}.${propertyName}`, this.properties[propertyName]);
+        }
     }
 
     async invoke(prompt) {
@@ -44,14 +63,14 @@ class Agent {
 
         this.dom.querySelector(`[data-property="${propertyName}"]`).onchange = (function(evt) {
 
-            this[propertyName] = evt.target.value;
+            this.properties[propertyName] = evt.target.value;
 
         }).bind(this);
     }
 
     async initUi() {
 
-        const dom = TemplateManager.getDom(Agent.template, this);
+        const dom = TemplateManager.getDom(Agent.template, this.properties);
         this.dom = dom.querySelector(".uiAgentNode");
 
         App.dom.append(...dom.childNodes);
