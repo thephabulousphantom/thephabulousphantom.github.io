@@ -24,22 +24,36 @@ class CommandFactory {
         
     }
 
-    async get(commandLine) {
+    parseFunctionAndArguments(input) {
 
-        const match = commandLine.match(CommandFactory.functionCallRegex);
-
+        const match = input.match(/(\w+)/);
         if (match) {
 
-            const commandName = match[1].toLowerCase();
-            const parameters = match[2] ? match[2].split(',').map(param => param.trim()) : [];
+            const commandName = match[1];
+            const argumentString = input.substring(commandName.length).trim();
+            const args = argumentString.match(/"([^"]*)"|[\w\.]+/g);
 
-            if (this.commands[commandName]) {
+            return {
+                commandName: commandName,
+                args: (args ? args.map(arg => arg.replace(/"/g, "").trim()) : null)
+            };
+        }
+        
+        return null;
+    }
 
-                return new this.commands[commandName](commandLine, commandName, parameters);
+    async get(commandLine) {
+
+        var parsed = this.parseFunctionAndArguments(commandLine);
+        if (parsed) {
+
+            if (this.commands[parsed.commandName]) {
+
+                return new this.commands[parsed.commandName](commandLine, parsed.commandName, parsed.args);
             }
             else {
 
-                throw new Error(`Unsupported command: ${commandName}`);
+                throw new Error(`Unsupported command: ${parsed.commandName}`);
             }
         }
 
@@ -48,7 +62,8 @@ class CommandFactory {
 }
 
 CommandFactory.functionCallRegex = 
-    /^(\w+)(?:\(([^)]*)\))?$/;
+    ///^(\w+)(?:\(([^)]*)\))?$/;
+    /^(\w+)\s+(?:([^,]+),\s*)*(?:(\w+))*$/;
 
 const commandFactory = new CommandFactory();
 export default commandFactory;

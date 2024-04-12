@@ -5,8 +5,8 @@
 
 .console-content, .console-input, .console-input input {
 
-    background-color: var(--appColorConsoleBackground);
-    color: var(--appColorConsoleFont);
+    background-color: var(--appColorPrimary);
+    color: var(--appColorDark);
 }
 
 .console-content {
@@ -29,8 +29,15 @@
     z-index: 10;
 }
 
+.console-input:has(input:focus), .console-input:has(select:focus) {
+
+    background-color: var(--appColorLight);
+}
+
 .console-input input {
 
+    background-color: inherit;
+    color: var(--appColorAccent);
     padding: calc(var(--appZoom) * var(--appPadding));
     border: none;
     width: 100%;
@@ -43,4 +50,5 @@
 .console-input input:focus {
 
     outline: none;
+    color: var(--appColorAccent2);
 }

@@ -1,16 +1,13 @@
 :root {
 
-    --appColorBackground: #ffffff;
-
-    --appColorUiBorder: #00000022;
-    --appColorUiBackground: #f0f3f3;
-    --appColorUiInputBackground: #ffffff;
-    --appColorUiGlow: #88FF0044;
-    --appColorUiGlowActive: #88FF00FF;
-
-    --appColorConsoleBackground: #000000;
-    --appColorConsoleFont: #88ff00;
-    --appColorConsoleActiveBorder: #448800;
+    --appColorPrimary: #E6E4CF;
+    --appColorSecondary: #F2CC0C;
+    --appColorAccent: #404D00;
+    --appColorAccent2: #556600;
+    
+    --appColorDark: #000000;
+    --appColorLight: #FCFAE3;
+    --appColorUiGlow: #00000044;
 
     --appFontFamily: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --appZoom: 3vmin;
