@@ -11,11 +11,11 @@
 
 .console-content {
 
-    padding: calc(var(--appZoom) * var(--appPadding));
+    padding: var(--appPadding);
     top: 0vh;
     left: 0vw;
     width: 100vw;
-    height: calc(100dvh - (var(--appZoom) + var(--appZoom) * var(--appPadding) * 4));
+    height: calc(100dvh - (var(--appZoom) + var(--appPadding) * 4));
     z-index: 1;
     overflow: auto;
 }
@@ -28,10 +28,10 @@
 
 .console-input {
 
-    top: calc(100dvh - (var(--appZoom) + var(--appZoom) * var(--appPadding) * 2));
+    top: calc(100dvh - (var(--appZoom) + var(--appPadding) * 2));
     left: 0vw;
     width: 100vw;
-    height: calc(var(--appZoom) + var(--appZoom) * var(--appPadding) * 2);
+    height: calc(var(--appZoom) + var(--appPadding) * 2);
     z-index: 10;
 }
 
@@ -49,7 +49,7 @@
 
     background-color: inherit;
     color: var(--appColorAccent);
-    padding: calc(var(--appZoom) * var(--appPadding));
+    padding: var(--appPadding);
     border: none;
     width: 100%;
     height: var(--appZoom);

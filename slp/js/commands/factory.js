@@ -6,6 +6,7 @@ import CommandAgentList from "./agentList.js";
 import CommandAgentInvoke from "./agentInvoke.js";
 import CommandStateSave from "./stateSave.js";
 import CommandStateLoad from "./stateLoad.js";
+import CommandConnect from "./connect.js";
 
 class CommandFactory {
 
@@ -17,7 +18,8 @@ class CommandFactory {
         "agentlist": CommandAgentList,
         "agentinvoke": CommandAgentInvoke,
         "statesave": CommandStateSave,
-        "stateload": CommandStateLoad
+        "stateload": CommandStateLoad,
+        "connect": CommandConnect
     };
 
     constructor() {

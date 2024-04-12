@@ -1,7 +1,7 @@
 :root, input[type="text"], select {
 
     font-family: var(--appFontFamily);
-    font-size: var(--appZoom);
+    font-size: var(--appFontSize);
     margin: 0px;
     padding: 0px;
 }

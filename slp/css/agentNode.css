@@ -2,13 +2,13 @@
 
     position: fixed;
     width: calc(var(--appZoom) * 30);
-    border-radius: calc(var(--appZoom) * var(--appPadding) * 0.5);
+    border-radius: var(--appBorderRadius);
     overflow: hidden;
     cursor: default;
     padding:
         0
         0
-        calc(var(--appZoom) * var(--appPadding) * 0.5)
+        calc(var(--appPadding) * 0.5)
         0;
     color: var(--appColorLight);
     background-color: none;
@@ -44,12 +44,12 @@
 
 .uiAgentNode .nodeTitle {
 
-    width: calc(var(--appZoom) * 30 - (2 * var(--appZoom) * var(--appPadding)));
+    width: calc(var(--appZoom) * 30 - (2 * var(--appPadding)));
     padding:
-        calc(var(--appZoom) * var(--appPadding) * 0.5)
-        calc(var(--appZoom) * var(--appPadding))
-        calc(var(--appZoom) * var(--appPadding) * 0.5)
-        calc(var(--appZoom) * var(--appPadding));
+        calc(var(--appPadding) * 0.5)
+        var(--appPadding)
+        calc(var(--appPadding) * 0.5)
+        var(--appPadding);
     cursor: pointer;
     user-select: none;
     background-color: var(--appColorSecondary);
@@ -63,10 +63,10 @@
     width: calc(var(--appZoom) * 30 - (2 * var(--appZoom) * var(--appPadding)));
     padding: 0px;
     margin:
-        calc(var(--appZoom) * var(--appPadding) * 0.5)
-        calc(var(--appZoom) * var(--appPadding))
-        calc(var(--appZoom) * var(--appPadding) * 0.5)
-        calc(var(--appZoom) * var(--appPadding));
+        calc(var(--appPadding) * 0.5)
+        var(--appPadding)
+        calc(var(--appPadding) * 0.5)
+        var(--appPadding);
 }
 
 .uiAgentNode .nodeLabel, .uiAgentNode .nodeValue, .uiAgentNode .nodeTitle {
@@ -78,18 +78,18 @@
 
 .uiAgentNode .nodeLabel {
 
-    width: calc(var(--appZoom) * 5 - (var(--appZoom) * var(--appPadding)));
+    width: calc(var(--appZoom) * 5 - var(--appPadding));
 }
 
 .uiAgentNode .nodeValue {
 
     background-color: inherit;
-    width: calc(var(--appZoom) * 25 - (2 * var(--appZoom) * var(--appPadding)));
+    width: calc(var(--appZoom) * 25 - (2 * var(--appPadding)));
     padding:
         0
         0
         0
-        calc(var(--appZoom) * var(--appPadding));
+        var(--appPadding);
     border: none;
     color: var(--appColorSecondary);
     box-sizing: content-box;

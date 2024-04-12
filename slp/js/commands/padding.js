@@ -14,7 +14,7 @@ class CommandPadding extends Command {
         if (padding > 0 & padding < 10) {
 
             await DataManager.set(`app.padding`, padding);
-            document.documentElement.style.setProperty("--appPadding", `${padding}`);
+            document.documentElement.style.setProperty("--appPaddingRatio", `${padding}`);
         }
     }
 }

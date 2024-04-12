@@ -14,5 +14,9 @@
 
     --appFontFamily: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --appZoom: 3vmin;
-    --appPadding: 1;
+    --appPaddingRatio: 1;
+
+    --appPadding: calc(var(--appZoom) * var(--appPaddingRatio));
+    --appFontSize: calc(var(--appZoom) * 1);
+    --appBorderRadius: calc(var(--appPadding) * 0.5);
 }

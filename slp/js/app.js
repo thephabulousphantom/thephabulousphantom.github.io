@@ -4,6 +4,7 @@ import Agent from "./agents/agent.js";
 import AgentOpenAi from "./agents/openAi.js";
 import AgentOpenAiChat from "./agents/openAiChat.js";
 import DataManager from "./dataManager.js";
+import ConnectorManager from "./connectors/manager.js";
 
 class App {
 
@@ -104,6 +105,7 @@ class App {
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
 
         Agent.updateUiFrame();
+        ConnectorManager.updateUiFrame();
     }
 
     async processCommand(commandLine) {
@@ -146,7 +148,7 @@ window.Handlebars.registerHelper('select', function(selected, options) {
 
 const app = new App();
 
-app.processCommand("agentnew openai,robot");
-app.processCommand("agentnew openaichat,kid,,,\"pretend that you are an actual living and breathing, silly 5 year old kid\"");
-
 export default app;
+
+await app.processCommand("agentnew openai,robot");
+await app.processCommand("agentnew openaichat,kid,,,\"pretend that you are an actual living and breathing, silly 5 year old kid\"");
