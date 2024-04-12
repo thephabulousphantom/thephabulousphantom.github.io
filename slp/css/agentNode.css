@@ -2,7 +2,6 @@
 
     position: fixed;
     width: calc(var(--appZoom) * 30);
-    opacity: 0.85;
     border-radius: calc(var(--appZoom) * var(--appPadding) * 0.5);
     overflow: hidden;
     cursor: default;
@@ -12,6 +11,7 @@
         calc(var(--appZoom) * var(--appPadding) * 0.5)
         0;
     color: var(--appColorLight);
+    background-color: none;
 }
 
 .uiAgentNode .nodeLabelValue option {
@@ -25,15 +25,15 @@
     color: var(--appColorAccent2);
 }
 
-.uiAgentNode, .uiAgentNode .nodeValue {
+.uiAgentNode {
 
-    background-color: var(--appColorPrimary);
+    background-color: var(--appColorPrimaryTransparent);
+    backdrop-filter: blur(3px);
 }
 
-.uiAgentNode:has(input:focus), .uiAgentNode:has(select:focus),
-.uiAgentNode .nodeValue:has(input:focus), .uiAgentNode .nodeValue:has(select:focus) {
+.uiAgentNode:has(input:focus), .uiAgentNode:has(select:focus) {
 
-    background-color: var(--appColorLighter);
+    background-color: var(--appColorLighterTransparent);
 }
 
 .uiAgentNode .nodeValue:focus {

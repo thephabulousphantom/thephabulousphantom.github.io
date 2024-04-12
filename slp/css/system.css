@@ -4,9 +4,11 @@
     --appColorSecondary: #F2CA79;
     --appColorAccent: #F2F23D;
     --appColorAccent2: #FAFA0C;
-    
+
+    --appColorPrimaryTransparent: #3D3D4Dcc;
     --appColorDark: #14141A;
     --appColorLighter: #515166;
+    --appColorLighterTransparent: #515166cc;
     --appColorLight: #C2C2F2;
     --appColorUiGlow: #00000088;
 
