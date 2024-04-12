@@ -33,24 +33,10 @@ class AgentOpenAiChat extends AgentOpenAi {
         super.updateUiFrame();
     }
 
-    /*async saveState() {
-
-        await super.saveState();
-
-        await DataManager.set(`agent.${this.properties.id}.openAiChat.system`, this.properties.system);
-    }
-
-    async loadState() {
-
-        await super.loadState();
-        
-        this.properties.system = await DataManager.get(`agent.${this.properties.id}.openAiChat.system`, this.properties.system);
-    }*/
-
     async invoke(prompt) {
 
         const messages = [];
-        if (this.system) {
+        if (this.properties.system) {
 
             messages.push({
                 "role": "system",

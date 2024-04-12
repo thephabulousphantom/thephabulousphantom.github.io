@@ -29,9 +29,11 @@ class CommandFactory {
         const match = input.match(/(\w+)/);
         if (match) {
 
-            const commandName = match[1];
+            const commandName = match[1].toLowerCase();
             const argumentString = input.substring(commandName.length).trim();
-            const args = argumentString.match(/"([^"]*)"|[\w\.]+/g);
+            const matches = [...argumentString.matchAll(/("(?:\\"|[^"])*"|[^",]*)(?:,|$)/g)];
+            const args = [];
+            matches.map(match => args.push(match[1].replace(/"/g, "").trim()));
 
             return {
                 commandName: commandName,

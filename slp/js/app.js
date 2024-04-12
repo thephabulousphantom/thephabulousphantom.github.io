@@ -147,6 +147,6 @@ window.Handlebars.registerHelper('select', function(selected, options) {
 const app = new App();
 
 app.processCommand("agentnew openai,robot");
-app.processCommand("agentnew openaichat,kid,\"\",\"\",\"pretend that you are an actual living and breathing, silly 5 year old kid\"");
+app.processCommand("agentnew openaichat,kid,,,\"pretend that you are an actual living and breathing, silly 5 year old kid\"");
 
 export default app;

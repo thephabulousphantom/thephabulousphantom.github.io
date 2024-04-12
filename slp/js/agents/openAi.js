@@ -29,22 +29,6 @@ class AgentOpenAi extends Agent {
         super.updateUiFrame();
     }
 
-    /*async saveState() {
-
-        await super.saveState();
-
-        await DataManager.set(`agent.${this.properties.id}.openAi.key`, this.properties.key);
-        await DataManager.set(`agent.${this.properties.id}.openAi.model`, this.properties.model);
-    }
-
-    async loadState() {
-
-        await super.loadState();
-        
-        this.properties.key = await DataManager.get(`agent.${this.properties.id}.openAi.key`, this.properties.key);
-        this.properties.model = await DataManager.get(`agent.${this.properties.id}.openAi.model`, this.properties.model);
-    }*/
-
     async invoke(prompt) {
 
         const response = await fetch(
