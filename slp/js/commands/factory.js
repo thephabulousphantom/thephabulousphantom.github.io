@@ -66,7 +66,6 @@ class CommandFactory {
 }
 
 CommandFactory.functionCallRegex = 
-    ///^(\w+)(?:\(([^)]*)\))?$/;
     /^(\w+)\s+(?:([^,]+),\s*)*(?:(\w+))*$/;
 
 const commandFactory = new CommandFactory();

@@ -22,3 +22,19 @@
 
     box-shadow: 0 0 calc(var(--appPadding) * 1) var(--appColorLight);
 }
+
+#zoomSizeHelper {
+
+    position: fixed;
+    visibility: hidden;
+    width: var(--appZoom);
+    height: var(--appZoom);
+}
+
+#paddingSizeHelper {
+
+    position: fixed;
+    visibility: hidden;
+    width: var(--appPadding);
+    height: var(--appPadding);
+}

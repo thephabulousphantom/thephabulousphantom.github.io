@@ -1,7 +1,11 @@
 import App from "../app.js";
 import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
+import ResultError from "../results/error.js"
+import ResultText from "../results/text.js"
+import ConnectorSocket from "./connectorSocket.js";
 
+var iii=0;
 class Agent {
 
     properties = {
@@ -12,6 +16,11 @@ class Agent {
     }
 
     dom = undefined;
+    svg = undefined;
+    sockets = {
+        input: [],
+        output: []
+    };
 
     constructor(name, type) {
 
@@ -20,6 +29,10 @@ class Agent {
 
         Agent.lookupId[this.properties.id] = this;
         Agent.lookupName[this.properties.name] = this;
+
+        this.sockets.input.push(new ConnectorSocket(this, "input", this.sockets.input.length, "text"));
+        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "error"));
+        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "text"));
     }
 
     async saveState() {
@@ -56,7 +69,10 @@ class Agent {
 
     async invoke(prompt) {
 
-        throw new Error(`Unable to respond to prompt: "${prompt}". Base agent shouldn't be directly prompted. Use derived classes instead.`);
+        return new ResultError(
+            new Error(`Unable to respond to prompt: "${prompt}". Base agent shouldn't be directly prompted. Use derived classes instead.`),
+            this
+        );
     }
     
     bindUiElement(propertyName) {
@@ -82,6 +98,18 @@ class Agent {
         title.addEventListener("touchstart", this.onTitlePointerDown.bind(this));
         title.addEventListener("mouseup", this.onTitlePointerUp.bind(this));
         title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
+
+        for (const socketConnector of this.sockets.input) {
+
+            socketConnector.initUi();
+            App.svg.appendChild(socketConnector.svg);
+        }
+
+        for (const socketConnector of this.sockets.output) {
+
+            socketConnector.initUi();
+            App.svg.appendChild(socketConnector.svg);
+        }
     }
 
     onTitlePointerDown(evt) {
@@ -115,6 +143,16 @@ class Agent {
 
             this.dom.style.left = `${this.dragging.startUiPosition.x + App.pointer.x - this.dragging.startPointerPosition.x}px`;
             this.dom.style.top = `${this.dragging.startUiPosition.y + App.pointer.y - this.dragging.startPointerPosition.y}px`;
+        }
+
+        for (const socketConnector of this.sockets.input) {
+
+            socketConnector.updateUiFrame();
+        }
+
+        for (const socketConnector of this.sockets.output) {
+
+            socketConnector.updateUiFrame();
         }
     }
 }

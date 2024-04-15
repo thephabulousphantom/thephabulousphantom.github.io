@@ -2,6 +2,8 @@ import Command from "./command.js";
 import Console from "../console.js";
 import AgentOpenAi from "../agents/openAi.js";
 import AgentOpenAiChat from "../agents/openAiChat.js";
+import ResultError from "../results/error.js";
+import ResultText from "../results/text.js";
 
 class CommandNewAgent extends Command {
 
@@ -34,7 +36,7 @@ class CommandNewAgent extends Command {
                     }
                 }
 
-                return `OpenAI instruct agent ${name} constructed.`;
+                return new ResultText(`OpenAI instruct agent ${name} constructed.`);
 
             case "openaichat":
                 {
@@ -61,10 +63,10 @@ class CommandNewAgent extends Command {
 
                 }
 
-                return `OpenAI chat agent ${name} constructed.`;
+                return new ResultText(`OpenAI chat agent ${name} constructed.`);
 
             default:
-                throw new Error(`Unsupported agent type: ${type}`);
+                return new ResultError(`Unsupported agent type: ${type}`);
         }
     }
 }

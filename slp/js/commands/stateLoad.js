@@ -1,6 +1,7 @@
 import Command from "./command.js";
 import Agent from "../agents/agent.js";
 import App from "../app.js";
+import ResultText from "../results/text.js";
 
 class CommandStateLoad extends Command {
 
@@ -13,7 +14,7 @@ class CommandStateLoad extends Command {
 
         await App.loadState();
 
-        return `${Object.getOwnPropertyNames(Agent.lookupId).length} agents loaded.`;
+        return new ResultText(`${Object.getOwnPropertyNames(Agent.lookupId).length} agents loaded.`);
     }
 }
 

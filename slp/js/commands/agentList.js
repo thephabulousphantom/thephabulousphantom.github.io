@@ -1,6 +1,7 @@
 import Command from "./command.js";
 import Console from "../console.js";
 import Agent from "../agents/agent.js";
+import ResultText from "../results/text.js";
 
 class CommandListAgents extends Command {
 
@@ -21,7 +22,7 @@ class CommandListAgents extends Command {
             count++;
         }
 
-        return `${count} agents listed.`
+        return new ResultText(`${count} agents listed.`);
     }
 }
 

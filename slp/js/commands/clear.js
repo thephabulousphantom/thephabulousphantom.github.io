@@ -1,5 +1,6 @@
 import Command from "./command.js";
 import Console from "../console.js";
+import ResultEmpty from "../results/empty.js";
 
 class CommandClear extends Command {
 
@@ -11,6 +12,8 @@ class CommandClear extends Command {
     async execute() {
 
         Console.dom.content.innerHTML = "";
+        
+        return new ResultEmpty();
     }
 }
 

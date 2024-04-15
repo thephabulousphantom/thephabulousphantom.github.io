@@ -1,6 +1,8 @@
 import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
 import Agent from "./agent.js";
+import ResultError from "../results/error.js";
+import ResultText from "../results/text.js";
 
 class AgentOpenAi extends Agent {
 
@@ -51,10 +53,16 @@ class AgentOpenAi extends Agent {
 
         if (data.error) {
 
-            return data.error.message;
+            return new ResultError(
+                data.error.message,
+                this
+            );
         }
 
-        return data.choices[0].text.trim();
+        return new ResultText(
+            data.choices[0].text.trim(),
+            this
+        );
     }
 }
     

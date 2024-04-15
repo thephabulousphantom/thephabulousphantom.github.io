@@ -1,6 +1,7 @@
 import Command from "./command.js";
 import Agent from "../agents/agent.js";
 import App from "../app.js";
+import ResultText from "../results/text.js";
 
 class CommandStateSave extends Command {
 
@@ -13,7 +14,7 @@ class CommandStateSave extends Command {
 
         await App.saveState();
         
-        return `${Object.getOwnPropertyNames(Agent.lookupId).length} agents saved.`;
+        return new ResultText(`${Object.getOwnPropertyNames(Agent.lookupId).length} agents saved.`);
     }
 }
 

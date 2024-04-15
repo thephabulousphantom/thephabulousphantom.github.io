@@ -5,6 +5,7 @@ import AgentOpenAi from "./agents/openAi.js";
 import AgentOpenAiChat from "./agents/openAiChat.js";
 import DataManager from "./dataManager.js";
 import ConnectorManager from "./connectors/manager.js";
+import ResultError from "./results/error.js";
 
 class App {
 
@@ -14,6 +15,13 @@ class App {
     }
 
     commandHistory = [];
+    dom = null;
+    svg = null;
+    size = {
+        zoom: null,
+        padding: null,
+    };
+    _sizeHelpers = { zoom: null, padding: null };
 
     constructor() {
 
@@ -31,6 +39,11 @@ class App {
         this.dom.addEventListener("touchstart", this.onPointerMove.bind(this));
         this.dom.addEventListener("touchmove", this.onPointerMove.bind(this));
         this.dom.addEventListener("touchend", this.onPointerMove.bind(this));
+
+        this.svg = document.querySelector("#appVectorContainer");
+
+        this._sizeHelpers.zoom = document.querySelector("#zoomSizeHelper");
+        this._sizeHelpers.padding = document.querySelector("#paddingSizeHelper");
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
     }
@@ -104,6 +117,9 @@ class App {
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
 
+        this.size.zoom = this._sizeHelpers.zoom.getClientRects()[0].width;
+        this.size.padding = this.size.zoom / this._sizeHelpers.padding.getClientRects()[0].width;
+
         Agent.updateUiFrame();
         ConnectorManager.updateUiFrame();
     }
@@ -112,30 +128,34 @@ class App {
 
         Console.write(commandLine, "< ");
 
+        var response = null;
+
         try {
 
             const command = await CommandFactory.get(commandLine);
-            const response = await command.execute();
-    
-            if (response !== undefined) {
-    
-                Console.write(response, "> ");
-            }
-
-            this.commandHistory.push({
-                command: commandLine,
-                response: response
-            });
+            response = await command.execute();
         }
         catch (ex) {
 
-            Console.write(`An error ocurred: ${ex.message}`);
-
-            this.commandHistory.push({
-                command: commandLine,
-                response: ex
-            });
+            response = new ResultError(ex);
         }
+
+        if (response !== undefined) {
+                
+            Console.write(
+                response.toString(),
+                response.value.type == "error"
+                    ? "! "
+                    : "> "
+                );
+
+            ConnectorManager.onResult(response);
+        }
+
+        this.commandHistory.push({
+            command: commandLine,
+            response: response
+        });
     }
 }
 

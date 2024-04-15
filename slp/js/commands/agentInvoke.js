@@ -1,5 +1,6 @@
 import Command from "./command.js";
 import Agent from "../agents/agent.js";
+import ResultError from "../results/error.js";
 
 class CommandAgentInvoke extends Command {
 
@@ -19,7 +20,7 @@ class CommandAgentInvoke extends Command {
 
         if (!agent) {
 
-            throw new Error(`Unable to invoke agent ${idOrName} - id or name not found. Please use either a valid agent id or a valid agent name.`);
+            return new ResultError(`Unable to invoke agent ${idOrName} - id or name not found. Please use either a valid agent id or a valid agent name.`);
         }
 
         return await agent.invoke(prompt);

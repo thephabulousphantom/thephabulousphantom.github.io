@@ -1,6 +1,8 @@
 .uiSvg {
 
     position: fixed;
+    top:0px;
+    left:0px;
     width: 100vw;
     height: 100dvh;
     margin: 0;
@@ -8,10 +10,36 @@
     z-index: 20;
 }
 
-.uiSvg line {
+.uiSvg .uiConnector {
 
     stroke: var(--appColorSecondary);
     stroke-linecap: round;
-    stroke-dasharray: calc(var(--appZoom) * 0.4);
     stroke-width: calc(var(--appZoom) * 0.2);
+}
+
+.uiSvg .uiConnector.uiConnectorError {
+
+    stroke: var(--appColorError);
+}
+
+.uiSvg .uiConnector.uiConnectorText {
+
+    stroke: var(--appColorText);
+}
+
+.uiSvg .uiSocket {
+
+    stroke: var(--appColorSecondary);
+    stroke-width: calc(var(--appZoom) * 0.4);
+    fill: var(--appColorPrimary);
+}
+
+.uiSvg .uiSocket.uiConnectorError {
+
+    fill: var(--appColorError);
+}
+
+.uiSvg .uiSocket.uiConnectorText {
+
+    fill: var(--appColorText);
 }
