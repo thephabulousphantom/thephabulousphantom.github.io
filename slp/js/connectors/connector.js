@@ -68,13 +68,25 @@ class Connector {
 
     updateUiFrame() {
 
-        const fromClientRect = this.from.socket.svg.getClientRects()[0];
-        this.svg.setAttribute("x1", fromClientRect.x + fromClientRect.width / 2);
-        this.svg.setAttribute("y1", fromClientRect.y + fromClientRect.height / 2);
+        if (this.from && this.from.socket && this.from.socket.svg) {
 
-        const toClientRect = this.to.socket.svg.getClientRects()[0];
-        this.svg.setAttribute("x2", toClientRect.x + toClientRect.width / 2);
-        this.svg.setAttribute("y2", toClientRect.y + toClientRect.height / 2);
+            const fromClientRect = this.from.socket.svg.getClientRects()[0];
+            if (fromClientRect) {
+
+                this.svg.setAttribute("x1", fromClientRect.x + fromClientRect.width / 2);
+                this.svg.setAttribute("y1", fromClientRect.y + fromClientRect.height / 2);
+            }
+        }
+    
+        if (this.to && this.to.socket && this.to.socket.svg) {
+
+            const toClientRect = this.to.socket.svg.getClientRects()[0];
+            if (toClientRect) {
+
+                this.svg.setAttribute("x2", toClientRect.x + toClientRect.width / 2);
+                this.svg.setAttribute("y2", toClientRect.y + toClientRect.height / 2);
+            }
+        }
     }
 }
 
