@@ -98,18 +98,6 @@ class Agent {
         title.addEventListener("touchstart", this.onTitlePointerDown.bind(this));
         title.addEventListener("mouseup", this.onTitlePointerUp.bind(this));
         title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
-
-        for (const socketConnector of this.sockets.input) {
-
-            socketConnector.initUi();
-            App.svg.appendChild(socketConnector.svg);
-        }
-
-        for (const socketConnector of this.sockets.output) {
-
-            socketConnector.initUi();
-            App.svg.appendChild(socketConnector.svg);
-        }
     }
 
     onTitlePointerDown(evt) {

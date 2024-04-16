@@ -37,6 +37,16 @@ class ConnectorSocket {
 
     updateUiFrame() {
 
+        if (!document.body.contains(this.svg)) {
+
+            this.initUi().then((function () {
+
+                App.svg.appendChild(this.svg);
+                
+            }).bind(this));
+            return;
+        }
+        
         const agentClientRect = this.agent.dom.querySelector(".nodeTitle").getClientRects()[0];
         const center_r = agentClientRect.height / 2;
         const actual_r = App.size.zoom / 2;

@@ -6,6 +6,7 @@ import AgentOpenAiChat from "./agents/openAiChat.js";
 import DataManager from "./dataManager.js";
 import ConnectorManager from "./connectors/manager.js";
 import ResultError from "./results/error.js";
+import Connector from "./connectors/connector.js";
 
 class App {
 
@@ -52,10 +53,17 @@ class App {
 
         await DataManager.set(`agent.ids`, Object.getOwnPropertyNames(Agent.lookupId));
 
-        for (var id in Agent.lookupId) {
+        for (const id in Agent.lookupId) {
 
             const agent = Agent.lookupId[id];
             await agent.saveState();
+        }
+
+        await DataManager.set(`connector.ids`, Object.getOwnPropertyNames(Connector.lookupId));
+
+        for (const connector of ConnectorManager.connectors) {
+
+            await connector.saveState();
         }
     }
 
@@ -65,6 +73,12 @@ class App {
         for (const agentNode of agentNodes) {
 
             agentNode.remove();
+        }
+
+        const connectorVectors = document.querySelectorAll(".uiConnector, .uiSocket");
+        for (const uiConnector of connectorVectors) {
+
+            uiConnector.remove();
         }
 
         const agentConstructors = {
@@ -104,6 +118,26 @@ class App {
 
             Agent.lookupId[agent.id] = agent;
             Agent.lookupName[agent.name] = agent;
+        }
+
+        Connector.nextId = 0;
+        ConnectorManager.connectors.length = 0;
+        const connectorIds = await DataManager.get(`connector.ids`);
+        const connectorsLoaded = [];
+        for (const connectorId of connectorIds) {
+
+            const connector = await ConnectorManager.addFromState(connectorId);
+            connectorsLoaded.push(connector);
+            if (Connector.nextId <= connectorId) {
+
+                Connector.nextId = connectorId + 1;
+            }
+        }
+
+        Connector.lookupId = {};
+        for (const connector of connectorsLoaded) {
+
+            Connector.lookupId[connector.id] = connector;
         }
     }
 

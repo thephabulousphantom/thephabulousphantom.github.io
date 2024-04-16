@@ -20,6 +20,16 @@ class ConnectorManager {
         return connector;
     }
 
+    async addFromState(id) {
+
+        const connector = await Connector.fromState(id);
+        this.connectors.push(connector);
+
+        App.svg.appendChild(connector.svg);
+
+        return connector;
+    }
+
     onResult(result) {
 
         if (result.source && result.source instanceof Agent) {

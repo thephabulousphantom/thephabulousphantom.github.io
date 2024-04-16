@@ -1,3 +1,6 @@
+import Agent from "../agents/agent.js";
+import DataManager from "../dataManager.js";
+
 class Connector {
 
     id = Connector.nextId++;
@@ -12,10 +15,11 @@ class Connector {
         socket: null
     };
 
-    type = null;
     svg = null;
 
     constructor(from, to, type) {
+
+        Connector.lookupId[this.id] = this;
 
         this.from.agent = from;
         this.to.agent = to;
@@ -55,6 +59,13 @@ class Connector {
         this.svg = line;
     }
 
+    async saveState() {
+
+        await DataManager.set(`connector.${this.id}.type`, this.from.socket.type);
+        await DataManager.set(`connector.${this.id}.from`, this.from.agent.properties.id);
+        await DataManager.set(`connector.${this.id}.to`, this.to.agent.properties.id);
+    }
+
     updateUiFrame() {
 
         const fromClientRect = this.from.socket.svg.getClientRects()[0];
@@ -68,5 +79,17 @@ class Connector {
 }
 
 Connector.nextId = 0;
+Connector.lookupId = {};
+
+Connector.fromState = async function(id) {
+
+    const fromId = await DataManager.get(`connector.${id}.from`);
+    const from = Agent.lookupId[fromId];
+    const toId = await DataManager.get(`connector.${id}.to`);
+    const to = Agent.lookupId[toId];
+    const type = await DataManager.get(`connector.${id}.type`);
+
+    return new Connector(from, to, type);
+}
 
 export default Connector;
