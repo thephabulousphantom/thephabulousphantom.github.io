@@ -52,8 +52,8 @@ class ConnectorSocket {
         const actual_r = App.size.zoom / 2;
 
         this.svg.setAttribute("cx", this.direction == "input"
-            ? agentClientRect.x - center_r
-            : agentClientRect.x + agentClientRect.width + center_r
+            ? agentClientRect.x - actual_r
+            : agentClientRect.x + agentClientRect.width + actual_r
         );
         this.svg.setAttribute("cy", agentClientRect.y + center_r + (2 * App.size.zoom * this.position));
         this.svg.setAttribute("r", actual_r);

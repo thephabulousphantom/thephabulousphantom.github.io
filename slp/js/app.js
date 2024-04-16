@@ -204,5 +204,7 @@ const app = new App();
 
 export default app;
 
+await app.processCommand("new textformat, robotInput, \"pretend that you are an actual living and breathing, silly 5 year old kid.\"");
 await app.processCommand("new openai, robot");
-await app.processCommand("new openaichat, kid,,, \"pretend that you are an actual living and breathing, silly 5 year old kid\"");
+await app.processCommand("connect robotInput, robot");
+await app.processCommand("new openaichat, kid,,, \"pretend that you are an actual living and breathing, silly 5 year old kid.\"");

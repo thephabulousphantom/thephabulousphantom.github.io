@@ -19,6 +19,8 @@ class CommandInvoke extends Command {
             return new ResultError(`Unable to invoke agent ${agentRef} - id or name not found. Please use either a valid agent id or a valid agent name.`);
         }
 
+        const prompt = this.parameters[1];
+
         return await agent.invoke(prompt);
     }
 }

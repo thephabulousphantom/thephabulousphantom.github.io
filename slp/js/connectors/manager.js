@@ -43,7 +43,7 @@ class ConnectorManager {
 
                         case "error":
                         case "text":
-                            App.processCommand(`agentinvoke ${connector.to.agent.properties.id}, "${result.toString().replace("\"", "\\\"")}"`);
+                            App.processCommand(`invoke ${connector.to.agent.properties.id}, "${result.toString().replace("\"", "\\\"")}"`);
                             break;
                     }
                 }
