@@ -7,6 +7,7 @@ import DataManager from "./dataManager.js";
 import ConnectorManager from "./connectors/manager.js";
 import ResultError from "./results/error.js";
 import Connector from "./connectors/connector.js";
+import NodeTextFormat from "./nodes/textFormat.js";
 
 class App {
 
@@ -83,7 +84,8 @@ class App {
 
         const agentConstructors = {
             "OpenAi": NodeOpenAi,
-            "OpenAiChat": NodeOpenAiChat
+            "OpenAiChat": NodeOpenAiChat,
+            "TextFormat": NodeTextFormat
         };
 
         Node.nextId = 0;
@@ -174,7 +176,7 @@ class App {
             response = new ResultError(ex);
         }
 
-        if (response !== undefined) {
+        if (response !== undefined && response.toString().length > 0) {
                 
             Console.write(
                 response.toString(),

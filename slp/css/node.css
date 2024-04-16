@@ -1,7 +1,7 @@
 .uiNode {
 
     position: fixed;
-    width: calc(var(--appZoom) * 30);
+    width: calc(var(--appZoom) * 20);
     border-radius: var(--appBorderRadius);
     overflow: hidden;
     cursor: default;
@@ -44,7 +44,7 @@
 
 .uiNode .nodeTitle {
 
-    width: calc(var(--appZoom) * 30 - (2 * var(--appPadding)));
+    width: calc(var(--appZoom) * 20 - (2 * var(--appPadding)));
     padding:
         calc(var(--appPadding) * 0.5)
         var(--appPadding)
@@ -60,7 +60,7 @@
 .uiNode .nodeLabelValue {
 
     display: flex;
-    width: calc(var(--appZoom) * 30 - (2 * var(--appZoom) * var(--appPadding)));
+    width: calc(var(--appZoom) * 20 - (2 * var(--appZoom) * var(--appPadding)));
     padding: 0px;
     margin:
         calc(var(--appPadding) * 0.5)
@@ -84,7 +84,7 @@
 .uiNode .nodeValue {
 
     background-color: inherit;
-    width: calc(var(--appZoom) * 25 - (2 * var(--appPadding)));
+    width: calc(var(--appZoom) * 15 - (2 * var(--appPadding)));
     padding:
         0
         0
