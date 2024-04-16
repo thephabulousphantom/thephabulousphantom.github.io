@@ -1,4 +1,4 @@
-import Agent from "../agents/agent.js";
+import Node from "../nodes/node.js";
 import DataManager from "../dataManager.js";
 
 class Connector {
@@ -84,9 +84,9 @@ Connector.lookupId = {};
 Connector.fromState = async function(id) {
 
     const fromId = await DataManager.get(`connector.${id}.from`);
-    const from = Agent.lookupId[fromId];
+    const from = Node.lookupId[fromId];
     const toId = await DataManager.get(`connector.${id}.to`);
-    const to = Agent.lookupId[toId];
+    const to = Node.lookupId[toId];
     const type = await DataManager.get(`connector.${id}.type`);
 
     return new Connector(from, to, type);

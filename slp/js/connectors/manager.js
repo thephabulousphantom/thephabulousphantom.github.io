@@ -1,6 +1,6 @@
 import App from "../app.js";
 import Connector from "./connector.js";
-import Agent from "../agents/agent.js"
+import Node from "../nodes/node.js"
 
 class ConnectorManager {
     
@@ -32,7 +32,7 @@ class ConnectorManager {
 
     onResult(result) {
 
-        if (result.source && result.source instanceof Agent) {
+        if (result.source && result.source instanceof Node) {
 
             const agent = result.source;
             for (const connector of this.connectors) {

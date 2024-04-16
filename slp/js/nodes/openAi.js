@@ -1,17 +1,16 @@
-import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
-import Agent from "./agent.js";
+import Node from "./node.js";
 import ResultError from "../results/error.js";
 import ResultText from "../results/text.js";
 
-class AgentOpenAi extends Agent {
+class NodeOpenAi extends Node {
 
     constructor(name, type) {
 
         super(name, type ?? "OpenAi");
 
         this.properties.key = null;
-        this.properties.model = AgentOpenAi.defaultModel;
+        this.properties.model = NodeOpenAi.defaultModel;
         this.properties._models = ["gpt-3.5-turbo-instruct"];
     }
 
@@ -19,7 +18,7 @@ class AgentOpenAi extends Agent {
 
         await super.initUi();
         
-        const dom = TemplateManager.getDom(AgentOpenAi.template, this.properties);
+        const dom = TemplateManager.getDom(NodeOpenAi.template, this.properties);
         this.dom.append(...dom.childNodes);
 
         this.bindUiElement("key");
@@ -66,7 +65,7 @@ class AgentOpenAi extends Agent {
     }
 }
     
-AgentOpenAi.defaultModel = "gpt-3.5-turbo-instruct";
-AgentOpenAi.template = await TemplateManager.getTemplate("agentNodeOpenAi");
+NodeOpenAi.defaultModel = "gpt-3.5-turbo-instruct";
+NodeOpenAi.template = await TemplateManager.getTemplate("nodeOpenAi");
 
-export default AgentOpenAi;
+export default NodeOpenAi;

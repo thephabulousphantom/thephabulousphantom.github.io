@@ -1,11 +1,11 @@
 import CommandClear from "./clear.js";
 import CommandZoom from "./zoom.js";
 import CommandPadding from "./padding.js";
-import CommandAgentNew from "./agentNew.js";
-import CommandAgentList from "./agentList.js";
-import CommandAgentInvoke from "./agentInvoke.js";
-import CommandStateSave from "./stateSave.js";
-import CommandStateLoad from "./stateLoad.js";
+import CommandNew from "./new.js";
+import CommandList from "./list.js";
+import CommandInvoke from "./invoke.js";
+import CommandSave from "./save.js";
+import CommandLoad from "./load.js";
 import CommandConnect from "./connect.js";
 
 class CommandFactory {
@@ -14,11 +14,11 @@ class CommandFactory {
         "clear": CommandClear,
         "zoom": CommandZoom,
         "padding": CommandPadding,
-        "agentnew": CommandAgentNew,
-        "agentlist": CommandAgentList,
-        "agentinvoke": CommandAgentInvoke,
-        "statesave": CommandStateSave,
-        "stateload": CommandStateLoad,
+        "new": CommandNew,
+        "list": CommandList,
+        "invoke": CommandInvoke,
+        "save": CommandSave,
+        "load": CommandLoad,
         "connect": CommandConnect
     };
 

@@ -1,4 +1,4 @@
-.uiAgentNode {
+.uiNode {
 
     position: fixed;
     width: calc(var(--appZoom) * 30);
@@ -14,35 +14,35 @@
     background-color: none;
 }
 
-.uiAgentNode .nodeLabelValue option {
+.uiNode .nodeLabelValue option {
 
     color: var(--appColorSecondary);
     background-color: var(--appColorLighter);
 }    
 
-.uiAgentNode .nodeLabelValue option:checked {
+.uiNode .nodeLabelValue option:checked {
 
     color: var(--appColorAccent2);
 }
 
-.uiAgentNode {
+.uiNode {
 
     background-color: var(--appColorPrimaryTransparent);
     backdrop-filter: blur(3px);
 }
 
-.uiAgentNode:has(input:focus), .uiAgentNode:has(select:focus) {
+.uiNode:has(input:focus), .uiNode:has(select:focus) {
 
     background-color: var(--appColorLighterTransparent);
 }
 
-.uiAgentNode .nodeValue:focus {
+.uiNode .nodeValue:focus {
 
     outline: none;
     color: var(--appColorAccent2);
 }
 
-.uiAgentNode .nodeTitle {
+.uiNode .nodeTitle {
 
     width: calc(var(--appZoom) * 30 - (2 * var(--appPadding)));
     padding:
@@ -57,7 +57,7 @@
     font-weight: bold;
 }
 
-.uiAgentNode .nodeLabelValue {
+.uiNode .nodeLabelValue {
 
     display: flex;
     width: calc(var(--appZoom) * 30 - (2 * var(--appZoom) * var(--appPadding)));
@@ -69,19 +69,19 @@
         var(--appPadding);
 }
 
-.uiAgentNode .nodeLabel, .uiAgentNode .nodeValue, .uiAgentNode .nodeTitle {
+.uiNode .nodeLabel, .uiNode .nodeValue, .uiNode .nodeTitle {
 
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
 }
 
-.uiAgentNode .nodeLabel {
+.uiNode .nodeLabel {
 
     width: calc(var(--appZoom) * 5 - var(--appPadding));
 }
 
-.uiAgentNode .nodeValue {
+.uiNode .nodeValue {
 
     background-color: inherit;
     width: calc(var(--appZoom) * 25 - (2 * var(--appPadding)));
@@ -95,7 +95,7 @@
     box-sizing: content-box;
 }
 
-.uiAgentNode select {
+.uiNode select {
 
     cursor: pointer;
 }

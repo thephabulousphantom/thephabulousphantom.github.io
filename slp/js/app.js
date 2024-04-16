@@ -1,8 +1,8 @@
 import Console from "./console.js";
 import CommandFactory from "./commands/factory.js";
-import Agent from "./agents/agent.js";
-import AgentOpenAi from "./agents/openAi.js";
-import AgentOpenAiChat from "./agents/openAiChat.js";
+import Node from "./nodes/node.js";
+import NodeOpenAi from "./nodes/openAi.js";
+import NodeOpenAiChat from "./nodes/openAiChat.js";
 import DataManager from "./dataManager.js";
 import ConnectorManager from "./connectors/manager.js";
 import ResultError from "./results/error.js";
@@ -51,11 +51,11 @@ class App {
 
     async saveState() {
 
-        await DataManager.set(`agent.ids`, Object.getOwnPropertyNames(Agent.lookupId));
+        await DataManager.set(`agent.ids`, Object.getOwnPropertyNames(Node.lookupId));
 
-        for (const id in Agent.lookupId) {
+        for (const id in Node.lookupId) {
 
-            const agent = Agent.lookupId[id];
+            const agent = Node.lookupId[id];
             await agent.saveState();
         }
 
@@ -69,7 +69,7 @@ class App {
 
     async loadState() {
 
-        const agentNodes = document.querySelectorAll(".uiAgentNode");
+        const agentNodes = document.querySelectorAll(".uiNode");
         for (const agentNode of agentNodes) {
 
             agentNode.remove();
@@ -82,11 +82,11 @@ class App {
         }
 
         const agentConstructors = {
-            "OpenAi": AgentOpenAi,
-            "OpenAiChat": AgentOpenAiChat
+            "OpenAi": NodeOpenAi,
+            "OpenAiChat": NodeOpenAiChat
         };
 
-        Agent.nextId = 0;
+        Node.nextId = 0;
 
         const ids = await DataManager.get(`agent.ids`);
 
@@ -104,20 +104,20 @@ class App {
                 await agent.loadState();
 
                 agentsLoaded.push(agent);
-                if (Agent.nextId <= id) {
+                if (Node.nextId <= id) {
 
-                    Agent.nextId = id + 1;
+                    Node.nextId = id + 1;
                 }
             }
         }
 
-        Agent.lookupId = {};
-        Agent.lookupName = {};
+        Node.lookupId = {};
+        Node.lookupName = {};
 
         for (const agent of agentsLoaded) {
 
-            Agent.lookupId[agent.id] = agent;
-            Agent.lookupName[agent.name] = agent;
+            Node.lookupId[agent.id] = agent;
+            Node.lookupName[agent.name] = agent;
         }
 
         Connector.nextId = 0;
@@ -154,7 +154,7 @@ class App {
         this.size.zoom = this._sizeHelpers.zoom.getClientRects()[0].width;
         this.size.padding = this.size.zoom / this._sizeHelpers.padding.getClientRects()[0].width;
 
-        Agent.updateUiFrame();
+        Node.updateUiFrame();
         ConnectorManager.updateUiFrame();
     }
 
@@ -204,5 +204,5 @@ const app = new App();
 
 export default app;
 
-await app.processCommand("agentnew openai,robot");
-await app.processCommand("agentnew openaichat,kid,,,\"pretend that you are an actual living and breathing, silly 5 year old kid\"");
+await app.processCommand("new openai, robot");
+await app.processCommand("new openaichat, kid,,, \"pretend that you are an actual living and breathing, silly 5 year old kid\"");

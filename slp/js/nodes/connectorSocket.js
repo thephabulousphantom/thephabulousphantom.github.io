@@ -37,7 +37,7 @@ class ConnectorSocket {
 
     updateUiFrame() {
 
-        if (!document.body.contains(this.svg)) {
+        if (!this.svg || !document.body.contains(this.svg)) {
 
             this.initUi().then((function () {
 

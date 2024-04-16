@@ -2,15 +2,14 @@ import App from "../app.js";
 import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
 import ResultError from "../results/error.js"
-import ResultText from "../results/text.js"
 import ConnectorSocket from "./connectorSocket.js";
 
 var iii=0;
-class Agent {
+class Node {
 
     properties = {
 
-        id: Agent.nextId++,
+        id: Node.nextId++,
         type: null,
         name: null
     }
@@ -27,8 +26,8 @@ class Agent {
         this.properties.name = name;
         this.properties.type = type;
 
-        Agent.lookupId[this.properties.id] = this;
-        Agent.lookupName[this.properties.name] = this;
+        Node.lookupId[this.properties.id] = this;
+        Node.lookupName[this.properties.name] = this;
 
         this.sockets.input.push(new ConnectorSocket(this, "input", this.sockets.input.length, "text"));
         this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "error"));
@@ -86,8 +85,8 @@ class Agent {
 
     async initUi() {
 
-        const dom = TemplateManager.getDom(Agent.template, this.properties);
-        this.dom = dom.querySelector(".uiAgentNode");
+        const dom = TemplateManager.getDom(Node.template, this.properties);
+        this.dom = dom.querySelector(".uiNode");
 
         App.dom.append(...dom.childNodes);
 
@@ -145,16 +144,16 @@ class Agent {
     }
 }
 
-Agent.nextId = 0;
-Agent.lookupId = {};
-Agent.lookupName = {};
-Agent.template = await TemplateManager.getTemplate("agentNode");
+Node.nextId = 0;
+Node.lookupId = {};
+Node.lookupName = {};
+Node.template = await TemplateManager.getTemplate("node");
 
-Agent.updateUiFrame = function() {
+Node.updateUiFrame = function() {
 
-    for (var id in Agent.lookupId) {
+    for (var id in Node.lookupId) {
 
-        const agent = Agent.lookupId[id];
+        const agent = Node.lookupId[id];
 
         if (agent.dom === undefined) {
 
@@ -175,4 +174,4 @@ Agent.updateUiFrame = function() {
     }
 }
 
-export default Agent;
+export default Node;

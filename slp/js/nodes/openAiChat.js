@@ -1,16 +1,15 @@
-import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
-import AgentOpenAi from "./openAi.js";
+import NodeOpenAi from "./openAi.js";
 import ResultError from "../results/error.js";
 import ResultText from "../results/text.js";
 
-class AgentOpenAiChat extends AgentOpenAi {
+class NodeOpenAiChat extends NodeOpenAi {
 
     constructor(name, type) {
 
         super(name, type ?? "OpenAiChat");
 
-        this.properties.model = AgentOpenAiChat.defaultModel;
+        this.properties.model = NodeOpenAiChat.defaultModel;
         this.properties.system = null;
         this.properties._models = [
             "gpt-3.5-turbo",
@@ -24,7 +23,7 @@ class AgentOpenAiChat extends AgentOpenAi {
 
         await super.initUi();
         
-        const dom = TemplateManager.getDom(AgentOpenAiChat.template, this.properties);
+        const dom = TemplateManager.getDom(NodeOpenAiChat.template, this.properties);
         this.dom.append(...dom.childNodes);
 
         this.bindUiElement("system");
@@ -84,7 +83,7 @@ class AgentOpenAiChat extends AgentOpenAi {
     }
 }
     
-AgentOpenAiChat.defaultModel = "gpt-3.5-turbo";
-AgentOpenAiChat.template = await TemplateManager.getTemplate("agentNodeOpenAiChat");
+NodeOpenAiChat.defaultModel = "gpt-3.5-turbo";
+NodeOpenAiChat.template = await TemplateManager.getTemplate("nodeOpenAiChat");
 
-export default AgentOpenAiChat;
+export default NodeOpenAiChat;

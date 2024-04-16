@@ -1,9 +1,9 @@
 import Command from "./command.js";
 import Console from "../console.js";
-import Agent from "../agents/agent.js";
+import Node from "../nodes/node.js";
 import ResultText from "../results/text.js";
 
-class CommandListAgents extends Command {
+class CommandList extends Command {
 
     constructor(commandLine, commandName, parameters) {
 
@@ -13,11 +13,11 @@ class CommandListAgents extends Command {
     async execute() {
 
         var count = 0;
-        for (var id in Agent.lookupId) {
+        for (var id in Node.lookupId) {
 
-            const agent = Agent.lookupId[id];
+            const agent = Node.lookupId[id];
 
-            Console.write(` - ${agent.type} agent ${agent.id}, name: ${agent.name}`);
+            Console.write(` - ${agent.properties.type} agent ${agent.properties.id}, name: ${agent.properties.name}`);
 
             count++;
         }
@@ -26,4 +26,4 @@ class CommandListAgents extends Command {
     }
 }
 
-export default CommandListAgents;
+export default CommandList;
