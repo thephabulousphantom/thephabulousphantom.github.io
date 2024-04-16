@@ -87,6 +87,8 @@ class Node {
 
         const dom = TemplateManager.getDom(Node.template, this.properties);
         this.dom = dom.querySelector(".uiNode");
+        this.nodeSizeToggle = this.dom.querySelector(".nodeSizeToggle");
+        this.nodeSizeToggle.addEventListener("click", this.onSizeToggle.bind(this));
 
         App.dom.append(...dom.childNodes);
 
@@ -97,6 +99,20 @@ class Node {
         title.addEventListener("touchstart", this.onTitlePointerDown.bind(this));
         title.addEventListener("mouseup", this.onTitlePointerUp.bind(this));
         title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
+    }
+
+    onSizeToggle(evt) {
+
+        if (this.dom.classList.contains("uiMinimised")) {
+
+            this.dom.classList.remove("uiMinimised");
+        }
+        else {
+            
+            this.dom.classList.add("uiMinimised");
+        }
+        
+        this.dom.querySelector(".nodeTitleName").innerText = this.properties.name;
     }
 
     onTitlePointerDown(evt) {

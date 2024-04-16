@@ -14,6 +14,11 @@
     background-color: none;
 }
 
+.uiNode.uiMinimised {
+
+    width: calc(var(--appZoom) * 10);
+}
+
 .uiNode .nodeLabelValue option {
 
     color: var(--appColorSecondary);
@@ -44,17 +49,44 @@
 
 .uiNode .nodeTitle {
 
+    position: relative;
     width: calc(var(--appZoom) * 20 - (2 * var(--appPadding)));
     padding:
         calc(var(--appPadding) * 0.5)
         var(--appPadding)
         calc(var(--appPadding) * 0.5)
         var(--appPadding);
-    cursor: pointer;
+    cursor: grab;
     user-select: none;
     background-color: var(--appColorSecondary);
     color: var(--appColorPrimary);
     font-weight: bold;
+}
+
+.uiNode.uiMinimised .nodeTitle {
+
+    width: calc(var(--appZoom) * 10 - (2 * var(--appPadding)));
+}
+
+.uiNode .nodeSizeToggle {
+
+    position: absolute;
+    top: 50%;
+    left: calc(var(--appZoom) * 18);
+    transform: translateY(-50%);
+    float: right;
+    width: calc(var(--appZoom));
+    height: calc(var(--appZoom) / 3);
+    background-color: var(--appColorSecondary);
+    border: calc(var(--appZoom) * 0.4) solid var(--appColorPrimary);
+    border-radius: 1vmin;
+    cursor: pointer;
+}
+
+.uiNode.uiMinimised .nodeSizeToggle {
+
+    left: calc(var(--appZoom) * 8);
+    height: calc(var(--appZoom));
 }
 
 .uiNode .nodeLabelValue {
@@ -67,6 +99,20 @@
         var(--appPadding)
         calc(var(--appPadding) * 0.5)
         var(--appPadding);
+}
+
+.uiNode.uiMinimised .nodeLabelValue {
+
+    display: none;
+}
+
+.uiNode .nodeTitleType, .uiNode.uiMinimised .nodeTitleName {
+
+    display: inherit;
+}
+.uiNode.uiMinimised .nodeTitleType, .uiNode .nodeTitleName {
+
+    display: none;
 }
 
 .uiNode .nodeLabel, .uiNode .nodeValue, .uiNode .nodeTitle {

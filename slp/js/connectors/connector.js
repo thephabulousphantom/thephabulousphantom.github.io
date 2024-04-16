@@ -6,12 +6,12 @@ class Connector {
     id = Connector.nextId++;
     
     from = {
-        agent: null,
+        node: null,
         socket: null
     };
 
     to = {
-        agent: null,
+        node: null,
         socket: null
     };
 
@@ -21,8 +21,8 @@ class Connector {
 
         Connector.lookupId[this.id] = this;
 
-        this.from.agent = from;
-        this.to.agent = to;
+        this.from.node = from;
+        this.to.node = to;
 
         for (const outputSocket of from.sockets.output) {
 
@@ -62,8 +62,8 @@ class Connector {
     async saveState() {
 
         await DataManager.set(`connector.${this.id}.type`, this.from.socket.type);
-        await DataManager.set(`connector.${this.id}.from`, this.from.agent.properties.id);
-        await DataManager.set(`connector.${this.id}.to`, this.to.agent.properties.id);
+        await DataManager.set(`connector.${this.id}.from`, this.from.node.properties.id);
+        await DataManager.set(`connector.${this.id}.to`, this.to.node.properties.id);
     }
 
     updateUiFrame() {
