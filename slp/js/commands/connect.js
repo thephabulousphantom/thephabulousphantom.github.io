@@ -14,24 +14,24 @@ class CommandConnect extends Command {
     async execute() {
 
         const from = this.parameters[0];
-        const agentFrom = Node.lookupId[from] ?? Node.lookupName[from];
-        if (!agentFrom) {
+        const nodeFrom = Node.lookupId[from] ?? Node.lookupName[from];
+        if (!nodeFrom) {
 
-            return new ResultError(`Invalid source agent ${from}. Please specify either a valid agent id or a valid agent name.`);
+            return new ResultError(`Invalid source node ${from}. Please specify either a valid node id or a valid node name.`);
         }
 
         const to = this.parameters[1];
-        const agentTo = Node.lookupId[to] ?? Node.lookupName[to];
-        if (!agentTo) {
+        const nodeTo = Node.lookupId[to] ?? Node.lookupName[to];
+        if (!nodeTo) {
 
-            return new ResultError(`Invalid destination agent ${to}. Please specify either a valid agent id or a valid agent name.`);
+            return new ResultError(`Invalid destination node ${to}. Please specify either a valid node id or a valid node name.`);
         }
 
         const type = this.parameters[2];
 
-        const connector = ConnectorManager.add(agentFrom, agentTo, type);
+        const connector = ConnectorManager.add(nodeFrom, nodeTo, type);
 
-        return new ResultText(`Connected output of ${agentFrom.properties.name} to input of ${agentTo.properties.name}.`);
+        return new ResultText(`Connected output of ${nodeFrom.properties.name} to input of ${nodeTo.properties.name}.`);
     }
 }
 

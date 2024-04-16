@@ -11,17 +11,17 @@ class CommandInvoke extends Command {
 
     async execute() {
 
-        const agentRef = this.parameters[0];
-        const agent = Node.lookupId[agentRef] ?? Node.lookupName[agentRef];
+        const nodeRef = this.parameters[0];
+        const node = Node.lookupId[nodeRef] ?? Node.lookupName[nodeRef];
 
-        if (!agent) {
+        if (!node) {
 
-            return new ResultError(`Unable to invoke agent ${agentRef} - id or name not found. Please use either a valid agent id or a valid agent name.`);
+            return new ResultError(`Unable to invoke node ${nodeRef} - id or name not found. Please use either a valid node id or a valid node name.`);
         }
 
         const prompt = this.parameters[1];
 
-        return await agent.invoke(prompt);
+        return await node.invoke(prompt);
     }
 }
 

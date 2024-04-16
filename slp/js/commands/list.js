@@ -15,14 +15,14 @@ class CommandList extends Command {
         var count = 0;
         for (var id in Node.lookupId) {
 
-            const agent = Node.lookupId[id];
+            const node = Node.lookupId[id];
 
-            Console.write(` - ${agent.properties.type} agent ${agent.properties.id}, name: ${agent.properties.name}`);
+            Console.write(` - ${node.properties.type} node ${node.properties.id}, name: ${node.properties.name}`);
 
             count++;
         }
 
-        return new ResultText(`${count} agents listed.`);
+        return new ResultText(`${count} node(s) listed.`);
     }
 }
 

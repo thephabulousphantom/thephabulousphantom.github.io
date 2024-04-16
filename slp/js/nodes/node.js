@@ -11,7 +11,8 @@ class Node {
 
         id: Node.nextId++,
         type: null,
-        name: null
+        name: null,
+        minimised: false
     }
 
     dom = undefined;
@@ -92,6 +93,11 @@ class Node {
 
         App.dom.append(...dom.childNodes);
 
+        if (this.properties.minimised) {
+
+            this.dom.classList.add("uiMinimised");
+        }
+
         this.bindUiElement("name");
 
         const title = this.dom.querySelector(".nodeTitle");
@@ -101,18 +107,30 @@ class Node {
         title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
     }
 
-    onSizeToggle(evt) {
+    toggle() {
 
-        if (this.dom.classList.contains("uiMinimised")) {
+        this.properties.minimised = !this.properties.minimised;
 
-            this.dom.classList.remove("uiMinimised");
-        }
-        else {
-            
-            this.dom.classList.add("uiMinimised");
+        if (this.dom) {
+
+            this.dom.querySelector(".nodeTitleName").innerText = this.properties.name;
+
+            if (this.dom.classList.contains("uiMinimised") && !this.properties.minimised) {
+    
+                this.dom.classList.remove("uiMinimised");
+            }
+            else if (!this.dom.classList.contains("uiMinimised") && this.properties.minimised) {
+                
+                this.dom.classList.add("uiMinimised");
+            }
         }
         
-        this.dom.querySelector(".nodeTitleName").innerText = this.properties.name;
+        return !this._minimised;
+    }
+
+    onSizeToggle(evt) {
+
+        this.toggle();
     }
 
     onTitlePointerDown(evt) {
