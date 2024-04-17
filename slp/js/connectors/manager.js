@@ -44,7 +44,7 @@ class ConnectorManager {
                         case "error":
                         case "text":
                         case "image":
-                            App.processCommand(`invoke ${connector.to.node.properties.id}, "${result.toString().replace("\"", "\\\"")}"`);
+                            App.processCommand(`invoke ${connector.to.node.properties.id}, "${result.toString().replace("\"", "'").replace(",", ";")}"`);
                             break;
                     }
                 }
