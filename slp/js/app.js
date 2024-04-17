@@ -233,7 +233,7 @@ await app.loadDefaults();
 
 await app.processCommand("new textformat, input, \"write a funny scenario for a comic book panel containing 6 frames. the scenario should tell the following story. \"");
 await app.processCommand("new openai, screenwriter");
-await app.processCommand("new textformat, daliInstructions, \"create great looking and detailed comic-book panel consisting of 6 frames, based on the following scenario. Make sure to follow the scenario exactly.\"");
+await app.processCommand("new textformat, daliInstructions, \"create great looking and detailed comic-book panel consisting of 6 frames, based on the following scenario. Make sure to follow the scenario exactly, and that text is readable.\"");
 await app.processCommand("new dall-e, dali");
 
 await app.processCommand("connect input, screenwriter");

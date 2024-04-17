@@ -6,7 +6,6 @@ import ResultError from "../results/error.js"
 import ConnectorSocket from "./connectorSocket.js";
 import ResultViewer from "../results/viewer.js";
 
-var iii=0;
 class Node {
 
     properties = {
@@ -45,16 +44,16 @@ class Node {
                 continue;
             }
 
-            await DataManager.set(`agent.${this.properties.id}.${propertyName}`, this.properties[propertyName]);
+            await DataManager.set(`node.${this.properties.id}.${propertyName}`, this.properties[propertyName]);
         }
     }
 
     async loadState() {
 
-        const savedType = await DataManager.get(`agent.${this.properties.id}.type`);
+        const savedType = await DataManager.get(`node.${this.properties.id}.type`);
         if (savedType != this.properties.type) {
 
-            throw new Error(`Stored agent ${this.properties.id} is of incompatible type ${savedType}. Needs to be of ${this.properties.type} type in order to be loaded.`);
+            throw new Error(`Stored node ${this.properties.id} is of incompatible type ${savedType}. Needs to be of ${this.properties.type} type in order to be loaded.`);
         }
 
         for (const propertyName in this.properties) {
@@ -64,7 +63,7 @@ class Node {
                 continue;
             }
 
-            this.properties[propertyName] = await DataManager.get(`agent.${this.properties.id}.${propertyName}`, this.properties[propertyName]);
+            this.properties[propertyName] = await DataManager.get(`node.${this.properties.id}.${propertyName}`, this.properties[propertyName]);
         }
     }
 
@@ -95,7 +94,7 @@ class Node {
     async invoke(prompt) {
 
         return new ResultError(
-            new Error(`Unable to respond to prompt: "${prompt}". Base agent shouldn't be directly prompted. Use derived classes instead.`),
+            new Error(`Unable to respond to prompt: "${prompt}". Base node shouldn't be directly prompted. Use derived classes instead.`),
             this
         );
     }
@@ -193,6 +192,18 @@ class Node {
         delete this.dragging;
     }
 
+    highlight(highlight) {
+
+        if (highlight && !this.dom.classList.contains("uiHighlight")) {
+
+            this.dom.classList.add("uiHighlight");
+        }
+        else if (!highlight && this.dom.classList.contains("uiHighlight")) {
+
+            this.dom.classList.remove("uiHighlight");
+        }
+    }
+
     updateUiFrame() {
 
         if (this.dragging) {
@@ -222,22 +233,22 @@ Node.updateUiFrame = function() {
 
     for (var id in Node.lookupId) {
 
-        const agent = Node.lookupId[id];
+        const node = Node.lookupId[id];
 
-        if (agent.dom === undefined) {
+        if (node.dom === undefined) {
 
-            agent.dom = false;
-            agent.initUi();
+            node.dom = false;
+            node.initUi();
         }
-        else if (agent.dom) {
+        else if (node.dom) {
 
-            if (!document.body.contains(agent.dom)) {
+            if (!document.body.contains(node.dom)) {
 
-                delete agent.dom;
+                delete node.dom;
             }
             else {
 
-                agent.updateUiFrame();
+                node.updateUiFrame();
             }
         }
     }

@@ -30,6 +30,7 @@ class NodeDall_e extends Node {
 
         this.bindUiElement("key");
         this.bindUiElement("model");
+        this.bindUiElement("size");
     }
 
     updateUiFrame() {

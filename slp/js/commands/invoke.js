@@ -21,7 +21,16 @@ class CommandInvoke extends Command {
 
         const prompt = this.parameters[1];
 
-        return await node.invoke(prompt);
+        try {
+
+            node.highlight(true);
+            return await node.invoke(prompt);
+        }
+        finally {
+
+            node.highlight(false);
+        }
+
     }
 }
 
