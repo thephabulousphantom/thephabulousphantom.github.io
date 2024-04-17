@@ -13,12 +13,12 @@ class Node {
         id: Node.nextId++,
         type: null,
         name: null,
-        results: [],
         minimised: false
     }
 
     dom = undefined;
     svg = undefined;
+    results = [];
     sockets = {
         input: [],
         output: []
@@ -69,23 +69,23 @@ class Node {
 
     lastResult() {
 
-        return this.properties.results.length
-            ? this.properties.results[this.properties.results.length - 1]
+        return this.results.length
+            ? this.results[this.results.length - 1]
             : new ResultEmpty();
     }
 
     lastResultText() {
 
         return (
-            this.properties.results.length
-                ? this.properties.results[this.properties.results.length - 1]
+            this.results.length
+                ? this.results[this.results.length - 1]
                 : new ResultEmpty()
         ).toString();
     }
 
     saveResult(result) {
 
-        this.properties.results.push(result);
+        this.results.push(result);
         this.dom.querySelector(".nodeLastResult").innerText = result.toString();
 
         return result;

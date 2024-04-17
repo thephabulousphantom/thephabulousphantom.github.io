@@ -8,6 +8,7 @@ import ConnectorManager from "./connectors/manager.js";
 import ResultError from "./results/error.js";
 import Connector from "./connectors/connector.js";
 import NodeTextFormat from "./nodes/textFormat.js";
+import NodeDall_e from "./nodes/dall-e.js";
 
 class App {
 
@@ -108,7 +109,8 @@ class App {
         const agentConstructors = {
             "OpenAi": NodeOpenAi,
             "OpenAiChat": NodeOpenAiChat,
-            "TextFormat": NodeTextFormat
+            "TextFormat": NodeTextFormat,
+            "Dall-e": NodeDall_e
         };
 
         Node.nextId = 0;
