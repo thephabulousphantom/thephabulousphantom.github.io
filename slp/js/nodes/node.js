@@ -103,7 +103,7 @@ class Node {
 
         this.dom.querySelector(`[data-property="${propertyName}"]`).onchange = (function(evt) {
 
-            this.properties[propertyName] = evt.target.value;
+            this.properties[propertyName] = evt.target.value == "" ? null : evt.target.value;
 
         }).bind(this);
     }

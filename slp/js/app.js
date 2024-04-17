@@ -183,7 +183,7 @@ class App {
         ConnectorManager.updateUiFrame();
     }
 
-    async processCommand(commandLine) {
+    async processCommand(commandLine, saveInHistory) {
 
         Console.write(commandLine, "< ");
 
@@ -211,10 +211,13 @@ class App {
             ConnectorManager.onResult(response);
         }
 
-        this.commandHistory.push({
-            command: commandLine,
-            response: response
-        });
+        if (saveInHistory) {
+
+            this.commandHistory.push({
+                command: commandLine,
+                response: response
+            });
+        }
     }
 }
 

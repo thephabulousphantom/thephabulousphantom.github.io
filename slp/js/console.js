@@ -110,7 +110,7 @@ class Console {
         const commandLine = this.dom.inputTextBox.value;
         this.dom.inputTextBox.value = "";
 
-        App.processCommand(commandLine);
+        App.processCommand(commandLine, true);
 
         this.lookingAtHistoricalCommand = null;
     }
