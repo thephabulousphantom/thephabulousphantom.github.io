@@ -34,16 +34,17 @@ class ConnectorManager {
 
         if (result.source && result.source instanceof Node) {
 
-            const agent = result.source;
+            const node = result.source;
             for (const connector of this.connectors) {
 
-                if (connector.from.agent == agent && connector.from.socket.type == result.value.type) {
+                if (connector.from.node == node && connector.from.socket.type == result.value.type) {
 
                     switch (result.value.type) {
 
                         case "error":
                         case "text":
-                            App.processCommand(`invoke ${connector.to.agent.properties.id}, "${result.toString().replace("\"", "\\\"")}"`);
+                        case "image":
+                            App.processCommand(`invoke ${connector.to.node.properties.id}, "${result.toString().replace("\"", "\\\"")}"`);
                             break;
                     }
                 }

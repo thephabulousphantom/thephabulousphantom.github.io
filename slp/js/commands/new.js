@@ -3,6 +3,7 @@ import Console from "../console.js";
 import NodeOpenAi from "../nodes/openAi.js";
 import NodeOpenAiChat from "../nodes/openAiChat.js";
 import NodeTextFormat from "../nodes/textFormat.js";
+import NodeDall_e from "../nodes/dall-e.js";
 import ResultError from "../results/error.js";
 import ResultText from "../results/text.js";
 
@@ -41,7 +42,7 @@ class CommandNew extends Command {
 
             case "openaichat":
                 {
-                    Console.write(`Constructing OpenAI chat agent ${name}...`);
+                    Console.write(`Constructing OpenAI chat node ${name}...`);
                     const node = new NodeOpenAiChat(name);
 
                     const openAiKey = this.parameters[2];
@@ -65,6 +66,32 @@ class CommandNew extends Command {
                 }
 
                 return new ResultText(`OpenAI chat node ${name} constructed.`);
+
+            case "dall-e":
+                {
+                    Console.write(`Constructing Dall-e node ${name}...`);
+                    const node = new NodeDall_e(name);
+
+                    const openAiKey = this.parameters[2];
+                    if (openAiKey) {
+
+                        node.properties.key = openAiKey;
+                    }
+
+                    const openAiModel = this.parameters[3];
+                    if (openAiModel) {
+
+                        node.properties.model = openAiModel;
+                    }
+
+                    const dall_eSize = this.parameters[4];
+                    if (dall_eSize) {
+
+                        node.properties.size = dall_eSize;
+                    }
+                }
+
+                return new ResultText(`Dall-e node ${name} constructed.`);
 
             case "textformat":
                 {

@@ -50,6 +50,7 @@ class Connector {
         switch (this.from.socket.type) {
             case "error": line.classList.add("uiConnectorError"); break;
             case "text": line.classList.add("uiConnectorText"); break;
+            case "image": line.classList.add("uiConnectorImage"); break;
         }
         line.setAttribute("x1", "-1");
         line.setAttribute("y1", "-1");

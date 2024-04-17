@@ -27,6 +27,11 @@
     stroke: var(--appColorText);
 }
 
+.uiSvg .uiConnector.uiConnectorImage {
+
+    stroke: var(--appColorImage);
+}
+
 .uiSvg .uiSocket {
 
     stroke: var(--appColorSecondary);
@@ -42,4 +47,9 @@
 .uiSvg .uiSocket.uiConnectorText {
 
     fill: var(--appColorText);
+}
+
+.uiSvg .uiSocket.uiConnectorImage {
+
+    fill: var(--appColorImage);
 }

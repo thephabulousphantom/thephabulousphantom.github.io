@@ -13,6 +13,12 @@
     </select>
 </div>
 <div class="nodeLabelValue">
-    <div class="nodeLabel">tokens</div>
-    <input class="nodeValue" type="text" data-property="maxTokens" value="{{maxTokens}}" />
+    <div class="nodeLabel">size</div>
+    <select class="nodeValue" data-property="size">
+        {{#select size}}
+        {{#each _sizes}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+        {{/select}}
+    </select>
 </div>

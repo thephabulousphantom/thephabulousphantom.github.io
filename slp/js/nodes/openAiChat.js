@@ -1,4 +1,5 @@
 import TemplateManager from "../templateManager.js";
+import App from "../app.js";
 import NodeOpenAi from "./openAi.js";
 import ResultError from "../results/error.js";
 import ResultText from "../results/text.js";
@@ -9,9 +10,12 @@ class NodeOpenAiChat extends NodeOpenAi {
 
         super(name, type ?? "OpenAiChat");
 
-        this.properties.model = NodeOpenAiChat.defaultModel;
+        this.properties.model = null;
+        this.properties.maxTokens = null;
         this.properties.system = null;
+        
         this.properties._models = [
+            null,
             "gpt-3.5-turbo",
             "gpt-4",
             "gpt-4-turbo",
@@ -56,12 +60,12 @@ class NodeOpenAiChat extends NodeOpenAi {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${ this.properties.key }`
+                    'Authorization': `Bearer ${ this.properties.key ?? App.defaults.key }`
                 },
                 body: JSON.stringify({
-                    model: this.properties.model,
+                    model: this.properties.model ?? App.defaults.openAiChatModel,
                     "messages": messages,
-                    max_tokens: 2048
+                    max_tokens: (this.properties.maxTokens ?? App.defaults.maxTokens)|0
                 })
             }
         );
@@ -70,20 +74,19 @@ class NodeOpenAiChat extends NodeOpenAi {
 
         if (data.error) {
 
-            return new ResultError(
+            return this.saveResult( new ResultError(
                 data.error.message,
                 this
-            );
+            ));
         }
 
-        return new ResultText(
+        return this.saveResult( new ResultText(
             data.choices[0].message.content.trim(),
             this
-        );
+        ));
     }
 }
     
-NodeOpenAiChat.defaultModel = "gpt-3.5-turbo";
 NodeOpenAiChat.template = await TemplateManager.getTemplate("nodeOpenAiChat");
 
 export default NodeOpenAiChat;

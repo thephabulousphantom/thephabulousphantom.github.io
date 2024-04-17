@@ -1,12 +1,16 @@
 import TemplateManager from "../templateManager.js";
 import Node from "./node.js";
 import ResultText from "../results/text.js";
+import ConnectorSocket from "./connectorSocket.js";
 
 class NodeTextFormat extends Node {
 
     constructor(name, type) {
 
         super(name, type ?? "TextFormat");
+
+        this.sockets.input.push(new ConnectorSocket(this, "input", this.sockets.input.length, "text"));
+        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "text"));
 
         this.properties.pre = "";
         this.properties.post = "";
@@ -30,10 +34,10 @@ class NodeTextFormat extends Node {
 
     async invoke(text) {
 
-        return new ResultText(
+        return this.saveResult( new ResultText(
             `${this.properties.pre}${text}${this.properties.post}`,
             this
-        );
+        ));
     }
 }
     

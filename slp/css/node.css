@@ -127,6 +127,12 @@
     width: calc(var(--appZoom) * 5 - var(--appPadding));
 }
 
+.uiNode a.nodeLabel:hover {
+
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .uiNode .nodeValue {
 
     background-color: inherit;
@@ -139,6 +145,12 @@
     border: none;
     color: var(--appColorSecondary);
     box-sizing: content-box;
+}
+
+.uiNode .nodeLastResult {
+    
+    color: var(--appColorLight);
+    height: 1lh;
 }
 
 .uiNode select {

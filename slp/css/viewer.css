@@ -1,0 +1,26 @@
+.uiResultViewer {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    background-color: var(--appColorPrimaryTransparent);
+    backdrop-filter: blur(3px);
+    z-index: 999999;
+}
+
+.uiResultViewer .uiContent {
+
+    padding: var(--appPadding);
+    border-radius: calc(var(--appZoom) * 0.2);
+    color: var(--appColorLight);
+}
+
+.uiResultViewer .uiContent img {
+
+    height: 90vmin;
+}

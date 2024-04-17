@@ -1,4 +1,5 @@
 import Result from "./result.js";
+import TemplateManager from "../templateManager.js";
 
 class ResultText extends Result {
 
@@ -13,6 +14,13 @@ class ResultText extends Result {
 
         return this.value.text;
     }
+
+    preview() {
+
+        return TemplateManager.getDom(ResultText.template, this);
+    }
 }
+
+ResultText.template = await TemplateManager.getTemplate("resultText");
 
 export default ResultText;

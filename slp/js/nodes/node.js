@@ -1,8 +1,10 @@
 import App from "../app.js";
 import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
+import ResultEmpty from "../results/empty.js"
 import ResultError from "../results/error.js"
 import ConnectorSocket from "./connectorSocket.js";
+import ResultViewer from "../results/viewer.js";
 
 var iii=0;
 class Node {
@@ -12,6 +14,7 @@ class Node {
         id: Node.nextId++,
         type: null,
         name: null,
+        results: [],
         minimised: false
     }
 
@@ -30,9 +33,7 @@ class Node {
         Node.lookupId[this.properties.id] = this;
         Node.lookupName[this.properties.name] = this;
 
-        this.sockets.input.push(new ConnectorSocket(this, "input", this.sockets.input.length, "text"));
         this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "error"));
-        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "text"));
     }
 
     async saveState() {
@@ -65,6 +66,30 @@ class Node {
 
             this.properties[propertyName] = await DataManager.get(`agent.${this.properties.id}.${propertyName}`, this.properties[propertyName]);
         }
+    }
+
+    lastResult() {
+
+        return this.properties.results.length
+            ? this.properties.results[this.properties.results.length - 1]
+            : new ResultEmpty();
+    }
+
+    lastResultText() {
+
+        return (
+            this.properties.results.length
+                ? this.properties.results[this.properties.results.length - 1]
+                : new ResultEmpty()
+        ).toString();
+    }
+
+    saveResult(result) {
+
+        this.properties.results.push(result);
+        this.dom.querySelector(".nodeLastResult").innerText = result.toString();
+
+        return result;
     }
 
     async invoke(prompt) {
@@ -105,6 +130,10 @@ class Node {
         title.addEventListener("touchstart", this.onTitlePointerDown.bind(this));
         title.addEventListener("mouseup", this.onTitlePointerUp.bind(this));
         title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
+
+        const resultLabel = this.dom.querySelector(".nodeResultLabel");
+        resultLabel.addEventListener("mousedown", this.onPreview.bind(this));
+        resultLabel.addEventListener("touchstart", this.onPreview.bind(this));
     }
 
     toggle() {
@@ -126,6 +155,12 @@ class Node {
         }
         
         return !this._minimised;
+    }
+
+    onPreview() {
+
+        const resultViewer = new ResultViewer(this.lastResult());
+        resultViewer.initUi();
     }
 
     onSizeToggle(evt) {

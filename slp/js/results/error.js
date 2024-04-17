@@ -1,4 +1,5 @@
 import Result from "./result.js"
+import TemplateManager from "../templateManager.js";
 
 class ResultError extends Result {
 
@@ -35,6 +36,13 @@ class ResultError extends Result {
             return JSON.toString(this.value.object);
         }
     }
+
+    preview() {
+
+        return TemplateManager.getDom(ResultError.template, this);
+    }
 }
+
+ResultError.template = await TemplateManager.getTemplate("resultError");
 
 export default ResultError;

@@ -8,6 +8,7 @@ import CommandSave from "./save.js";
 import CommandLoad from "./load.js";
 import CommandConnect from "./connect.js";
 import CommandToggle from "./toggle.js";
+import CommandDefault from "./default.js";
 
 class CommandFactory {
 
@@ -21,7 +22,8 @@ class CommandFactory {
         "save": CommandSave,
         "load": CommandLoad,
         "connect": CommandConnect,
-        "toggle": CommandToggle
+        "toggle": CommandToggle,
+        "default": CommandDefault
     };
 
     constructor() {

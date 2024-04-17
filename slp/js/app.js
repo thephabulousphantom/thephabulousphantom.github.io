@@ -19,11 +19,34 @@ class App {
     commandHistory = [];
     dom = null;
     svg = null;
+
+    defaults = {
+        openAiModel: "gpt-3.5-turbo-instruct",
+        openAiChatModel: "gpt-3.5-turbo",
+        dall_eModel: "dall-e-3",
+        dall_eSize: "1024x1024",
+        maxTokens: 2048,
+        key: ""
+    };
+
     size = {
         zoom: null,
         padding: null,
     };
+
     _sizeHelpers = { zoom: null, padding: null };
+
+    async loadDefaults() {
+
+        this.defaults = {
+            openAiModel: await DataManager.get("defaults.openAiModel", "gpt-3.5-turbo-instruct"),
+            openAiChatModel: await DataManager.get("defaults.openAiChatModel", "gpt-3.5-turbo"),
+            dall_eModel: await DataManager.get("defaults.dall_eModel", "dall-e-3"),
+            dall_eSize: await DataManager.get("defaults.dall_eSize", "1024x1024"),
+            maxTokens: await DataManager.get("defaults.maxTokens", "2048"),
+            key: await DataManager.get("defaults.key", "")
+        };
+    }
 
     constructor() {
 
@@ -52,12 +75,12 @@ class App {
 
     async saveState() {
 
-        await DataManager.set(`agent.ids`, Object.getOwnPropertyNames(Node.lookupId));
+        await DataManager.set(`node.ids`, Object.getOwnPropertyNames(Node.lookupId));
 
         for (const id in Node.lookupId) {
 
-            const agent = Node.lookupId[id];
-            await agent.saveState();
+            const node = Node.lookupId[id];
+            await node.saveState();
         }
 
         await DataManager.set(`connector.ids`, Object.getOwnPropertyNames(Connector.lookupId));
@@ -70,10 +93,10 @@ class App {
 
     async loadState() {
 
-        const agentNodes = document.querySelectorAll(".uiNode");
-        for (const agentNode of agentNodes) {
+        const nodes = document.querySelectorAll(".uiNode");
+        for (const node of nodes) {
 
-            agentNode.remove();
+            node.remove();
         }
 
         const connectorVectors = document.querySelectorAll(".uiConnector, .uiSocket");
@@ -90,22 +113,22 @@ class App {
 
         Node.nextId = 0;
 
-        const ids = await DataManager.get(`agent.ids`);
+        const ids = await DataManager.get(`node.ids`);
 
-        var agentsLoaded = [];
+        var nodesLoaded = [];
 
         for (const id of ids) {
 
-            const type = await DataManager.get(`agent.${id}.type`);
-            const name = await DataManager.get(`agent.${id}.name`);
+            const type = await DataManager.get(`node.${id}.type`);
+            const name = await DataManager.get(`node.${id}.name`);
 
             if (agentConstructors[type]) {
 
-                var agent = new agentConstructors[type](name);
-                agent.id = id;
-                await agent.loadState();
+                var node = new agentConstructors[type](name);
+                node.id = id;
+                await node.loadState();
 
-                agentsLoaded.push(agent);
+                nodesLoaded.push(node);
                 if (Node.nextId <= id) {
 
                     Node.nextId = id + 1;
@@ -116,10 +139,10 @@ class App {
         Node.lookupId = {};
         Node.lookupName = {};
 
-        for (const agent of agentsLoaded) {
+        for (const node of nodesLoaded) {
 
-            Node.lookupId[agent.id] = agent;
-            Node.lookupName[agent.name] = agent;
+            Node.lookupId[node.properties.id] = node;
+            Node.lookupName[node.properties.name] = node;
         }
 
         Connector.nextId = 0;
@@ -206,10 +229,13 @@ const app = new App();
 
 export default app;
 
-await app.processCommand("new textformat, robotInput, \"pretend that you are an actual living and breathing, silly 5 year old kid.\"");
-await app.processCommand("new openai, robot");
-await app.processCommand("connect robotInput, robot");
-await app.processCommand("new openaichat, kid,,, \"pretend that you are an actual living and breathing, silly 5 year old kid.\"");
-await app.processCommand("toggle 0");
-await app.processCommand("toggle 1");
-await app.processCommand("toggle 2");
+await app.loadDefaults();
+
+await app.processCommand("new textformat, input, \"write a funny scenario for a comic book panel containing 6 frames. the scenario should tell the following story. \"");
+await app.processCommand("new openai, screenwriter");
+await app.processCommand("new textformat, daliInstructions, \"create great looking and detailed comic-book panel consisting of 6 frames, based on the following scenario. \"");
+await app.processCommand("new dall-e, dali");
+
+await app.processCommand("connect input, screenwriter");
+await app.processCommand("connect screenwriter, daliInstructions");
+await app.processCommand("connect daliInstructions, dali");

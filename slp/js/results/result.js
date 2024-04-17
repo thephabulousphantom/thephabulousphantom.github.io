@@ -14,6 +14,11 @@ class Result {
 
         throw new Error(`Result type ${this.value.type} doesn't implement toString method.`);
     }
+
+    preview() {
+
+        return "";
+    }
 }
 
 export default Result;

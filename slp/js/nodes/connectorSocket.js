@@ -25,6 +25,7 @@ class ConnectorSocket {
 
             case "error": circle.classList.add("uiConnectorError"); break;
             case "text": circle.classList.add("uiConnectorText"); break;
+            case "image": circle.classList.add("uiConnectorImage"); break;
         }
 
         circle.setAttribute("cx", "-1");
