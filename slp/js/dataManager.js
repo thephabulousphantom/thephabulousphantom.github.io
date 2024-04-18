@@ -16,10 +16,15 @@ class DataManager {
         return JSON.parse(value);
     }
 
-    async set (key, value) {
+    async set(key, value) {
 
         window.localStorage.setItem(key, JSON.stringify(value));
         return value;
+    }
+
+    async clear(key) {
+
+        window.localStorage.removeItem(key);
     }
 }
 

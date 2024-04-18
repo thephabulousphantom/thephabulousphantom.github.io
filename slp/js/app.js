@@ -1,3 +1,4 @@
+import HandlebarsHelpers from "./handlebarsHelpers.js";
 import Console from "./console.js";
 import CommandFactory from "./commands/factory.js";
 import Node from "./nodes/node.js";
@@ -9,6 +10,7 @@ import ResultError from "./results/error.js";
 import Connector from "./connectors/connector.js";
 import NodeTextFormat from "./nodes/textFormat.js";
 import NodeDall_e from "./nodes/dall-e.js";
+import Menu from "./menu/menu.js";
 
 class App {
 
@@ -20,6 +22,7 @@ class App {
     commandHistory = [];
     dom = null;
     svg = null;
+    menu = null;
 
     defaults = {
         openAiModel: "gpt-3.5-turbo-instruct",
@@ -49,7 +52,14 @@ class App {
         };
     }
 
+    async scripts() {
+
+        return await DataManager.get();
+    }
+
     constructor() {
+
+        HandlebarsHelpers();
 
         Console.write(null, "Application started, ready for your input.");
 
@@ -65,6 +75,8 @@ class App {
         this.dom.addEventListener("touchstart", this.onPointerMove.bind(this));
         this.dom.addEventListener("touchmove", this.onPointerMove.bind(this));
         this.dom.addEventListener("touchend", this.onPointerMove.bind(this));
+
+        this.menu = new Menu("Silly little people");
 
         this.svg = document.querySelector("#appVectorContainer");
 
@@ -92,7 +104,7 @@ class App {
         }
     }
 
-    async loadState() {
+    resetState() {
 
         const nodes = document.querySelectorAll(".uiNode");
         for (const node of nodes) {
@@ -106,14 +118,23 @@ class App {
             uiConnector.remove();
         }
 
+        Node.nextId = 0;
+        Node.lookupId = {};
+        Node.lookupName = {};
+
+        this.commandHistory.length = 0;
+    }
+
+    async loadState() {
+        
+        this.resetState();
+
         const agentConstructors = {
             "OpenAi": NodeOpenAi,
             "OpenAiChat": NodeOpenAiChat,
             "TextFormat": NodeTextFormat,
             "Dall-e": NodeDall_e
         };
-
-        Node.nextId = 0;
 
         const ids = await DataManager.get(`node.ids`);
 
@@ -183,6 +204,7 @@ class App {
 
         Node.updateUiFrame();
         ConnectorManager.updateUiFrame();
+        this.menu.updateUiFrame();
     }
 
     async processCommand(commandLine, saveInHistory) {
@@ -223,19 +245,12 @@ class App {
     }
 }
 
-// handlebars select helper - for selecting an option in select element
-window.Handlebars.registerHelper('select', function(selected, options) {
-    return options.fn(this).replace(
-        new RegExp(' value=\"' + selected + '\"'),
-        '$& selected="selected"');
-});
-
 const app = new App();
 
 export default app;
 
 await app.loadDefaults();
-
+/*
 await app.processCommand("new textformat, input, \"write a funny scenario for a comic book panel containing 6 frames. the scenario should tell the following story. \"");
 await app.processCommand("new openai, screenwriter");
 await app.processCommand("connect input, screenwriter");
@@ -244,4 +259,4 @@ await app.processCommand("new textformat, daliInstructions, \"create great looki
 await app.processCommand("connect screenwriter, daliInstructions");
 
 await app.processCommand("new dall-e, dali");
-await app.processCommand("connect daliInstructions, dali");
+await app.processCommand("connect daliInstructions, dali");*/

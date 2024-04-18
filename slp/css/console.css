@@ -15,7 +15,7 @@
     top: 0vh;
     left: 0vw;
     width: 100vw;
-    height: calc(100dvh - (var(--appZoom) + var(--appPadding) * 4));
+    height: 100dvh;
     z-index: 1;
     overflow: auto;
 }
@@ -28,9 +28,9 @@
 
 .console-input {
 
-    top: calc(100dvh - (var(--appZoom) + var(--appPadding) * 2));
-    left: 0vw;
-    width: 100vw;
+    top: calc(100dvh - (2 * var(--appZoom) + var(--appPadding) * 2));
+    left: var(--appZoom);
+    width: calc(100vw - 2 * var(--appZoom));
     height: calc(var(--appZoom) + var(--appPadding) * 2);
     z-index: 10;
 }
@@ -51,7 +51,7 @@
     color: var(--appColorAccent);
     padding: var(--appPadding);
     border: none;
-    width: 100%;
+    width: calc(100% - 2 * var(--appZoom));
     height: var(--appZoom);
     position: relative;
     top: 0;
