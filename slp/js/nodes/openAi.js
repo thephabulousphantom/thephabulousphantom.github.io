@@ -1,8 +1,8 @@
 import TemplateManager from "../templateManager.js";
 import App from "../app.js";
 import Node from "./node.js";
-import ResultError from "../results/error.js";
-import ResultText from "../results/text.js";
+import ValueError from "../values/error.js";
+import ValueText from "../values/text.js";
 import ConnectorSocket from "./connectorSocket.js";
 
 class NodeOpenAi extends Node {
@@ -60,14 +60,14 @@ class NodeOpenAi extends Node {
 
         if (data.error) {
 
-            return this.saveResult( new ResultError(
+            return this.saveResult( new ValueError(
                 data.error.message,
                 this
             ));
         }
         else {
 
-            return this.saveResult( new ResultText(
+            return this.saveResult( new ValueText(
                 data.choices[0].text.trim(),
                 this
             ));

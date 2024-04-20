@@ -1,10 +1,11 @@
 import App from "../app.js";
 import DataManager from "../dataManager.js";
 import TemplateManager from "../templateManager.js";
-import ResultEmpty from "../results/empty.js"
-import ResultError from "../results/error.js"
+import ConnectorManager from "../connectors/manager.js";
+import ValueEmpty from "../values/empty.js"
+import ValueError from "../values/error.js"
 import ConnectorSocket from "./connectorSocket.js";
-import ResultViewer from "../results/viewer.js";
+import ResultViewer from "../values/viewer.js";
 
 class Node {
 
@@ -71,7 +72,7 @@ class Node {
 
         return this.results.length
             ? this.results[this.results.length - 1]
-            : new ResultEmpty();
+            : new ValueEmpty();
     }
 
     lastResultText() {
@@ -79,7 +80,7 @@ class Node {
         return (
             this.results.length
                 ? this.results[this.results.length - 1]
-                : new ResultEmpty()
+                : new ValueEmpty()
         ).toString();
     }
 
@@ -93,7 +94,7 @@ class Node {
 
     async invoke(prompt) {
 
-        return new ResultError(
+        return new ValueError(
             new Error(`Unable to respond to prompt: "${prompt}". Base node shouldn't be directly prompted. Use derived classes instead.`),
             this
         );
@@ -133,6 +134,29 @@ class Node {
         const resultLabel = this.dom.querySelector(".nodeResultLabel");
         resultLabel.addEventListener("mousedown", this.onPreview.bind(this));
         resultLabel.addEventListener("touchstart", this.onPreview.bind(this));
+    }
+
+    removeUi() {
+
+        this.dom.remove();
+    }
+
+    remove() {
+
+        ConnectorManager.removeFromNode(this.properties.id);
+        for (const connectorSocket of this.sockets.input) {
+
+            connectorSocket.removeUi();
+        }
+        this.sockets.input.length = 0;
+        for (const connectorSocket of this.sockets.output) {
+
+            connectorSocket.removeUi();
+        }
+        this.sockets.output.length = 0;
+        this.removeUi();
+        delete Node.lookupName[this.properties.name];
+        delete Node.lookupId[this.properties.id];
     }
 
     toggle() {

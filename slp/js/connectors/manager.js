@@ -30,6 +30,36 @@ class ConnectorManager {
         return connector;
     }
 
+    removeFromNode(id) {
+
+        for (var i = 0; i < this.connectors.length; i++) {
+
+            const connector = this.connectors[i];
+
+            if (connector.from.node.properties.id == id
+            || connector.to.node.properties.id == id) {
+
+                this.remove(connector.id);
+                i--;
+                continue;
+            }
+        }
+    }
+
+    remove(id) {
+
+        for (var i = 0; i < this.connectors.length; i++) {
+
+            const connector = this.connectors[i];
+            if (connector.id == id) {
+
+                connector.remove();
+                this.connectors.splice(i, 1);
+                return connector;
+            }
+        }
+    }
+
     onResult(result) {
 
         if (result.source && result.source instanceof Node) {
@@ -44,7 +74,7 @@ class ConnectorManager {
                         case "error":
                         case "text":
                         case "image":
-                            App.processCommand(`invoke ${connector.to.node.properties.id}, "${result.toString().replaceAll("\"", "'").replaceAll(",", ";")}"`);
+                            App.processCommand(`text ${connector.to.node.properties.id}, "${result.toString().replaceAll("\"", "'").replaceAll(",", ";")}"`);
                             break;
                     }
                 }

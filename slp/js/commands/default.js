@@ -1,8 +1,8 @@
 import Command from "./command.js";
 import App from "../app.js";
 import DataManager from "../dataManager.js";
-import ResultEmpty from "../results/empty.js";
-import ResultText from "../results/text.js";
+import ValueEmpty from "../values/empty.js";
+import ValueText from "../values/text.js";
 
 class CommandDefault extends Command {
 
@@ -21,10 +21,10 @@ class CommandDefault extends Command {
             App.defaults[varName] = value;
             await DataManager.set(`defaults.${varName}`, value);
 
-            return new ResultText(value);
+            return new ValueText(value);
         }
 
-        return new ResultEmpty();
+        return new ValueEmpty();
     }
 }
 

@@ -2,7 +2,7 @@ import Command from "./command.js";
 import Node from "../nodes/node.js";
 import Connector from "../connectors/connector.js"
 import App from "../app.js";
-import ResultText from "../results/text.js";
+import ValueText from "../values/text.js";
 
 class CommandSave extends Command {
 
@@ -15,7 +15,7 @@ class CommandSave extends Command {
 
         await App.saveState();
         
-        return new ResultText(`${Object.getOwnPropertyNames(Node.lookupId).length} node(s) with ${Object.getOwnPropertyNames(Connector.lookupId).length} connection(s) saved.`);
+        return new ValueText(`${Object.getOwnPropertyNames(Node.lookupId).length} node(s) with ${Object.getOwnPropertyNames(Connector.lookupId).length} connection(s) saved.`);
     }
 }
 

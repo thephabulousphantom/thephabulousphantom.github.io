@@ -3,19 +3,33 @@
     padding: calc(var(--appZoom) * var(--appPadding) * 0.2);
 }            
 
-.console-content, .console-input, .console-input input {
+.console-content {
 
     background-color: var(--appColorPrimary);
+    color: var(--appColorLight);
+}
+
+.console-input {
+
+    background-color: var(--appColorPrimaryTransparent);
+    backdrop-filter: blur(3px);
+    color: var(--appColorLight);
+}
+
+.console-input input {
+
+    background: none;
     color: var(--appColorLight);
 }
 
 .console-content {
 
     padding: var(--appPadding);
+    padding-bottom: calc(var(--appZoom) + var(--appPadding) * 5);
     top: 0vh;
     left: 0vw;
     width: 100vw;
-    height: 100dvh;
+    height: calc(100dvh - var(--appZoom) - var(--appPadding) * 5);
     z-index: 1;
     overflow: auto;
 }
@@ -35,6 +49,11 @@
     z-index: 10;
 }
 
+.console-input input {
+
+    background-color: none;
+}
+
 .console-input input::placeholder {
 
     color: var(--appColorSecondary);
@@ -42,12 +61,12 @@
 
 .console-input:has(input:focus), .console-input:has(select:focus) {
 
-    background-color: var(--appColorLighter);
+    background-color: var(--appColorLighterTransparent);
 }
 
 .console-input input {
 
-    background-color: inherit;
+    background-color: none;
     color: var(--appColorAccent);
     padding: var(--appPadding);
     border: none;

@@ -6,7 +6,7 @@ import NodeOpenAi from "./nodes/openAi.js";
 import NodeOpenAiChat from "./nodes/openAiChat.js";
 import DataManager from "./dataManager.js";
 import ConnectorManager from "./connectors/manager.js";
-import ResultError from "./results/error.js";
+import ValueError from "./values/error.js";
 import Connector from "./connectors/connector.js";
 import NodeTextFormat from "./nodes/textFormat.js";
 import NodeDall_e from "./nodes/dall-e.js";
@@ -220,7 +220,7 @@ class App {
         }
         catch (ex) {
 
-            response = new ResultError(ex);
+            response = new ValueError(ex);
         }
 
         if (response !== undefined && response.toString().length > 0) {

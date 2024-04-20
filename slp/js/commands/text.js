@@ -1,8 +1,8 @@
 import Command from "./command.js";
 import Node from "../nodes/node.js";
-import ResultError from "../results/error.js";
+import ValueError from "../values/error.js";
 
-class CommandInvoke extends Command {
+class CommandText extends Command {
 
     constructor(commandLine, commandName, parameters) {
 
@@ -16,7 +16,7 @@ class CommandInvoke extends Command {
 
         if (!node) {
 
-            return new ResultError(`Unable to invoke node ${nodeRef} - id or name not found. Please use either a valid node id or a valid node name.`);
+            return new ValueError(`Unable to send text to node ${nodeRef} - id or name not found. Please use either a valid node id or a valid node name.`);
         }
 
         const prompt = this.parameters[1];
@@ -34,4 +34,4 @@ class CommandInvoke extends Command {
     }
 }
 
-export default CommandInvoke;
+export default CommandText;

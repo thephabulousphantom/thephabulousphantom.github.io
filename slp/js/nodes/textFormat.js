@@ -1,6 +1,6 @@
 import TemplateManager from "../templateManager.js";
 import Node from "./node.js";
-import ResultText from "../results/text.js";
+import ValueText from "../values/text.js";
 import ConnectorSocket from "./connectorSocket.js";
 
 class NodeTextFormat extends Node {
@@ -34,7 +34,7 @@ class NodeTextFormat extends Node {
 
     async invoke(text) {
 
-        return this.saveResult( new ResultText(
+        return this.saveResult( new ValueText(
             `${this.properties.pre}${text}${this.properties.post}`,
             this
         ));

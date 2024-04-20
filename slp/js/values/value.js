@@ -1,4 +1,4 @@
-class Result {
+class Value {
 
     value = {
     }
@@ -12,7 +12,7 @@ class Result {
 
     toString() {
 
-        throw new Error(`Result type ${this.value.type} doesn't implement toString method.`);
+        throw new Error(`Value type ${this.value.type} doesn't implement toString method.`);
     }
 
     preview() {
@@ -21,4 +21,4 @@ class Result {
     }
 }
 
-export default Result;
+export default Value;

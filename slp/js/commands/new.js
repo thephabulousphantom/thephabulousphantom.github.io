@@ -4,8 +4,8 @@ import NodeOpenAi from "../nodes/openAi.js";
 import NodeOpenAiChat from "../nodes/openAiChat.js";
 import NodeTextFormat from "../nodes/textFormat.js";
 import NodeDall_e from "../nodes/dall-e.js";
-import ResultError from "../results/error.js";
-import ResultText from "../results/text.js";
+import ValueError from "../values/error.js";
+import ValueText from "../values/text.js";
 
 class CommandNew extends Command {
 
@@ -38,7 +38,7 @@ class CommandNew extends Command {
                     }
                 }
 
-                return new ResultText(`OpenAI instruct node ${name} constructed.`);
+                return new ValueText(`OpenAI instruct node ${name} constructed.`);
 
             case "openaichat":
                 {
@@ -65,7 +65,7 @@ class CommandNew extends Command {
 
                 }
 
-                return new ResultText(`OpenAI chat node ${name} constructed.`);
+                return new ValueText(`OpenAI chat node ${name} constructed.`);
 
             case "dall-e":
                 {
@@ -91,7 +91,7 @@ class CommandNew extends Command {
                     }
                 }
 
-                return new ResultText(`Dall-e node ${name} constructed.`);
+                return new ValueText(`Dall-e node ${name} constructed.`);
 
             case "textformat":
                 {
@@ -111,11 +111,11 @@ class CommandNew extends Command {
                     }
                 }
 
-                return new ResultText(`TextFormat node ${name} constructed.`);
+                return new ValueText(`TextFormat node ${name} constructed.`);
                 break;
 
             default:
-                return new ResultError(`Unsupported node type: ${type}`);
+                return new ValueError(`Unsupported node type: ${type}`);
         }
     }
 }

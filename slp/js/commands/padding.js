@@ -1,6 +1,6 @@
 import Command from "./command.js";
 import DataManager from "../dataManager.js";
-import ResultEmpty from "../results/empty.js";
+import ValueEmpty from "../values/empty.js";
 
 class CommandPadding extends Command {
 
@@ -18,7 +18,7 @@ class CommandPadding extends Command {
             document.documentElement.style.setProperty("--appPaddingRatio", `${padding}`);
         }
 
-        return new ResultEmpty();
+        return new ValueEmpty();
     }
 }
 

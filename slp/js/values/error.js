@@ -1,7 +1,7 @@
-import Result from "./result.js"
+import Value from "./value.js"
 import TemplateManager from "../templateManager.js";
 
-class ResultError extends Result {
+class ValueError extends Value {
 
     constructor(error, source) {
 
@@ -39,10 +39,10 @@ class ResultError extends Result {
 
     preview() {
 
-        return TemplateManager.getDom(ResultError.template, this);
+        return TemplateManager.getDom(ValueError.templateView, this);
     }
 }
 
-ResultError.template = await TemplateManager.getTemplate("resultError");
+ValueError.templateView = await TemplateManager.getTemplate("valueViewError");
 
-export default ResultError;
+export default ValueError;

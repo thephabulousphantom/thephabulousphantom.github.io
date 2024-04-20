@@ -1,7 +1,7 @@
-import Result from "./result.js";
+import Value from "./value.js";
 import TemplateManager from "../templateManager.js";
 
-class ResultText extends Result {
+class ValueText extends Value {
 
     constructor(text, source) {
 
@@ -17,10 +17,10 @@ class ResultText extends Result {
 
     preview() {
 
-        return TemplateManager.getDom(ResultText.template, this);
+        return TemplateManager.getDom(ValueText.templateView, this);
     }
 }
 
-ResultText.template = await TemplateManager.getTemplate("resultText");
+ValueText.templateView = await TemplateManager.getTemplate("valueViewText");
 
-export default ResultText;
+export default ValueText;

@@ -43,6 +43,18 @@ class Connector {
             }
         }
 
+        this.initUi();
+    }
+
+    async saveState() {
+
+        await DataManager.set(`connector.${this.id}.type`, this.from.socket.type);
+        await DataManager.set(`connector.${this.id}.from`, this.from.node.properties.id);
+        await DataManager.set(`connector.${this.id}.to`, this.to.node.properties.id);
+    }
+
+    initUi() {
+
         var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
         line.setAttribute("id", this.id);
@@ -60,11 +72,15 @@ class Connector {
         this.svg = line;
     }
 
-    async saveState() {
+    remove() {
 
-        await DataManager.set(`connector.${this.id}.type`, this.from.socket.type);
-        await DataManager.set(`connector.${this.id}.from`, this.from.node.properties.id);
-        await DataManager.set(`connector.${this.id}.to`, this.to.node.properties.id);
+        if (this.svg) {
+
+            this.svg.remove();
+            this.svg = null;
+        }
+
+        delete Connector.lookupId[this.id];
     }
 
     updateUiFrame() {

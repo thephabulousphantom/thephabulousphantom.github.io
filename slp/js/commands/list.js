@@ -1,7 +1,7 @@
 import Command from "./command.js";
 import Console from "../console.js";
 import Node from "../nodes/node.js";
-import ResultText from "../results/text.js";
+import ValueText from "../values/text.js";
 
 class CommandList extends Command {
 
@@ -22,7 +22,7 @@ class CommandList extends Command {
             count++;
         }
 
-        return new ResultText(`${count} node(s) listed.`);
+        return new ValueText(`${count} node(s) listed.`);
     }
 }
 

@@ -1,6 +1,6 @@
 import Command from "./command.js";
 import DataManager from "../dataManager.js";
-import ResultEmpty from "../results/empty.js";
+import ValueEmpty from "../values/empty.js";
 
 class CommandZoom extends Command {
 
@@ -18,7 +18,7 @@ class CommandZoom extends Command {
             document.documentElement.style.setProperty("--appZoom", `${zoom}vmin`);
         }
 
-        return new ResultEmpty();
+        return new ValueEmpty();
     }
 }
 

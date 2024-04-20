@@ -1,7 +1,7 @@
 import Command from "./command.js";
 import Node from "../nodes/node.js";
-import ResultText from "../results/text.js";
-import ResultError from "../results/error.js";
+import ValueText from "../values/text.js";
+import ValueError from "../values/error.js";
 
 class CommandToggle extends Command {
 
@@ -16,16 +16,16 @@ class CommandToggle extends Command {
         const node = Node.lookupId[nodeRef] ?? Node.lookupName[nodeRef];
         if (!node) {
 
-            return new ResultError(`Invalid node ${nodeRef}. Please specify either a valid node id or a valid node name.`);
+            return new ValueError(`Invalid node ${nodeRef}. Please specify either a valid node id or a valid node name.`);
         }
 
         if (node.toggle()) {
 
-            return new ResultText(`Node ${nodeRef} restored.`);
+            return new ValueText(`Node ${nodeRef} restored.`);
         }
         else {
 
-            return new ResultText(`Node ${nodeRef} minimised.`);
+            return new ValueText(`Node ${nodeRef} minimised.`);
         }
     }
 }

@@ -2,7 +2,7 @@ import Command from "./command.js";
 import Node from "../nodes/node.js";
 import Connector from "../connectors/connector.js";
 import App from "../app.js";
-import ResultText from "../results/text.js";
+import ValueText from "../values/text.js";
 
 class CommandLoad extends Command {
 
@@ -15,7 +15,7 @@ class CommandLoad extends Command {
 
         await App.loadState();
 
-        return new ResultText(`${Object.getOwnPropertyNames(Node.lookupId).length} node(s) with ${Object.getOwnPropertyNames(Connector.lookupId).length} connection(s) loaded.`);
+        return new ValueText(`${Object.getOwnPropertyNames(Node.lookupId).length} node(s) with ${Object.getOwnPropertyNames(Connector.lookupId).length} connection(s) loaded.`);
     }
 }
 

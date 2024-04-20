@@ -1,8 +1,8 @@
 import TemplateManager from "../templateManager.js";
 import App from "../app.js";
 import NodeOpenAi from "./openAi.js";
-import ResultError from "../results/error.js";
-import ResultText from "../results/text.js";
+import ValueError from "../values/error.js";
+import ValueText from "../values/text.js";
 
 class NodeOpenAiChat extends NodeOpenAi {
 
@@ -74,13 +74,13 @@ class NodeOpenAiChat extends NodeOpenAi {
 
         if (data.error) {
 
-            return this.saveResult( new ResultError(
+            return this.saveResult( new ValueError(
                 data.error.message,
                 this
             ));
         }
 
-        return this.saveResult( new ResultText(
+        return this.saveResult( new ValueText(
             data.choices[0].message.content.trim(),
             this
         ));

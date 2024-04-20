@@ -1,8 +1,8 @@
 import TemplateManager from "../templateManager.js";
 import App from "../app.js";
 import Node from "./node.js";
-import ResultError from "../results/error.js";
-import ResultImage from "../results/image.js";
+import ValueError from "../values/error.js";
+import ValueImage from "../values/image.js";
 import ConnectorSocket from "./connectorSocket.js";
 
 class NodeDall_e extends Node {
@@ -61,14 +61,14 @@ class NodeDall_e extends Node {
 
         if (data.error) {
 
-            return this.saveResult( new ResultError(
+            return this.saveResult( new ValueError(
                 data.error.message,
                 this
             ));
         }
         else {
 
-            return this.saveResult( new ResultImage(
+            return this.saveResult( new ValueImage(
                 data.data[0].url.trim(),
                 this
             ));

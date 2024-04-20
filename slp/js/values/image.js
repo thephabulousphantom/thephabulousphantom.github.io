@@ -1,7 +1,7 @@
-import Result from "./result.js";
+import Value from "./value.js";
 import TemplateManager from "../templateManager.js";
 
-class ResultImage extends Result {
+class ValueImage extends Value {
 
     constructor(urlOrData, source) {
 
@@ -22,10 +22,10 @@ class ResultImage extends Result {
 
     preview() {
 
-        return TemplateManager.getDom(ResultImage.template, this);
+        return TemplateManager.getDom(ValueImage.templateView, this);
     }
 }
 
-ResultImage.template = await TemplateManager.getTemplate("resultImage");
+ValueImage.templateView = await TemplateManager.getTemplate("valueViewImage");
 
-export default ResultImage;
+export default ValueImage;

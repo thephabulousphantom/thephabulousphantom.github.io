@@ -3,12 +3,13 @@ import CommandZoom from "./zoom.js";
 import CommandPadding from "./padding.js";
 import CommandNew from "./new.js";
 import CommandList from "./list.js";
-import CommandInvoke from "./invoke.js";
+import CommandText from "./text.js";
 import CommandSave from "./save.js";
 import CommandLoad from "./load.js";
 import CommandConnect from "./connect.js";
 import CommandToggle from "./toggle.js";
 import CommandDefault from "./default.js";
+import CommandKill from "./kill.js";
 
 class CommandFactory {
 
@@ -18,12 +19,13 @@ class CommandFactory {
         "padding": CommandPadding,
         "new": CommandNew,
         "list": CommandList,
-        "invoke": CommandInvoke,
+        "text": CommandText,
         "save": CommandSave,
         "load": CommandLoad,
         "connect": CommandConnect,
         "toggle": CommandToggle,
-        "default": CommandDefault
+        "default": CommandDefault,
+        "kill": CommandKill
     };
 
     constructor() {

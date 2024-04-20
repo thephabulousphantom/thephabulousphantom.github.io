@@ -1,4 +1,4 @@
-.uiResultViewer {
+.uiValueViewer {
 
     position: fixed;
     top: 0;
@@ -13,7 +13,7 @@
     z-index: 999999;
 }
 
-.uiResultViewer .uiContent {
+.uiValueViewer .uiContent {
 
     display: inline-block;
     color: var(--appColorPrimary);
@@ -22,12 +22,18 @@
     border-radius: calc(var(--appZoom) * 0.2);
 }
 
-.uiResultViewer .uiContent div {
+.uiValueViewer .uiContent .uiViewText {
 
+    font-size: calc(1.5 * var(--appZoom));
     text-align: left;
+    width: 90vmin;
+    height: 90vmin;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-.uiResultViewer .uiContent img {
+.uiValueViewer .uiContent .uiViewImage {
 
     height: 90vmin;
 }

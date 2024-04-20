@@ -36,6 +36,15 @@ class ConnectorSocket {
         this.svg = circle;
     }
 
+    removeUi() {
+
+        if (this.svg) {
+
+            this.svg.remove();
+            this.svg = null;
+        }
+    }
+
     updateUiFrame() {
 
         if (!this.svg || !document.body.contains(this.svg)) {

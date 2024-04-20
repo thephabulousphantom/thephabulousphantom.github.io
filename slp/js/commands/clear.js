@@ -1,6 +1,6 @@
 import Command from "./command.js";
 import Console from "../console.js";
-import ResultEmpty from "../results/empty.js";
+import ValueEmpty from "../values/empty.js";
 
 class CommandClear extends Command {
 
@@ -13,7 +13,7 @@ class CommandClear extends Command {
 
         Console.dom.content.innerHTML = "";
         
-        return new ResultEmpty();
+        return new ValueEmpty();
     }
 }
 
