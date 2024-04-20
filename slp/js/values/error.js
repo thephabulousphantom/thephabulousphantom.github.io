@@ -37,7 +37,7 @@ class ValueError extends Value {
         }
     }
 
-    preview() {
+    viewDom() {
 
         return TemplateManager.getDom(ValueError.templateView, this);
     }

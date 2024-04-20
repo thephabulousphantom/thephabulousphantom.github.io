@@ -4,8 +4,10 @@ import TemplateManager from "../templateManager.js";
 import ConnectorManager from "../connectors/manager.js";
 import ValueEmpty from "../values/empty.js"
 import ValueError from "../values/error.js"
+import ValueText from "../values/text.js"
 import ConnectorSocket from "./connectorSocket.js";
-import ResultViewer from "../values/viewer.js";
+import ValueViewer from "../values/viewer.js";
+import ValueEditor from "../values/editor.js";
 
 class Node {
 
@@ -102,11 +104,23 @@ class Node {
     
     bindUiElement(propertyName) {
 
-        this.dom.querySelector(`[data-property="${propertyName}"]`).onchange = (function(evt) {
+        this.getPropertyUi(propertyName).onchange = (function(evt) {
 
-            this.properties[propertyName] = evt.target.value == "" ? null : evt.target.value;
+            if (propertyName == "name") {
+
+                this.updateName(evt.target.value);
+            }
+            else {
+
+                this.properties[propertyName] = evt.target.value == "" ? null : evt.target.value;
+            }
 
         }).bind(this);
+    }
+
+    getPropertyUi(propertyName) {
+
+        return this.dom.querySelector(`[data-property="${propertyName}"]`);
     }
 
     async initUi() {
@@ -132,8 +146,12 @@ class Node {
         title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
 
         const resultLabel = this.dom.querySelector(".nodeResultLabel");
-        resultLabel.addEventListener("mousedown", this.onPreview.bind(this));
-        resultLabel.addEventListener("touchstart", this.onPreview.bind(this));
+        resultLabel.addEventListener("mousedown", this.onViewResult.bind(this));
+        resultLabel.addEventListener("touchstart", this.onViewResult.bind(this));
+
+        const nameInput = this.dom.querySelector(".nodeNameInput");
+        nameInput.addEventListener("mousedown", this.onEditName.bind(this));
+        nameInput.addEventListener("touchstart", this.onEditName.bind(this));
     }
 
     removeUi() {
@@ -180,10 +198,25 @@ class Node {
         return !this._minimised;
     }
 
-    onPreview() {
+    onViewResult() {
 
-        const resultViewer = new ResultViewer(this.lastResult());
-        resultViewer.initUi();
+        const valueViewer = new ValueViewer(this.lastResult());
+        valueViewer.initUi();
+    }
+
+    onEditName() {
+
+        const nameValue = new ValueText(this.properties.name);
+        const valueEditor = new ValueEditor(nameValue, this.updateName.bind(this));
+        valueEditor.initUi();
+    }
+
+    updateName(name) {
+
+        delete Node.lookupName[this.properties.name];
+        this.properties.name = name;
+        Node.lookupName[this.properties.name] = this;
+        this.dom.querySelector(`[data-property="name"]`).value = name;
     }
 
     onSizeToggle(evt) {

@@ -20,7 +20,7 @@ class ValueImage extends Value {
         return this.value.image;
     }
 
-    preview() {
+    viewDom() {
 
         return TemplateManager.getDom(ValueImage.templateView, this);
     }

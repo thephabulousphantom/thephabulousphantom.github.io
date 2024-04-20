@@ -16,18 +16,17 @@ class Viewer {
         const dom = TemplateManager.getDom(Viewer.template, this);
         
         const uiValueViewer = dom.querySelector(".uiValueViewer");
+        const uiCloseButton = dom.querySelector(".uiCloseButton");
         const uiContent = dom.querySelector(".uiContent");
 
-        uiContent.append(this.value.preview());
+        uiContent.append(this.value.viewDom());
 
         this.dom = uiValueViewer;
 
         App.dom.append(...dom.childNodes);
 
-        uiValueViewer.addEventListener("mousedown", this.onClose.bind(this));
-        uiValueViewer.addEventListener("touchstart", this.onClose.bind(this));
-        uiContent.addEventListener("mousedown", this.onClose.bind(this));
-        uiContent.addEventListener("touchstart", this.onClose.bind(this));
+        uiCloseButton.addEventListener("mousedown", this.onClose.bind(this));
+        uiCloseButton.addEventListener("touchstart", this.onClose.bind(this));
     }
 
     onClose() {

@@ -15,7 +15,7 @@ class Value {
         throw new Error(`Value type ${this.value.type} doesn't implement toString method.`);
     }
 
-    preview() {
+    viewDom() {
 
         return "";
     }

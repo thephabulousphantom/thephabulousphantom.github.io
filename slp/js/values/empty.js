@@ -13,7 +13,7 @@ class ValueEmpty extends Value {
         return "";
     }
 
-    preview() {
+    viewDom() {
 
         return TemplateManager.getDom(ValueEmpty.templateView, this);
     }

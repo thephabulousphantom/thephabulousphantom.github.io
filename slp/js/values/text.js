@@ -15,12 +15,18 @@ class ValueText extends Value {
         return this.value.text;
     }
 
-    preview() {
+    viewDom() {
 
         return TemplateManager.getDom(ValueText.templateView, this);
+    }
+
+    editDom() {
+
+        return TemplateManager.getDom(ValueText.templateEdit, this);
     }
 }
 
 ValueText.templateView = await TemplateManager.getTemplate("valueViewText");
+ValueText.templateEdit = await TemplateManager.getTemplate("valueEditText");
 
 export default ValueText;
