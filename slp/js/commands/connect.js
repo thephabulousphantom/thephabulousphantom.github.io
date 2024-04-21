@@ -11,17 +11,60 @@ class CommandConnect extends Command {
         super(commandLine, commandName, parameters);
     }
 
+    getBeforeLastNode() {
+
+        var nodeId = Node.nextId;
+        var foundLastNode = null;
+
+        do {
+
+            if (Node.lookupId[nodeId]) {
+
+                if (foundLastNode) {
+
+                    return Node.lookupId[nodeId];
+                }
+
+                foundLastNode = Node.lookupId[nodeId];
+            }
+            
+        } while (--nodeId >= 0)
+    }
+
+    getLastNode() {
+
+        var nodeId = Node.nextId;
+        var foundLastNode = null;
+
+        do {
+
+            if (Node.lookupId[nodeId]) {
+
+                return Node.lookupId[nodeId];
+            }
+            
+        } while (--nodeId >= 0)
+    }
+
     async execute() {
 
         const from = this.parameters[0];
-        const nodeFrom = Node.lookupId[from] ?? Node.lookupName[from];
+        var nodeFrom = Node.lookupId[from] ?? Node.lookupName[from];
+
+        const to = this.parameters[1];
+        var nodeTo = Node.lookupId[to] ?? Node.lookupName[to];
+
+        if (!nodeFrom && !nodeTo) {
+
+            nodeFrom = this.getBeforeLastNode();
+            nodeTo = this.getLastNode();
+        }
+
         if (!nodeFrom) {
 
             return new ValueError(`Invalid source node ${from}. Please specify either a valid node id or a valid node name.`);
         }
 
-        const to = this.parameters[1];
-        const nodeTo = Node.lookupId[to] ?? Node.lookupName[to];
         if (!nodeTo) {
 
             return new ValueError(`Invalid destination node ${to}. Please specify either a valid node id or a valid node name.`);

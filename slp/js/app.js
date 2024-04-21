@@ -9,7 +9,7 @@ import ConnectorManager from "./connectors/manager.js";
 import ValueError from "./values/error.js";
 import Connector from "./connectors/connector.js";
 import NodeTextFormat from "./nodes/textFormat.js";
-import NodeDall_e from "./nodes/dall-e.js";
+import NodeDalle from "./nodes/dalle.js";
 import Menu from "./menu/menu.js";
 
 class App {
@@ -133,7 +133,7 @@ class App {
             "OpenAi": NodeOpenAi,
             "OpenAiChat": NodeOpenAiChat,
             "TextFormat": NodeTextFormat,
-            "Dall-e": NodeDall_e
+            "Dall-e": NodeDalle
         };
 
         const ids = await DataManager.get(`node.ids`);

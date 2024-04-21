@@ -107,3 +107,23 @@
     outline: none;
     color: var(--appColorAccent2);
 }
+
+.uiMenu li.uiMenuItemScript {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: calc(var(--appPadding) * 0.5) var(--appPadding) calc(var(--appPadding) * 0.5) var(--appPadding);
+}
+
+.uiMenu li.uiMenuItemScript .uiMenuItemName {
+
+    width: calc(var(--appZoom) * 20 - var(--appPadding) * 2 - 6 * var(--appZoom));
+}
+
+.uiMenu li.uiMenuItemScript svg {
+
+    width: calc(var(--appZoom) + var(--appPadding));
+    height: calc(var(--appZoom) + var(--appPadding));
+    fill: var(--appColorLight);
+}

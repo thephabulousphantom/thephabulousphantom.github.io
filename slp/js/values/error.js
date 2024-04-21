@@ -14,10 +14,12 @@ class ValueError extends Value {
         else if (error instanceof Error) {
 
             this.value.exception = error;
+            this.value.text = error.message;
         }
         else {
 
             this.value.object = error;
+            this.value.text = JSON.toString(error);
         }
     }
 

@@ -6,12 +6,14 @@ import Viewer from "../values/viewer.js";
 class Editor extends Viewer {
 
     callback = null;
+    context = null;
 
-    constructor(value, callback) {
+    constructor(value, callback, context) {
 
         super(value);
 
         this.callback = callback;
+        this.context = context;
     }
     
     getBaseCssSelector() {
@@ -61,7 +63,7 @@ class Editor extends Viewer {
                 if(this.callback && this.dom) {
 
                     const uiEditText = this.dom.querySelector(".uiEditText");
-                    this.callback(uiEditText.value);
+                    this.callback(uiEditText.value, this.context);
                 }
                 break;
         }

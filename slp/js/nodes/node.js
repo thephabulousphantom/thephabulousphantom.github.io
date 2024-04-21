@@ -97,7 +97,7 @@ class Node {
     async invoke(prompt) {
 
         return new ValueError(
-            new Error(`Unable to respond to prompt: "${prompt}". Base node shouldn't be directly prompted. Use derived classes instead.`),
+            new Error(`Unable to respond to prompt: "${prompt}". This node type shouldn't be directly invoked. Use derived classes instead.`),
             this
         );
     }

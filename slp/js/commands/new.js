@@ -3,7 +3,8 @@ import Console from "../console.js";
 import NodeOpenAi from "../nodes/openAi.js";
 import NodeOpenAiChat from "../nodes/openAiChat.js";
 import NodeTextFormat from "../nodes/textFormat.js";
-import NodeDall_e from "../nodes/dall-e.js";
+import NodeDalle2 from "../nodes/dalle2.js";
+import NodeDalle3 from "../nodes/dalle3.js";
 import ValueError from "../values/error.js";
 import ValueText from "../values/text.js";
 
@@ -67,10 +68,10 @@ class CommandNew extends Command {
 
                 return new ValueText(`OpenAI chat node ${name} constructed.`);
 
-            case "dall-e":
+            case "dalle2":
                 {
-                    Console.write(`Constructing Dall-e node ${name}...`);
-                    const node = new NodeDall_e(name);
+                    Console.write(`Constructing Dall-e 2 node ${name}...`);
+                    const node = new NodeDalle2(name);
 
                     const openAiKey = this.parameters[2];
                     if (openAiKey) {
@@ -78,20 +79,46 @@ class CommandNew extends Command {
                         node.properties.key = openAiKey;
                     }
 
-                    const openAiModel = this.parameters[3];
-                    if (openAiModel) {
+                    const dalleSize = this.parameters[4];
+                    if (dalleSize) {
 
-                        node.properties.model = openAiModel;
-                    }
-
-                    const dall_eSize = this.parameters[4];
-                    if (dall_eSize) {
-
-                        node.properties.size = dall_eSize;
+                        node.properties.size = dalleSize;
                     }
                 }
 
-                return new ValueText(`Dall-e node ${name} constructed.`);
+                return new ValueText(`Dall-e 2 node ${name} constructed.`);
+
+            case "dalle3":
+                {
+                    Console.write(`Constructing Dall-e 3 node ${name}...`);
+                    const node = new NodeDalle3(name);
+
+                    const openAiKey = this.parameters[2];
+                    if (openAiKey) {
+
+                        node.properties.key = openAiKey;
+                    }
+
+                    const dalleSize = this.parameters[4];
+                    if (dalleSize) {
+
+                        node.properties.size = dalleSize;
+                    }
+
+                    const dalleStyle = this.parameters[5]
+                    if (dalleStyle) {
+
+                        node.properties.style = dalleStyle;
+                    }
+
+                    const dalleQuality = this.parameters[6];
+                    if (dalleQuality) {
+
+                        node.properties.quality = dalleQuality;
+                    }
+                }
+
+                return new ValueText(`Dall-e 3 node ${name} constructed.`);
 
             case "textformat":
                 {

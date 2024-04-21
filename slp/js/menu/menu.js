@@ -1,5 +1,7 @@
 import TemplateManager from "../templateManager.js";
 import App from "../app.js";
+import ValueText from "../values/text.js";
+import ValueEditor from "../values/editor.js";
 import ScriptsManager from "../scriptsManager.js";
 
 class Menu {
@@ -50,6 +52,7 @@ class Menu {
         this.bind("click", "uiMenuItemReset", this.onReset.bind(this));
         this.bind("click", "uiMenuItemSave", this.onSave.bind(this));
         this.bind("click", "uiMenuItemLoad", this.onLoad.bind(this));
+        this.bind("click", "uiMenuItemEdit", this.onEdit.bind(this));
         this.bind("click", "uiMenuItemDelete", this.onDelete.bind(this));
         this.bind("change", "uiMenuItemName", this.onName.bind(this));
     }
@@ -100,6 +103,23 @@ class Menu {
 
             await App.processCommand(command, true);
         }
+    }
+
+    async onEdit(evt) {
+
+        const name = evt.currentTarget.dataset.name;
+        const commands = await ScriptsManager.get(name, "");
+
+        const commandsValue = new ValueText(commands);
+        const valueEditor = new ValueEditor(commandsValue, this.onEditDone.bind(this), name);
+        valueEditor.initUi();
+    }
+
+    async onEditDone(commands, name) {
+
+        await ScriptsManager.set(name, commands);
+
+        this.initUi();
     }
 
     async onDelete(evt) {

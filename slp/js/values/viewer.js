@@ -20,7 +20,7 @@ class Viewer {
             }
             else {
 
-                this.currentValueIndex = 0;
+                this.currentValueIndex = this.value.length - 1;
             }
         }
     }

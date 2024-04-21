@@ -68,14 +68,20 @@ class ScriptsManager {
 }
 
 ScriptsManager.defaultScripts = {
-    "comic book" : `\
+    "example - comic" : `\
 new textformat, input, "write a funny scenario for a comic book panel containing 6 frames. the scenario should tell the following story."
+
 new openai, screenwriter
-connect input, screenwriter
+
+connect
+
 new textformat, daliInstructions, "create great looking and detailed comic-book panel consisting of 6 frames. Make sure to follow the scenario so that frames in the picture closely follow frame descriptions in the scenario. Frames should be ordered left to right, top to bottom. Also make sure that text shown on each frame matches with scenario and is readable. What follows is the scenario."
-connect screenwriter, daliInstructions
-new dall-e, dali
-connect daliInstructions, dali`
+
+connect
+
+new dalle3, dali
+
+connect`
 };
 
 const scriptsManager = new ScriptsManager();
