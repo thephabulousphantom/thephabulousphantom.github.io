@@ -17,6 +17,7 @@ class NodeOpenAi extends Node {
         this.properties.key = null;
         this.properties.model = null;
         this.properties.maxTokens = null;
+        this.properties.temperature = null;
         
         this.properties._models = [null, "gpt-3.5-turbo-instruct"];
     }
@@ -31,6 +32,7 @@ class NodeOpenAi extends Node {
         this.bindUiElement("key");
         this.bindUiElement("model");
         this.bindUiElement("maxTokens");
+        this.bindUiElement("temperature");
     }
 
     updateUiFrame() {
@@ -51,6 +53,7 @@ class NodeOpenAi extends Node {
                 body: JSON.stringify({
                     model: this.properties.model ?? App.defaults["openAiModel"],
                     prompt: prompt,
+                    temperature: (this.properties.temperature ?? App.defaults["openAiTemperature"])|0,
                     max_tokens: (this.properties.maxTokens ?? App.defaults.maxTokens)|0
                 })
             }
