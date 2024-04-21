@@ -13,6 +13,17 @@
     z-index: 999999;
 }
 
+.uiValueViewer .uiTitle, .uiValueEditor .uiTitle {
+
+    font-size: calc(3 * var(--appZoom));
+    font-weight: bold;
+    position: fixed;
+    left: var(--appPadding);
+    top: var(--appPadding);
+    color: var(--appColorLight);
+    text-transform: lowercase;
+}
+
 .uiValueViewer .uiContent, .uiValueEditor .uiContent {
 
     display: inline-block;
@@ -49,18 +60,45 @@
     overflow-y: auto;
 }
 
-.uiValueViewer .uiCloseButton, .uiValueEditor .uiCloseButton {
+.uiValueViewer .uiCloseButton, .uiValueEditor .uiCloseButton,
+.uiValueViewer .uiPreviousButton, .uiValueEditor .uiPreviousButton,
+.uiValueViewer .uiNextButton, .uiValueEditor .uiNextButton
+ {
 
     width : calc(4 * var(--appZoom));
     height: calc(4 * var(--appZoom));
     position: fixed;
-    left: calc(100vw - calc(4 * var(--appZoom)) - var(--appPadding));
-    top: calc(var(--appPadding));
 
     border-radius: 100vmax;
     background-color: var(--appColorSecondary);    
     fill: var(--appColorPrimary);
     z-index: 999999;
+}
+
+.uiValueViewer.uiSingleValue .uiPreviousButton,
+.uiValueViewer.uiSingleValue .uiNextButton,
+.uiValueEditor.uiSingleValue .uiPreviousButton,
+.uiValueEditor.uiSingleValue .uiNextButton
+{
+    display: none;
+}
+
+.uiValueViewer .uiCloseButton, .uiValueEditor .uiCloseButton
+{
+    left: calc(100vw - calc(4 * var(--appZoom)) - var(--appPadding));
+    top: calc(var(--appPadding));
+}
+
+.uiValueViewer .uiPreviousButton, .uiValueEditor .uiPreviousButton
+{
+    left: calc(100vw - calc(8 * var(--appZoom)) - 2 * var(--appPadding));
+    top: calc(100dvh - calc(4 * var(--appZoom)) - var(--appPadding));
+}
+
+.uiValueViewer .uiNextButton, .uiValueEditor .uiNextButton
+{
+    left: calc(100vw - calc(4 * var(--appZoom)) - var(--appPadding));
+    top: calc(100dvh - calc(4 * var(--appZoom)) - var(--appPadding));
 }
 
 .uiValueEditor textarea {

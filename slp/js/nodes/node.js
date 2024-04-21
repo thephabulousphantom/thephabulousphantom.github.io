@@ -132,6 +132,9 @@ class Node {
 
         App.dom.append(...dom.childNodes);
 
+        this.dom.style.left = `${App.size.padding + (this.properties.id * App.size.zoom * 2) % (App.size.width - 40 * App.size.zoom)}px`;
+        this.dom.style.top = `${App.size.padding + (this.properties.id * App.size.zoom * 3) % (App.size.height - 8 * App.size.zoom)}px`;
+
         if (this.properties.minimised) {
 
             this.dom.classList.add("uiMinimised");
@@ -200,7 +203,7 @@ class Node {
 
     onViewResult() {
 
-        const valueViewer = new ValueViewer(this.lastResult());
+        const valueViewer = new ValueViewer(this.results);
         valueViewer.initUi();
     }
 

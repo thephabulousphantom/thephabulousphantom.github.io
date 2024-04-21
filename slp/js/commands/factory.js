@@ -10,6 +10,7 @@ import CommandConnect from "./connect.js";
 import CommandToggle from "./toggle.js";
 import CommandDefault from "./default.js";
 import CommandKill from "./kill.js";
+import CommandReset from "./reset.js";
 
 class CommandFactory {
 
@@ -25,7 +26,8 @@ class CommandFactory {
         "connect": CommandConnect,
         "toggle": CommandToggle,
         "default": CommandDefault,
-        "kill": CommandKill
+        "kill": CommandKill,
+        "reset": CommandReset
     };
 
     constructor() {

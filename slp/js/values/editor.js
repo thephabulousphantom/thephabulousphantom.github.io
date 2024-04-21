@@ -1,34 +1,37 @@
 import App from "../app.js";
+import ValueEmpty from "./empty.js";
 import TemplateManager from "../templateManager.js";
+import Viewer from "../values/viewer.js";
 
-class Editor {
+class Editor extends Viewer {
 
-    value = null;
     callback = null;
-    dom = null;
 
     constructor(value, callback) {
 
-        this.value = value;
+        super(value);
+
         this.callback = callback;
+    }
+    
+    getBaseCssSelector() {
+
+        return ".uiValueEditor";
+    }
+
+    getTemplate() {
+
+        return Editor.template;
+    }
+
+    getValueDom(value) {
+
+        return value.editDom();
     }
 
     async initUi() {
 
-        const dom = TemplateManager.getDom(Editor.template, this);
-        
-        const uiValueEditor = dom.querySelector(".uiValueEditor");
-        const uiContent = dom.querySelector(".uiContent");
-        const uiCloseButton = dom.querySelector(".uiCloseButton");
-
-        uiContent.append(this.value.editDom());
-
-        this.dom = uiValueEditor;
-
-        App.dom.append(...dom.childNodes);
-
-        uiCloseButton.addEventListener("mousedown", this.onClose.bind(this));
-        uiCloseButton.addEventListener("touchstart", this.onClose.bind(this));
+        super.initUi();
 
         switch (this.value.value.type) {
 
@@ -63,11 +66,7 @@ class Editor {
                 break;
         }
 
-        if (this.dom) {
-
-            this.dom.remove();
-            this.dom = null;
-        }
+        super.onClose();
     }
 }
 

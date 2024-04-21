@@ -36,9 +36,11 @@ class App {
     size = {
         zoom: null,
         padding: null,
+        width: null,
+        height: null
     };
 
-    _sizeHelpers = { zoom: null, padding: null };
+    _sizeHelpers = { zoom: null, padding: null, app: null };
 
     async loadDefaults() {
 
@@ -79,9 +81,6 @@ class App {
         this.menu = new Menu("Silly little people");
 
         this.svg = document.querySelector("#appVectorContainer");
-
-        this._sizeHelpers.zoom = document.querySelector("#zoomSizeHelper");
-        this._sizeHelpers.padding = document.querySelector("#paddingSizeHelper");
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
     }
@@ -195,13 +194,45 @@ class App {
         this.pointer.y = evt.touches && evt.touches.length ? evt.touches[0].clientY : evt.clientY;
     }
 
+    updateSizes() {
+
+        if (!this._sizeHelpers.zoom) {
+
+            this._sizeHelpers.zoom = document.querySelector("#zoomSizeHelper");
+        }
+
+        if (!this._sizeHelpers.padding) {
+
+            this._sizeHelpers.padding = document.querySelector("#paddingSizeHelper");
+        }
+
+        if (!this._sizeHelpers.app) {
+
+            this._sizeHelpers.app = document.querySelector("#appVectorContainer");
+        }
+
+        if (this._sizeHelpers.zoom) {
+
+            this.size.zoom = this._sizeHelpers.zoom.getClientRects()[0].width;
+        }
+
+        if (this._sizeHelpers.padding) {
+
+            this.size.padding = this.size.zoom / this._sizeHelpers.padding.getClientRects()[0].width;
+        }
+
+        if (this._sizeHelpers.app) {
+
+            this.size.width = this._sizeHelpers.app.getClientRects()[0].width;
+            this.size.height = this._sizeHelpers.app.getClientRects()[0].height;
+        }
+    }
+
     onUpdateFrame() {
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
 
-        this.size.zoom = this._sizeHelpers.zoom.getClientRects()[0].width;
-        this.size.padding = this.size.zoom / this._sizeHelpers.padding.getClientRects()[0].width;
-
+        this.updateSizes();
         Node.updateUiFrame();
         ConnectorManager.updateUiFrame();
         this.menu.updateUiFrame();
