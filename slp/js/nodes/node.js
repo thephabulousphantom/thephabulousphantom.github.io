@@ -212,7 +212,7 @@ class Node {
     onEditName(evt) {
 
         const nameValue = new ValueText(this.properties.name);
-        const valueEditor = new ValueEditor(nameValue, this.updateName.bind(this));
+        const valueEditor = new ValueEditor(null, nameValue, this.updateName.bind(this));
         valueEditor.initUi();
 
         evt.preventDefault();

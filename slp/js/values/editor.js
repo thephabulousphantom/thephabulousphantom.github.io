@@ -5,13 +5,17 @@ import Viewer from "../values/viewer.js";
 
 class Editor extends Viewer {
 
+    name = null;
     callback = null;
     context = null;
+    _nameReadyOnly = true;
 
-    constructor(value, callback, context) {
+    constructor(name, value, callback, context) {
 
         super(value);
 
+        this._nameReadOnly = !name;
+        this.name = this._nameReadOnly ? "Value Editor" : name;
         this.callback = callback;
         this.context = context;
     }
@@ -34,6 +38,11 @@ class Editor extends Viewer {
     async initUi() {
 
         super.initUi();
+
+        if (this._nameReadOnly) {
+
+            this.dom.querySelector(".uiTitle").disabled = true;
+        }
 
         switch (this.value.value.type) {
 
@@ -63,7 +72,7 @@ class Editor extends Viewer {
                 if(this.callback && this.dom) {
 
                     const uiEditText = this.dom.querySelector(".uiEditText");
-                    this.callback(uiEditText.value, this.context);
+                    this.callback(uiEditText.value, this.context, this.dom.querySelector(".uiTitle").value);
                 }
                 break;
         }

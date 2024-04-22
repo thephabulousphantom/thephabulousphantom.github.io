@@ -111,11 +111,15 @@
     top: calc(100dvh - calc(4 * var(--appZoom)) - var(--appPadding));
 }
 
-.uiValueEditor textarea {
+.uiValueEditor textarea, .uiValueEditor .uiTitle {
 
     background: none;
     outline: none;
     border: none;
     margin: none;
+}
+
+.uiValueEditor textarea {
+
     width: calc(100vw - 4 * var(--appZoom));
 }

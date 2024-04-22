@@ -51,10 +51,9 @@ class Menu {
         this.bind("click", "uiMenuIcon", this.onToggle.bind(this));
         this.bind("click", "uiMenuItemReset", this.onReset.bind(this));
         this.bind("click", "uiMenuItemSave", this.onSave.bind(this));
-        this.bind("click", "uiMenuItemLoad", this.onLoad.bind(this));
         this.bind("click", "uiMenuItemEdit", this.onEdit.bind(this));
         this.bind("click", "uiMenuItemDelete", this.onDelete.bind(this));
-        this.bind("change", "uiMenuItemName", this.onName.bind(this));
+        this.bind("click", "uiMenuItemName", this.onLoad.bind(this));
     }
 
     onToggle(evt) {
@@ -109,13 +108,18 @@ class Menu {
         const commands = await ScriptsManager.get(name, "");
 
         const commandsValue = new ValueText(commands);
-        const valueEditor = new ValueEditor(commandsValue, this.onEditDone.bind(this), name);
+        const valueEditor = new ValueEditor(name, commandsValue, this.onEditDone.bind(this), name);
         valueEditor.initUi();
     }
 
-    async onEditDone(commands, name) {
+    async onEditDone(commands, name, newName) {
 
-        await ScriptsManager.set(name, commands);
+        if (newName != name) {
+
+            await ScriptsManager.rename(name, newName);
+        }
+        
+        await ScriptsManager.set(newName, commands);
 
         this.initUi();
     }
@@ -134,7 +138,7 @@ class Menu {
         this.initUi();
     }
 
-    async onName(evt) {
+    /*async onName(evt) {
 
         const nameInput = evt.currentTarget;
         const name = nameInput.dataset.name;
@@ -143,7 +147,7 @@ class Menu {
         await ScriptsManager.rename(name, newName);
 
         this.initUi();
-    }
+    }*/
 
     updateUiFrame() {
 

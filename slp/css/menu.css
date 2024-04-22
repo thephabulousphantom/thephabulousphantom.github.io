@@ -54,7 +54,7 @@
     color: var(--appColorPrimary);
 }
 
-.uiMenu .uiButton {
+.uiMenu .uiButton, .uiMenuItemScript .uiMenuItemName {
 
     cursor: pointer;
 }
@@ -118,7 +118,7 @@
 
 .uiMenu li.uiMenuItemScript .uiMenuItemName {
 
-    width: calc(var(--appZoom) * 20 - var(--appPadding) * 2 - 6 * var(--appZoom));
+    width: calc(var(--appZoom) * 20 - var(--appPadding) * 2 - 4 * var(--appZoom));
 }
 
 .uiMenu li.uiMenuItemScript svg {
