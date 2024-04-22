@@ -19,6 +19,11 @@
     width: calc(var(--appZoom) * 10);
 }
 
+.uiNode.uiHidden {
+
+    display: none;
+}
+
 .uiNode .nodeLabelValue option {
 
     color: var(--appColorSecondary);

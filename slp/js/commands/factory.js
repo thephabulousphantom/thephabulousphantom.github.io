@@ -12,6 +12,8 @@ import CommandDefault from "./default.js";
 import CommandKill from "./kill.js";
 import CommandReset from "./reset.js";
 import CommandContinue from "./continue.js";
+import CommandHide from "./hide.js";
+import CommandShow from "./show.js";
 
 class CommandFactory {
 
@@ -29,7 +31,9 @@ class CommandFactory {
         "default": CommandDefault,
         "kill": CommandKill,
         "reset": CommandReset,
-        "continue": CommandContinue
+        "continue": CommandContinue,
+        "hide": CommandHide,
+        "show": CommandShow
     };
 
     constructor() {

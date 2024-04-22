@@ -2,7 +2,7 @@ import TemplateManager from "../templateManager.js";
 import Node from "./node.js";
 import ValueText from "../values/text.js";
 import ValueEditor from "../values/editor.js";
-import ConnectorSocket from "../connectors/connectorSocket.js";
+import ConnectorSocket from "../connectors/socket.js";
 
 class NodeTextFormat extends Node {
 

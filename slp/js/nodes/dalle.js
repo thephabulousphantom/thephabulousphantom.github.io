@@ -1,6 +1,6 @@
 import TemplateManager from "../templateManager.js";
 import Node from "./node.js";
-import ConnectorSocket from "../connectors/connectorSocket.js";
+import ConnectorSocket from "../connectors/socket.js";
 
 class NodeDalle extends Node {
 

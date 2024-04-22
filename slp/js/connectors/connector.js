@@ -83,6 +83,28 @@ class Connector {
         delete Connector.lookupId[this.id];
     }
 
+    hide() {
+
+        if (this.svg) {
+
+            if (!this.svg.classList.contains("uiHidden")) {
+
+                this.svg.classList.add("uiHidden");
+            }
+        }
+    }
+
+    show() {
+
+        if (this.svg) {
+
+            if (this.svg.classList.contains("uiHidden")) {
+
+                this.svg.classList.remove("uiHidden");
+            }
+        }
+    }
+
     updateUiFrame() {
 
         if (this.from && this.from.socket && this.from.socket.svg) {

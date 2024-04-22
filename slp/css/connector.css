@@ -39,6 +39,11 @@
     fill: var(--appColorPrimary);
 }
 
+.uiSvg .uiHidden {
+
+    display: none;
+}
+
 .uiSvg .uiSocket.uiConnectorError {
 
     fill: var(--appColorError);

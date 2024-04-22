@@ -46,6 +46,36 @@ class ConnectorManager {
         }
     }
 
+    hideForNode(id) {
+
+        for (var i = 0; i < this.connectors.length; i++) {
+
+            const connector = this.connectors[i];
+
+            if (connector.from.node.properties.id == id
+            || connector.to.node.properties.id == id) {
+
+                connector.hide(connector.id);
+                continue;
+            }
+        }
+    }
+
+    showForNode(id) {
+        
+        for (var i = 0; i < this.connectors.length; i++) {
+
+            const connector = this.connectors[i];
+
+            if (connector.from.node.properties.id == id
+            || connector.to.node.properties.id == id) {
+
+                connector.show(connector.id);
+                continue;
+            }
+        }
+    }
+
     remove(id) {
 
         for (var i = 0; i < this.connectors.length; i++) {

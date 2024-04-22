@@ -5,7 +5,7 @@ import ConnectorManager from "../connectors/manager.js";
 import ValueEmpty from "../values/empty.js"
 import ValueError from "../values/error.js"
 import ValueText from "../values/text.js"
-import ConnectorSocket from "../connectors/connectorSocket.js";
+import ConnectorSocket from "../connectors/socket.js";
 import ValueViewer from "../values/viewer.js";
 import ValueEditor from "../values/editor.js";
 
@@ -198,6 +198,46 @@ class Node {
         }
         
         return !this.properties.minimised;
+    }
+
+    hide() {
+
+        if (!this.dom.classList.contains("uiHidden")) {
+    
+            this.dom.classList.add("uiHidden");
+        }
+
+        for (const connectorSocket of this.sockets.input) {
+
+            connectorSocket.hide();
+        }
+
+        for (const connectorSocket of this.sockets.output) {
+
+            connectorSocket.hide();
+        }
+
+        ConnectorManager.hideForNode(this.properties.id);
+    }
+
+    show() {
+
+        if (this.dom.classList.contains("uiHidden")) {
+    
+            this.dom.classList.remove("uiHidden");
+        }
+
+        for (const connectorSocket of this.sockets.input) {
+
+            connectorSocket.show();
+        }
+
+        for (const connectorSocket of this.sockets.output) {
+
+            connectorSocket.show();
+        }
+
+        ConnectorManager.showForNode(this.properties.id);
     }
 
     onViewResult(evt) {
