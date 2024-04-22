@@ -69,26 +69,26 @@ class ScriptsManager {
 
 ScriptsManager.defaultScripts = {
     "example - comic" : `\
-reset
+!reset
 
-new textformat, input, "write a witty scenario for a comic book panel with 6 frames. repeat a very detailed description of the appearance of the characters in every panel. characters need to be consistent across all the frames. the comic book panel should tell the following story;"
+!new textformat, input, "write a witty scenario for a comic book panel with 6 frames. repeat a very detailed description of the appearance of the characters in every panel. characters need to be consistent across all the frames. the comic book panel should tell the following story;"
 
-new openaichat, screenwriter
+!new openaichat, screenwriter
 
-connect
+!connect
 
-new textformat, director, "a comic-book panel in black and white with strong contrasts, with great detail and linework, where all the characters look consistent across all frames of the panel, and story is based on the following scenario; "
+!new textformat, director, "a comic-book panel in black and white with strong contrasts, with great detail and linework, where all the characters look consistent across all frames of the panel, and story is based on the following scenario; "
 
-connect
+!connect
 
-new dalle3, illustrator
+!new dalle3, illustrator
 
-connect
+!connect
 
-toggle input
-toggle screenwriter
-toggle director
-toggle illustrator`
+!toggle input
+!toggle screenwriter
+!toggle director
+!toggle illustrator`
 };
 
 const scriptsManager = new ScriptsManager();

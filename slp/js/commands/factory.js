@@ -38,6 +38,15 @@ class CommandFactory {
 
     parseFunctionAndArguments(input) {
 
+        if (input.trim()[0] == "!") {
+
+            input = input.substring(1).trim();
+        }
+        else {
+
+            input = `text input,"${input}"`;
+        }
+
         const match = input.match(/(\w+)/);
         if (match) {
 
@@ -62,7 +71,7 @@ class CommandFactory {
         if (parsed) {
 
             if (this.commands[parsed.commandName]) {
-
+                
                 return new this.commands[parsed.commandName](commandLine, parsed.commandName, parsed.args);
             }
             else {

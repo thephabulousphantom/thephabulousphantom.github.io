@@ -71,7 +71,7 @@ class Menu {
 
     onReset(evt) {
 
-        App.processCommand("reset");
+        App.processCommand("!reset");
     }
 
     async onSave(evt) {
