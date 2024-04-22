@@ -45,9 +45,6 @@ class Viewer {
         const dom = TemplateManager.getDom(this.getTemplate(), this);
         
         const uiValueViewer = dom.querySelector(this.getBaseCssSelector());
-        const uiCloseButton = dom.querySelector(".uiCloseButton");
-        const uiPreviousButton = dom.querySelector(".uiPreviousButton");
-        const uiNextButton = dom.querySelector(".uiNextButton");
         const uiContent = dom.querySelector(".uiContent");
 
         if (this.currentValueIndex === null) {
@@ -64,30 +61,33 @@ class Viewer {
             }
         }
 
+        dom.querySelector(".uiCloseButton")
+            .addEventListener("click", this.onClose.bind(this));
+            
+        dom.querySelector(".uiPreviousButton")
+            .addEventListener("click", this.onPrevious.bind(this));
+
+        dom.querySelector(".uiNextButton")
+            .addEventListener("click", this.onNext.bind(this));
+
         this.dom = uiValueViewer;
 
         App.dom.append(...dom.childNodes);
-
-        uiCloseButton.addEventListener("mousedown", this.onClose.bind(this));
-        uiCloseButton.addEventListener("touchstart", this.onClose.bind(this));
-
-        uiPreviousButton.addEventListener("mousedown", this.onPrevious.bind(this));
-        uiPreviousButton.addEventListener("touchstart", this.onPrevious.bind(this));
-
-        uiNextButton.addEventListener("mousedown", this.onNext.bind(this));
-        uiNextButton.addEventListener("touchstart", this.onNext.bind(this));
     }
 
-    onClose() {
+    onClose(evt) {
 
         if (this.dom) {
 
             this.dom.remove();
             this.dom = null;
         }
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 
-    onPrevious() {
+    onPrevious(evt) {
 
         if (this.currentValueIndex === null) {
 
@@ -98,9 +98,12 @@ class Viewer {
 
         this.dom.remove();
         this.initUi();
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 
-    onNext() {
+    onNext(evt) {
 
         if (this.currentValueIndex === null) {
 
@@ -111,6 +114,9 @@ class Viewer {
 
         this.dom.remove();
         this.initUi();
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 }
 

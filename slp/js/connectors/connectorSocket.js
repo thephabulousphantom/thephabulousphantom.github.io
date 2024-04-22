@@ -18,7 +18,12 @@ class ConnectorSocket {
 
     async initUi() {
 
-        var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        if (!this.svg) {
+
+            this.svg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        }
+
+        var circle = this.svg;
 
         circle.classList.add("uiSocket");
         switch (this.type) {
@@ -33,7 +38,7 @@ class ConnectorSocket {
         circle.setAttribute("r", "0");
         circle.setAttribute("fill", "var(--appColorSecondary)");
 
-        this.svg = circle;
+        App.svg.appendChild(this.svg);
     }
 
     removeUi() {
@@ -49,11 +54,7 @@ class ConnectorSocket {
 
         if (!this.svg || !document.body.contains(this.svg)) {
 
-            this.initUi().then((function () {
-
-                App.svg.appendChild(this.svg);
-                
-            }).bind(this));
+            this.initUi();
             return;
         }
         

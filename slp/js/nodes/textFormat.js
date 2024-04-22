@@ -2,7 +2,7 @@ import TemplateManager from "../templateManager.js";
 import Node from "./node.js";
 import ValueText from "../values/text.js";
 import ValueEditor from "../values/editor.js";
-import ConnectorSocket from "./connectorSocket.js";
+import ConnectorSocket from "../connectors/connectorSocket.js";
 
 class NodeTextFormat extends Node {
 
@@ -27,13 +27,11 @@ class NodeTextFormat extends Node {
         this.bindUiElement("pre");
         this.bindUiElement("post");
 
-        const preInput = this.dom.querySelector(".nodePreInput");
-        preInput.addEventListener("mousedown", this.onEditPre.bind(this));
-        preInput.addEventListener("touchstart", this.onEditPre.bind(this));
+        this.dom.querySelector(".nodePreInput")
+            .addEventListener("click", this.onEditPre.bind(this));
 
-        const postInput = this.dom.querySelector(".nodePostInput");
-        postInput.addEventListener("mousedown", this.onEditPost.bind(this));
-        postInput.addEventListener("touchstart", this.onEditPost.bind(this));
+        this.dom.querySelector(".nodePostInput")
+            .addEventListener("click", this.onEditPost.bind(this));
     }
 
     updateUiFrame() {
@@ -41,11 +39,14 @@ class NodeTextFormat extends Node {
         super.updateUiFrame();
     }
 
-    onEditPre() {
+    onEditPre(evt) {
 
         const nameValue = new ValueText(this.properties.pre);
         const valueEditor = new ValueEditor(nameValue, this.updatePre.bind(this));
         valueEditor.initUi();
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 
     updatePre(pre) {
@@ -54,11 +55,14 @@ class NodeTextFormat extends Node {
         this.getPropertyUi("pre").value = pre;
     }
 
-    onEditPost() {
+    onEditPost(evt) {
 
         const nameValue = new ValueText(this.properties.post);
         const valueEditor = new ValueEditor(nameValue, this.updatePost.bind(this));
         valueEditor.initUi();
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 
     updatePost(post) {

@@ -83,6 +83,8 @@ class App {
 
         this.svg = document.querySelector("#appVectorContainer");
 
+        this.addPointerDownHandler
+
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
     }
 

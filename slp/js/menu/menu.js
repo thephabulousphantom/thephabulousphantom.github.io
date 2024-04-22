@@ -94,8 +94,6 @@ class Menu {
 
     async onLoad(evt) {
 
-        App.resetState();
-
         const name = evt.currentTarget.dataset.name;
         const commands = await ScriptsManager.get(name, "");
 

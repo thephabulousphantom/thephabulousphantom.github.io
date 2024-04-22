@@ -53,11 +53,21 @@
 
     font-size: calc(1.5 * var(--appZoom));
     text-align: left;
-    width: 90vmin;
-    height: 90vmin;
     overflow-wrap: break-word;
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+.uiValueEditor .uiContent .uiEditText {
+
+    width: calc(100vw - 4 * var(--appPadding));;
+    height: calc(100dvh - 15 * var(--appZoom));
+}
+
+.uiValueEditor .uiContent .uiEditImage {
+
+    width: 90vmin;
+    height: 90vmin;
 }
 
 .uiValueViewer .uiCloseButton, .uiValueEditor .uiCloseButton,
@@ -107,4 +117,5 @@
     outline: none;
     border: none;
     margin: none;
+    width: calc(100vw - 4 * var(--appZoom));
 }

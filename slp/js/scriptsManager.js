@@ -69,6 +69,8 @@ class ScriptsManager {
 
 ScriptsManager.defaultScripts = {
     "example - comic" : `\
+reset
+
 new textformat, input, "write a witty scenario for a comic book panel with 6 frames. repeat a very detailed description of the appearance of the characters in every panel. characters need to be consistent across all the frames. the comic book panel should tell the following story;"
 
 new openaichat, screenwriter
@@ -81,7 +83,12 @@ connect
 
 new dalle3, illustrator
 
-connect`
+connect
+
+toggle input
+toggle screenwriter
+toggle director
+toggle illustrator`
 };
 
 const scriptsManager = new ScriptsManager();

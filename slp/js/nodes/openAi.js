@@ -3,7 +3,7 @@ import App from "../app.js";
 import Node from "./node.js";
 import ValueError from "../values/error.js";
 import ValueText from "../values/text.js";
-import ConnectorSocket from "./connectorSocket.js";
+import ConnectorSocket from "../connectors/connectorSocket.js";
 
 class NodeOpenAi extends Node {
 

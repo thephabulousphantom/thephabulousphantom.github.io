@@ -1,3 +1,4 @@
+import App from "../app.js";
 import Command from "./command.js";
 import DataManager from "../dataManager.js";
 import ValueEmpty from "../values/empty.js";
@@ -16,6 +17,8 @@ class CommandZoom extends Command {
 
             await DataManager.set(`app.zoom`, zoom);
             document.documentElement.style.setProperty("--appZoom", `${zoom}vmin`);
+
+            App.updateSizes();
         }
 
         return new ValueEmpty();

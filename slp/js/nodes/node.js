@@ -5,7 +5,7 @@ import ConnectorManager from "../connectors/manager.js";
 import ValueEmpty from "../values/empty.js"
 import ValueError from "../values/error.js"
 import ValueText from "../values/text.js"
-import ConnectorSocket from "./connectorSocket.js";
+import ConnectorSocket from "../connectors/connectorSocket.js";
 import ValueViewer from "../values/viewer.js";
 import ValueEditor from "../values/editor.js";
 
@@ -126,14 +126,15 @@ class Node {
     async initUi() {
 
         const dom = TemplateManager.getDom(Node.template, this.properties);
+
         this.dom = dom.querySelector(".uiNode");
-        this.nodeSizeToggle = this.dom.querySelector(".nodeSizeToggle");
-        this.nodeSizeToggle.addEventListener("click", this.onSizeToggle.bind(this));
+        this.dom.querySelector(".nodeSizeToggle")
+            .addEventListener("click", this.onSizeToggle.bind(this));
 
         App.dom.append(...dom.childNodes);
 
-        this.dom.style.left = `${App.size.padding + (this.properties.id * App.size.zoom * 2) % (App.size.width - 40 * App.size.zoom)}px`;
-        this.dom.style.top = `${App.size.padding + (this.properties.id * App.size.zoom * 3) % (App.size.height - 8 * App.size.zoom)}px`;
+        this.dom.style.left = `${App.size.zoom * App.size.padding + (this.properties.id * App.size.zoom * 12.5) % (App.size.width - 20 * App.size.zoom - 2 * App.size.zoom * App.size.padding)}px`;
+        this.dom.style.top = `${App.size.zoom * App.size.padding + (this.properties.id * App.size.zoom * 3) % (App.size.height - 8 * App.size.zoom)}px`;
 
         if (this.properties.minimised) {
 
@@ -148,13 +149,11 @@ class Node {
         title.addEventListener("mouseup", this.onTitlePointerUp.bind(this));
         title.addEventListener("touchend", this.onTitlePointerUp.bind(this));
 
-        const resultLabel = this.dom.querySelector(".nodeResultLabel");
-        resultLabel.addEventListener("mousedown", this.onViewResult.bind(this));
-        resultLabel.addEventListener("touchstart", this.onViewResult.bind(this));
+        this.dom.querySelector(".nodeResultLabel")
+            .addEventListener("click", this.onViewResult.bind(this));
 
-        const nameInput = this.dom.querySelector(".nodeNameInput");
-        nameInput.addEventListener("mousedown", this.onEditName.bind(this));
-        nameInput.addEventListener("touchstart", this.onEditName.bind(this));
+        this.dom.querySelector(".nodeNameInput")
+            .addEventListener("click", this.onEditName.bind(this));
     }
 
     removeUi() {
@@ -198,20 +197,26 @@ class Node {
             }
         }
         
-        return !this._minimised;
+        return !this.properties.minimised;
     }
 
-    onViewResult() {
+    onViewResult(evt) {
 
         const valueViewer = new ValueViewer(this.results);
         valueViewer.initUi();
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 
-    onEditName() {
+    onEditName(evt) {
 
         const nameValue = new ValueText(this.properties.name);
         const valueEditor = new ValueEditor(nameValue, this.updateName.bind(this));
         valueEditor.initUi();
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 
     updateName(name) {
@@ -225,6 +230,22 @@ class Node {
     onSizeToggle(evt) {
 
         this.toggle();
+    }
+
+    bringToTop() {
+
+        for (const node of window.document.querySelectorAll(".uiNode")) {
+
+            if ((node.style.zIndex | 0) >= 10000) {
+
+                node.style.zIndex = (node.style.zIndex | 0) - 10000;
+            }
+        }
+
+        if ((this.dom.style.zIndex | 0) < 10000) {
+
+            this.dom.style.zIndex = (this.dom.style.zIndex | 0) + 10000;
+        }
     }
 
     onTitlePointerDown(evt) {
@@ -244,7 +265,7 @@ class Node {
             }
         };
 
-        evt.preventDefault();
+        this.bringToTop();
     }
 
     onTitlePointerUp(evt) {
