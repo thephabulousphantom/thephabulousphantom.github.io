@@ -37,8 +37,8 @@
 
     font-size: calc(1.5 * var(--appZoom));
     text-align: left;
-    width: 90vmin;
-    height: 90vmin;
+    width: calc(100vw - 4 * var(--appPadding));;
+    height: calc(100dvh - 15 * var(--appZoom));
     overflow-wrap: break-word;
     overflow-x: hidden;
     overflow-y: auto;
@@ -51,7 +51,7 @@
 
 .uiValueEditor .uiContent .uiEditText, .uiValueEditor .uiContent .uiEditImage {
 
-    font-size: calc(1.5 * var(--appZoom));
+    font-size: calc(1.25 * var(--appZoom));
     text-align: left;
     overflow-wrap: break-word;
     overflow-x: hidden;
