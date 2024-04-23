@@ -16,7 +16,8 @@ class Node {
         id: Node.nextId++,
         type: null,
         name: null,
-        minimised: false
+        minimised: false,
+        hidden: false
     }
 
     dom = undefined;
@@ -141,6 +142,15 @@ class Node {
             this.dom.classList.add("uiMinimised");
         }
 
+        if (this.properties.hidden) {
+
+            this.hide();
+        }
+        else {
+            
+            this.show();
+        }
+
         this.bindUiElement("name");
 
         const title = this.dom.querySelector(".nodeTitle");
@@ -202,42 +212,52 @@ class Node {
 
     hide() {
 
-        if (!this.dom.classList.contains("uiHidden")) {
+        this.properties.hidden = true;
+
+        if (this.dom) {
+
+            if (!this.dom.classList.contains("uiHidden")) {
     
-            this.dom.classList.add("uiHidden");
+                this.dom.classList.add("uiHidden");
+            }
+
+            for (const connectorSocket of this.sockets.input) {
+
+                connectorSocket.hide();
+            }
+    
+            for (const connectorSocket of this.sockets.output) {
+    
+                connectorSocket.hide();
+            }
+    
+            ConnectorManager.hideForNode(this.properties.id);
         }
-
-        for (const connectorSocket of this.sockets.input) {
-
-            connectorSocket.hide();
-        }
-
-        for (const connectorSocket of this.sockets.output) {
-
-            connectorSocket.hide();
-        }
-
-        ConnectorManager.hideForNode(this.properties.id);
     }
 
     show() {
 
-        if (this.dom.classList.contains("uiHidden")) {
+        this.properties.hidden = false;
+
+        if (this.dom) {
+
+            if (this.dom.classList.contains("uiHidden")) {
     
-            this.dom.classList.remove("uiHidden");
+                this.dom.classList.remove("uiHidden");
+            }
+    
+            for (const connectorSocket of this.sockets.input) {
+    
+                connectorSocket.show();
+            }
+    
+            for (const connectorSocket of this.sockets.output) {
+    
+                connectorSocket.show();
+            }
+    
+            ConnectorManager.showForNode(this.properties.id);
         }
-
-        for (const connectorSocket of this.sockets.input) {
-
-            connectorSocket.show();
-        }
-
-        for (const connectorSocket of this.sockets.output) {
-
-            connectorSocket.show();
-        }
-
-        ConnectorManager.showForNode(this.properties.id);
     }
 
     onViewResult(evt) {

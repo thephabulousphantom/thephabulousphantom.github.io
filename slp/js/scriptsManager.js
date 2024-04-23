@@ -88,7 +88,9 @@ ScriptsManager.defaultScripts = {
 !toggle input
 !toggle screenwriter
 !toggle director
-!toggle illustrator`
+!toggle illustrator
+
+!hide`
 };
 
 const scriptsManager = new ScriptsManager();

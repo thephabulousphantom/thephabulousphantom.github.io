@@ -82,9 +82,6 @@ class Viewer {
             this.dom.remove();
             this.dom = null;
         }
-
-        evt.preventDefault();
-        evt.stopPropagation();
     }
 
     onPrevious(evt) {

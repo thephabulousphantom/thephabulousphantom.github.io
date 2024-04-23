@@ -138,17 +138,6 @@ class Menu {
         this.initUi();
     }
 
-    /*async onName(evt) {
-
-        const nameInput = evt.currentTarget;
-        const name = nameInput.dataset.name;
-        const newName = nameInput.value;
-
-        await ScriptsManager.rename(name, newName);
-
-        this.initUi();
-    }*/
-
     updateUiFrame() {
 
         if (!this.dom) {

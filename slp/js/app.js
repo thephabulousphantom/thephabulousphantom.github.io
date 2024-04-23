@@ -195,9 +195,6 @@ class App {
 
         this.pointer.x = evt.touches && evt.touches.length ? evt.touches[0].clientX : evt.clientX;
         this.pointer.y = evt.touches && evt.touches.length ? evt.touches[0].clientY : evt.clientY;
-
-        evt.preventDefault();
-        evt.stopPropagation();
     }
 
     updateSizes() {

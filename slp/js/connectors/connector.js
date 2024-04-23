@@ -70,6 +70,15 @@ class Connector {
         line.setAttribute("y2", "-1");
 
         this.svg = line;
+
+        if (this.from.node.properties.hidden || this.to.node.properties.hidden) {
+
+            this.hide();
+        }
+        else {
+
+            this.show();
+        }
     }
 
     remove() {

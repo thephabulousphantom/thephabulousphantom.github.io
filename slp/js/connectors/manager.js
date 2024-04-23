@@ -70,7 +70,14 @@ class ConnectorManager {
             if (connector.from.node.properties.id == id
             || connector.to.node.properties.id == id) {
 
-                connector.show(connector.id);
+                if (connector.from.node.properties.hidden || connector.to.node.properties.hidden) {
+
+                    connector.hide(connector.id);
+                }
+                else {
+
+                    connector.show(connector.id);
+                }
                 continue;
             }
         }
