@@ -326,6 +326,9 @@ class Node {
         };
 
         this.bringToTop();
+
+        evt.stopPropagation();
+        evt.preventDefault();
     }
 
     onTitlePointerUp(evt) {
