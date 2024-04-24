@@ -1,7 +1,39 @@
 .console-outputText {
 
     padding: calc(var(--appZoom) * var(--appPadding) * 0.2);
-}            
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.console-outputText br {
+
+    display: none;
+}
+
+#appContainer .uiVerbose {
+
+    display: none;
+}
+
+#appContainer.uiVerbose .uiVerbose {
+
+    display: unset;
+}
+
+
+#appContainer.uiVerbose .console-outputText {
+
+    height: unset;
+    overflow: unset;
+}
+
+#appContainer.uiVerbose .console-outputText br {
+
+    display: unset;
+}
+
 
 .console-content {
 

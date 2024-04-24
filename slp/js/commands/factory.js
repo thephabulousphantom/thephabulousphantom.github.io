@@ -15,6 +15,7 @@ import CommandReset from "./reset.js";
 import CommandContinue from "./continue.js";
 import CommandHide from "./hide.js";
 import CommandShow from "./show.js";
+import CommandVerbose from "./verbose.js";
 
 class CommandFactory {
 
@@ -35,7 +36,8 @@ class CommandFactory {
         "reset": CommandReset,
         "continue": CommandContinue,
         "hide": CommandHide,
-        "show": CommandShow
+        "show": CommandShow,
+        "verbose": CommandVerbose
     };
 
     constructor() {

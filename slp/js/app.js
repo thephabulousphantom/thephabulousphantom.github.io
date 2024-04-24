@@ -41,6 +41,8 @@ class App {
         height: null
     };
 
+    verbose = false;
+
     _sizeHelpers = { zoom: null, padding: null, app: null };
 
     async loadDefaults() {
@@ -87,9 +89,26 @@ class App {
 
         this.svg = document.querySelector("#appVectorContainer");
 
-        this.addPointerDownHandler
+        this.verboseUpdated(!!DataManager.get(`app.verbose`, false));
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
+    }
+
+    verboseUpdated(verbose) {
+
+        this.verbose = verbose;
+        DataManager.set(`app.verbose`, verbose);
+
+        if (this.verbose && !this.dom.classList.contains("uiVerbose")) {
+
+            this.dom.classList.add("uiVerbose");
+        }
+        else if (!this.verbose && this.dom.classList.contains("uiVerbose")) {
+
+            this.dom.classList.remove("uiVerbose");
+        }
+
+        Console.writeVerbose(`Verbose set to ${verbose}...`);
     }
 
     async saveState() {

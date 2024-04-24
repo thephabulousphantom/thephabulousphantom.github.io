@@ -64,6 +64,12 @@ class Console {
         }
     }
 
+    async writeVerbose(text, highlightedPrefix) {
+
+        const textBlock = await this.write(text, highlightedPrefix);
+        textBlock.classList.add("uiVerbose");
+    }
+
     async write(text, highlightedPrefix) {
 
         const textBlock = document.createElement("div");
@@ -85,6 +91,8 @@ class Console {
 
         this.dom.content.appendChild(textBlock);
         this.dom.content.scrollTop = this.dom.content.scrollHeight;
+
+        return textBlock;
     }
 
     recallHistoricalCommand(offset) {

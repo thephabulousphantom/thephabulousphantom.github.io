@@ -133,11 +133,13 @@ class ConnectorManager {
                         case "text":
                         case "image":
                             App.processCommand(`!text ${connector.to.node.properties.id}, "${result.toString().replaceAll("\"", "'").replaceAll(",", ";")}"`);
-                            break;
+                            return true;
                     }
                 }
             }
         }
+
+        return false;
     }
 
     updateUiFrame() {

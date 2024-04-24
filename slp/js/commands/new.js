@@ -23,7 +23,7 @@ class CommandNew extends Command {
         switch (type.toLowerCase()) {
             case "openai":
                 {
-                    Console.write(`Constructing OpenAI instruct node ${name}...`);
+                    Console.writeVerbose(`Constructing OpenAI instruct node ${name}...`);
                     const node = new NodeOpenAi(name);
 
                     const openAiKey = this.parameters[2];
@@ -43,7 +43,7 @@ class CommandNew extends Command {
 
             case "openaichat":
                 {
-                    Console.write(`Constructing OpenAI chat node ${name}...`);
+                    Console.writeVerbose(`Constructing OpenAI chat node ${name}...`);
                     const node = new NodeOpenAiChat(name);
 
                     const openAiKey = this.parameters[2];
@@ -70,7 +70,7 @@ class CommandNew extends Command {
 
             case "dalle2":
                 {
-                    Console.write(`Constructing Dall-e 2 node ${name}...`);
+                    Console.writeVerbose(`Constructing Dall-e 2 node ${name}...`);
                     const node = new NodeDalle2(name);
 
                     const openAiKey = this.parameters[2];
@@ -90,7 +90,7 @@ class CommandNew extends Command {
 
             case "dalle3":
                 {
-                    Console.write(`Constructing Dall-e 3 node ${name}...`);
+                    Console.writeVerbose(`Constructing Dall-e 3 node ${name}...`);
                     const node = new NodeDalle3(name);
 
                     const openAiKey = this.parameters[2];
@@ -122,7 +122,7 @@ class CommandNew extends Command {
 
             case "textformat":
                 {
-                    Console.write(`Constructing TextFormat node ${name}...`);
+                    Console.writeVerbose(`Constructing TextFormat node ${name}...`);
                     const node = new NodeTextFormat(name);
 
                     const pre = this.parameters[2];
