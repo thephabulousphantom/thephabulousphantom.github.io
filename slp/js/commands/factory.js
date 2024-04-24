@@ -7,6 +7,7 @@ import CommandText from "./text.js";
 import CommandSave from "./save.js";
 import CommandLoad from "./load.js";
 import CommandConnect from "./connect.js";
+import CommandDisconnect from "./disconnect.js";
 import CommandToggle from "./toggle.js";
 import CommandDefault from "./default.js";
 import CommandKill from "./kill.js";
@@ -27,6 +28,7 @@ class CommandFactory {
         "save": CommandSave,
         "load": CommandLoad,
         "connect": CommandConnect,
+        "disconnect": CommandDisconnect,
         "toggle": CommandToggle,
         "default": CommandDefault,
         "kill": CommandKill,

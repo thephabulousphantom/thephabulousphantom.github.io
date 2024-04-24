@@ -20,6 +20,24 @@ class ConnectorManager {
         return connector;
     }
 
+    remove(from, to, type) {
+
+        for (var i = 0; i < this.connectors.length; i++) {
+
+            const connector = this.connectors[i];
+
+            if (connector.from.node.properties.id == from.properties.id
+                && connector.to.node.properties.id == to.properties.id
+                && ((type && connector.type == type) || !type)
+            ) {
+
+                return this.removeById(connector.id);
+            }
+        }
+
+        return null;
+    }
+
     async addFromState(id) {
 
         const connector = await Connector.fromState(id);
@@ -39,7 +57,7 @@ class ConnectorManager {
             if (connector.from.node.properties.id == id
             || connector.to.node.properties.id == id) {
 
-                this.remove(connector.id);
+                this.removeById(connector.id);
                 i--;
                 continue;
             }
@@ -83,7 +101,7 @@ class ConnectorManager {
         }
     }
 
-    remove(id) {
+    removeById(id) {
 
         for (var i = 0; i < this.connectors.length; i++) {
 
@@ -92,9 +110,12 @@ class ConnectorManager {
 
                 connector.remove();
                 this.connectors.splice(i, 1);
+
                 return connector;
             }
         }
+
+        return null;
     }
 
     onResult(result) {
