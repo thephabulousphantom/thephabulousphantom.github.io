@@ -35,8 +35,6 @@ class Node {
 
         Node.lookupId[this.properties.id] = this;
         Node.lookupName[this.properties.name] = this;
-
-        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "error"));
     }
 
     async saveState() {

@@ -8,8 +8,8 @@ class NodeDalle extends Node {
 
         super(name, type);
 
-        this.sockets.input.push(new ConnectorSocket(this, "input", this.sockets.input.length, "text"));
-        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "image"));
+        this.sockets.input.push(new ConnectorSocket(this, "input", "text"));
+        this.sockets.output.push(new ConnectorSocket(this, "output", "image"));
 
         this.properties.key = null;
 

@@ -4,16 +4,16 @@ class ConnectorSocket {
 
     node = null;
     direction = null;
-    position = 0;
+    position = null;
     type = null;
     svg = null;
 
-    constructor(node, direction, position, type) {
+    constructor(node, direction, type, position) {
     
         this.node = node;
         this.direction = direction;
-        this.position = position;
         this.type = type;
+        this.position = position;
     }
 
     async initUi() {
@@ -88,12 +88,19 @@ class ConnectorSocket {
             const agentClientRect = this.node.dom.querySelector(".nodeTitle").getClientRects()[0];
             const center_r = agentClientRect.height / 2;
             const actual_r = App.size.zoom / 2;
-    
+
+            const positionClientRect = !isMinimised && this.position
+                ? this.node.dom.querySelector(`[data-property="${this.position}"]`).getClientRects()[0]
+                : null;
+
             this.svg.setAttribute("cx", this.direction == "input"
                 ? agentClientRect.x + (isMinimised ? 1 : -1) * actual_r
                 : agentClientRect.x + agentClientRect.width + (isMinimised ? -1 : 1) * actual_r
             );
-            this.svg.setAttribute("cy", agentClientRect.y + center_r + ((isMinimised ? 0 : 2) * App.size.zoom * this.position));
+            this.svg.setAttribute("cy", positionClientRect
+                ? positionClientRect.top + positionClientRect.height / 2
+                : agentClientRect.y + center_r
+            );
             this.svg.setAttribute("r", actual_r);
         }
     }

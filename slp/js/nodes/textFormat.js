@@ -10,8 +10,8 @@ class NodeTextFormat extends Node {
 
         super(name, type ?? "TextFormat");
 
-        this.sockets.input.push(new ConnectorSocket(this, "input", this.sockets.input.length, "text"));
-        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "text"));
+        this.sockets.input.push(new ConnectorSocket(this, "input", "text"));
+        this.sockets.output.push(new ConnectorSocket(this, "output", "text"));
 
         this.properties.pre = "";
         this.properties.post = "";

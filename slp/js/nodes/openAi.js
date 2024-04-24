@@ -11,8 +11,8 @@ class NodeOpenAi extends Node {
 
         super(name, type ?? "OpenAi");
 
-        this.sockets.input.push(new ConnectorSocket(this, "input", this.sockets.input.length, "text"));
-        this.sockets.output.push(new ConnectorSocket(this, "output", this.sockets.output.length, "text"));
+        this.sockets.input.push(new ConnectorSocket(this, "input", "text"));
+        this.sockets.output.push(new ConnectorSocket(this, "output", "text"));
 
         this.properties.key = null;
         this.properties.model = null;

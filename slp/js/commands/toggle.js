@@ -13,20 +13,27 @@ class CommandToggle extends Command {
     async execute() {
 
         const nodeRef = this.parameters[0];
-        const node = Node.lookupId[nodeRef] ?? Node.lookupName[nodeRef];
-        if (!node) {
+        var node = Node.lookupId[nodeRef] ?? Node.lookupName[nodeRef];
 
-            return new ValueError(`Invalid node ${nodeRef}. Please specify either a valid node id or a valid node name.`);
+        if (node) {
+
+            if (node.toggle()) {
+
+                return new ValueText(`Node ${nodeRef} restored.`);
+            }
+            else {
+
+                return new ValueText(`Node ${nodeRef} minimised.`);
+            }
         }
 
-        if (node.toggle()) {
+        for (const id in Node.lookupId) {
 
-            return new ValueText(`Node ${nodeRef} restored.`);
+            node = Node.lookupId[id];
+            node.toggle();
         }
-        else {
 
-            return new ValueText(`Node ${nodeRef} minimised.`);
-        }
+        return new ValueText(`Toggled ${Object.keys(Node.lookupId).length} nodes.`);
     }
 }
 
