@@ -61,7 +61,7 @@ class NodeOpenAiChat extends NodeOpenAi {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${ this.properties.key ?? App.defaults.key }`
+                    'Authorization': `Bearer ${ this.properties.key ?? App.defaults.openAiKey }`
                 },
                 body: JSON.stringify({
                     model: this.properties.model ?? App.defaults.openAiChatModel,

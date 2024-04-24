@@ -51,6 +51,7 @@ class Menu {
         this.bind("click", "uiMenuIcon", this.onToggle.bind(this));
         this.bind("click", "uiMenuItemReset", this.onReset.bind(this));
         this.bind("click", "uiMenuItemSave", this.onSave.bind(this));
+        this.bind("click", "uiMenuItemDefaults", this.onDefaults.bind(this));
         this.bind("click", "uiMenuItemEdit", this.onEdit.bind(this));
         this.bind("click", "uiMenuItemDelete", this.onDelete.bind(this));
         this.bind("click", "uiMenuItemName", this.onLoad.bind(this));
@@ -89,6 +90,38 @@ class Menu {
         await ScriptsManager.set("untitled", commands);
 
         this.initUi();
+    }
+
+    async onDefaults(evt) {
+
+        const value = new ValueText(JSON.stringify(App.defaults, null, "\n"));
+        const valueEditor = new ValueEditor("Defaults", value, this.onDefaultsDone.bind(this));
+        valueEditor._nameReadOnly = true;
+        valueEditor.initUi();
+    }
+
+    async onDefaultsDone(defaultsString) {
+
+        var defaults = null;
+
+        try {
+
+            defaults = JSON.parse(defaultsString);
+        }
+        catch (ex) {
+
+            return;
+        }
+
+        for (const defaultValueName in App.defaults) {
+
+            if (defaults[defaultValueName] !== undefined) {
+
+                App.defaults[defaultValueName] = defaults[defaultValueName];
+            }
+        }
+
+        App.saveDefaults();
     }
 
     async onLoad(evt) {

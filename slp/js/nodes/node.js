@@ -76,19 +76,13 @@ class Node {
             : new ValueEmpty();
     }
 
-    lastResultText() {
-
-        return (
-            this.results.length
-                ? this.results[this.results.length - 1]
-                : new ValueEmpty()
-        ).toString();
-    }
-
     saveResult(result) {
 
         this.results.push(result);
-        this.dom.querySelector(".nodeLastResult").innerText = result.toString();
+        this.dom.querySelector(".nodeLastResult").innerText = 
+            (result.toString().substring(0, "data:image/png;base64,".length) == "data:image/png;base64,")
+            ? "[image]"
+            : result.toString();
 
         return result;
     }

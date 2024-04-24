@@ -31,7 +31,7 @@ class App {
         dall_eModel: "dall-e-3",
         dall_eSize: "1024x1024",
         maxTokens: 2048,
-        key: ""
+        openAiKey: ""
     };
 
     size = {
@@ -45,14 +45,18 @@ class App {
 
     async loadDefaults() {
 
-        this.defaults = {
-            openAiModel: await DataManager.get("defaults.openAiModel", "gpt-3.5-turbo-instruct"),
-            openAiChatModel: await DataManager.get("defaults.openAiChatModel", "gpt-3.5-turbo"),
-            dall_eModel: await DataManager.get("defaults.dall_eModel", "dall-e-3"),
-            dall_eSize: await DataManager.get("defaults.dall_eSize", "1024x1024"),
-            maxTokens: await DataManager.get("defaults.maxTokens", "2048"),
-            key: await DataManager.get("defaults.key", "")
-        };
+        for (const defaultValueName in this.defaults) {
+
+            this.defaults[defaultValueName] = await DataManager.get(`defaults.${defaultValueName}`, this.defaults[defaultValueName]);
+        }
+    }
+
+    async saveDefaults() {
+
+        for (const defaultValueName in this.defaults) {
+
+            await DataManager.set(`defaults.${defaultValueName}`, this.defaults[defaultValueName]);
+        }
     }
 
     async scripts() {
