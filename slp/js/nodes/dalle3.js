@@ -33,22 +33,26 @@ class NodeDalle3 extends NodeDalle {
         super.updateUiFrame();
     }
 
-    lastResult() {
+    resultToText(result) {
 
-        const result = super.lastResult();
-        if (result.substring(0, "data:image/png;base64,".length) == "data:image/png;base64,") {
+        if (result.toString().substring(0, "data:image/png;base64,".length) == "data:image/png;base64,") {
 
-            return "[image]"
+            return "[image]";
         }
 
-        return result;
+        if (result.toString().substring(0, "https:".length) == "https:") {
+
+            return "[url]";
+        }
+
+        return super.resultToText(result);
     }
 
     async invoke(prompt) {
 
         var body = {
             model: "dall-e-3",
-            response_format: "b64_json",
+            /*response_format: "b64_json",*/
             prompt: prompt,
             n: 1
         };
@@ -92,7 +96,9 @@ class NodeDalle3 extends NodeDalle {
         else {
 
             return this.saveResult( new ValueImage(
-                `data:image/png;base64,${data.data[0].b64_json}`,
+                data.data[0].b64_json
+                    ? `data:image/png;base64,${data.data[0].b64_json}`
+                    : data.data[0].url,
                 this
             ));
         }

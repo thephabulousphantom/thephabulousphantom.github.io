@@ -69,6 +69,11 @@ class Node {
         }
     }
 
+    resultToText(result) {
+
+        return result.toString();
+    }
+
     lastResult() {
 
         return this.results.length
@@ -79,10 +84,7 @@ class Node {
     saveResult(result) {
 
         this.results.push(result);
-        this.dom.querySelector(".nodeLastResult").innerText = 
-            (result.toString().substring(0, "data:image/png;base64,".length) == "data:image/png;base64,")
-            ? "[image]"
-            : result.toString();
+        this.dom.querySelector(".nodeLastResult").innerText = this.resultToText(result);
 
         return result;
     }
