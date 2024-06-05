@@ -5,7 +5,6 @@ import ConnectorManager from "../connectors/manager.js";
 import ValueEmpty from "../values/empty.js"
 import ValueError from "../values/error.js"
 import ValueText from "../values/text.js"
-import ConnectorSocket from "../connectors/socket.js";
 import ValueViewer from "../values/viewer.js";
 import ValueEditor from "../values/editor.js";
 
@@ -99,7 +98,7 @@ class Node {
     
     bindUiElement(propertyName) {
 
-        this.getPropertyUi(propertyName).onchange = (function(evt) {
+        this.getPropertyUi(propertyName).oninput = (function(evt) {
 
             if (propertyName == "name") {
 

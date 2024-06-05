@@ -3,7 +3,7 @@
     position: fixed;
     top: var(--appPadding);
     left: calc(100vw - calc(var(--appZoom) * 20 + var(--appPadding)));
-    z-index: 999999;
+    z-index: 10000;
 
     width: calc(var(--appZoom) * 20);
     border-radius: var(--appBorderRadius);

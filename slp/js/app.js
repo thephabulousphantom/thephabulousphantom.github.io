@@ -11,13 +11,14 @@ import Connector from "./connectors/connector.js";
 import NodeTextFormat from "./nodes/textFormat.js";
 import NodeDalle from "./nodes/dalle.js";
 import Menu from "./menu/menu.js";
+import Toolbar from "./toolbar.js";
 
 class App {
 
     pointer = {
         x: 0,
         y: 0
-    }
+    };
 
     commandHistory = [];
     dom = null;
@@ -90,6 +91,18 @@ class App {
         this.svg = document.querySelector("#appVectorContainer");
 
         this.verboseUpdated(!!DataManager.get(`app.verbose`, false));
+
+        this.toolbar = new Toolbar();
+        this.toolbar.add("clear console", "!clear");
+        this.toolbar.add("toggle node view", "!toggle");
+        this.toolbar.add("show nodes", "!show");
+        this.toolbar.add("hide nodes", "!hide");
+
+        this.toolbar.add("+ agent: text", "!new textformat");
+        this.toolbar.add("+ agent: openAi chat", "!new openaichat");
+        this.toolbar.add("+ agent: dall-e 2", "!new dalle2");
+        this.toolbar.add("+ agent: dall-e 3", "!new dalle3");
+
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
     }
@@ -260,6 +273,7 @@ class App {
 
         this.updateSizes();
         Node.updateUiFrame();
+        this.toolbar.updateUiFrame();
         ConnectorManager.updateUiFrame();
         this.menu.updateUiFrame();
     }

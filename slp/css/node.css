@@ -111,11 +111,11 @@
     display: none;
 }
 
-.uiNode .nodeTitleType, .uiNode.uiMinimised .nodeTitleName {
+.uiNode .nodeExpanded, .uiNode.uiMinimised .nodeCollapsed {
 
     display: inherit;
 }
-.uiNode.uiMinimised .nodeTitleType, .uiNode .nodeTitleName {
+.uiNode.uiMinimised .nodeTitleType, .uiNode .nodeCollapsed {
 
     display: none;
 }

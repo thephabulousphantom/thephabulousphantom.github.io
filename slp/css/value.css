@@ -10,7 +10,7 @@
     align-items: center;
     background-color: var(--appColorPrimaryTransparent);
     backdrop-filter: blur(3px);
-    z-index: 999999;
+    z-index: 10000;
 }
 
 .uiValueViewer .uiTitle, .uiValueEditor .uiTitle {
@@ -82,7 +82,7 @@
     border-radius: 100vmax;
     background-color: var(--appColorSecondary);    
     fill: var(--appColorPrimary);
-    z-index: 999999;
+    z-index: 10000;
 }
 
 .uiValueViewer.uiSingleValue .uiPreviousButton,
