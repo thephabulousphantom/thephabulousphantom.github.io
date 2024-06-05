@@ -6,7 +6,7 @@
     width: 100vw;
     height: 100dvh;
     margin: 0;
-    pointer-events: none;
+    /*pointer-events: none;*/
     z-index: 20;
 }
 
@@ -32,11 +32,17 @@
     stroke: var(--appColorImage);
 }
 
+.uiSvg .uiDashed {
+
+    stroke-dasharray: 0 4 0;
+}
+
 .uiSvg .uiSocket {
 
     stroke: var(--appColorSecondary);
     stroke-width: calc(var(--appZoom) * 0.4);
     fill: var(--appColorPrimary);
+    cursor: pointer;
 }
 
 .uiSvg .uiHidden {

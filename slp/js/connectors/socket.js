@@ -1,3 +1,4 @@
+import ConnectorManager from "./manager.js";
 import App from "../app.js";
 
 class ConnectorSocket {
@@ -38,7 +39,17 @@ class ConnectorSocket {
         circle.setAttribute("r", "0");
         circle.setAttribute("fill", "var(--appColorSecondary)");
 
-        App.svg.appendChild(this.svg);
+        circle.addEventListener("mousedown", this.onMouseDown.bind(this));
+
+        App.svg.insertBefore(this.svg, App.svg.firstChild);
+    }
+
+    onMouseDown(evt) {
+
+        ConnectorManager.onSocketMouseDown(this);
+
+        evt.preventDefault();
+        evt.stopPropagation();
     }
 
     removeUi() {
@@ -101,8 +112,9 @@ class ConnectorSocket {
                 ? positionClientRect.top + positionClientRect.height / 2
                 : agentClientRect.y + center_r
             );
+
             this.svg.setAttribute("r", actual_r);
-        }
+        }        
     }
 }
 
