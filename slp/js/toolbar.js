@@ -13,6 +13,8 @@ class Toolbar {
     dom = null;
 
     constructor() {
+
+        document.addEventListener("keydown", this.onKeyDown.bind(this));
     }
     
     add(displayText, commandLine) {
@@ -61,6 +63,20 @@ class Toolbar {
             this.dom.classList.add("expanded");
         }
     }
+
+    onKeyDown(evt) {
+        
+        if (!this.dom) {
+
+            return;
+        }
+
+        if (evt.code.toLowerCase() === "escape") {
+
+            this.onHandleClick();
+        }
+    }
+
 
     onToolClick(evt) {
 

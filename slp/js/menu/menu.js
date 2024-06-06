@@ -95,7 +95,7 @@ class Menu {
     async onDefaults(evt) {
 
         const value = new ValueText(JSON.stringify(App.defaults, null, "\n"));
-        const valueEditor = new ValueEditor("Defaults", value, this.onDefaultsDone.bind(this));
+        const valueEditor = new ValueEditor("Agent defaults", value, this.onDefaultsDone.bind(this));
         valueEditor._nameReadOnly = true;
         valueEditor.initUi();
     }

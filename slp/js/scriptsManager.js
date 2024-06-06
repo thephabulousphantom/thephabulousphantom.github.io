@@ -68,21 +68,15 @@ class ScriptsManager {
 }
 
 ScriptsManager.defaultScripts = {
-    "example - comic" : `\
+    "example: comic" : `
 !reset
 
 !new textformat, input, "write a witty scenario for a comic book panel with 6 frames. repeat a very detailed description of the appearance of the characters in every panel. characters need to be consistent across all the frames. the comic book panel should tell the following story;"
-
 !new openaichat, screenwriter
-
 !connect
-
 !new textformat, director, "a comic-book panel in black and white with strong contrasts, with great detail and linework, where all the characters look consistent across all frames of the panel, and story is based on the following scenario; "
-
 !connect
-
 !new dalle3, illustrator
-
 !connect
 
 !toggle input
@@ -90,6 +84,16 @@ ScriptsManager.defaultScripts = {
 !toggle director
 !toggle illustrator
 
+!hide`,
+"example: sci-fi poster": `!reset
+
+!new textformat, input, "Innovate a movie poster for a sci-fi genre film titled: '","'"
+!new dalle3, poster illustrator,,1024x1792
+!connect`,
+"example: DSLR camera": `!reset
+!new textformat, input,,"cinematic-style, photorealistic, DSLR camera, wide-angle lens, low-light exposure."
+!new dalle3, DSLR camera,,1792x1024
+!connect
 !hide`
 };
 

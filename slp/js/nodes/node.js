@@ -265,7 +265,7 @@ class Node {
     onEditName(evt) {
 
         const nameValue = new ValueText(this.properties.name);
-        const valueEditor = new ValueEditor(null, nameValue, this.updateName.bind(this));
+        const valueEditor = new ValueEditor(`edit ${this.properties.type} agent name`, nameValue, this.updateName.bind(this));
         valueEditor.initUi();
 
         evt.preventDefault();
@@ -391,17 +391,29 @@ class Node {
 
                 nodeInfo.node.dom.style.left = `${nodeInfo.startUiPosition.x + App.pointer.x - this.dragging.startPointerPosition.x}px`;
                 nodeInfo.node.dom.style.top = `${nodeInfo.startUiPosition.y + App.pointer.y - this.dragging.startPointerPosition.y}px`;
+
+                for (const socketConnector of nodeInfo.node.sockets.input) {
+
+                    socketConnector.updateUiFrame();
+                }
+        
+                for (const socketConnector of nodeInfo.node.sockets.output) {
+        
+                    socketConnector.updateUiFrame();
+                }
             }
         }
+        else {
 
-        for (const socketConnector of this.sockets.input) {
+            for (const socketConnector of this.sockets.input) {
 
-            socketConnector.updateUiFrame();
-        }
-
-        for (const socketConnector of this.sockets.output) {
-
-            socketConnector.updateUiFrame();
+                socketConnector.updateUiFrame();
+            }
+    
+            for (const socketConnector of this.sockets.output) {
+    
+                socketConnector.updateUiFrame();
+            }
         }
     }
 }

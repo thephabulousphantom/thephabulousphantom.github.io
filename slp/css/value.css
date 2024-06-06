@@ -14,11 +14,12 @@
 }
 
 .uiValueViewer .uiTitle, .uiValueEditor .uiTitle {
-
+    
+    width: 100vw;
     font-size: calc(3 * var(--appZoom));
     font-weight: bold;
     position: fixed;
-    left: var(--appPadding);
+    left: calc(var(--appPadding) * 2 + var(--appZoom) * 2);
     top: var(--appPadding);
     color: var(--appColorLight);
     text-transform: lowercase;

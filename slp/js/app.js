@@ -97,7 +97,6 @@ class App {
         this.toolbar.add("toggle node view", "!toggle");
         this.toolbar.add("show nodes", "!show");
         this.toolbar.add("hide nodes", "!hide");
-
         this.toolbar.add("+ agent: text", "!new textformat");
         this.toolbar.add("+ agent: openAi chat", "!new openaichat");
         this.toolbar.add("+ agent: dall-e 2", "!new dalle2");

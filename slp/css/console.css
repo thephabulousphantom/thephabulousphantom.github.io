@@ -63,7 +63,8 @@
     width: 100vw;
     height: calc(100dvh - var(--appZoom) - var(--appPadding) * 5);
     z-index: 1;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .console-content div::selection {
@@ -78,7 +79,7 @@
     left: var(--appZoom);
     width: calc(100vw - 2 * var(--appZoom));
     height: calc(var(--appZoom) + var(--appPadding) * 2);
-    z-index: 10;
+    z-index: 20;
 }
 
 .console-input input {

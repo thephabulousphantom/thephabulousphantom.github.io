@@ -99,19 +99,19 @@ class CommandNew extends Command {
                         node.properties.key = openAiKey;
                     }
 
-                    const dalleSize = this.parameters[4];
+                    const dalleSize = this.parameters[3];
                     if (dalleSize) {
 
                         node.properties.size = dalleSize;
                     }
 
-                    const dalleStyle = this.parameters[5]
+                    const dalleStyle = this.parameters[4]
                     if (dalleStyle) {
 
                         node.properties.style = dalleStyle;
                     }
 
-                    const dalleQuality = this.parameters[6];
+                    const dalleQuality = this.parameters[5];
                     if (dalleQuality) {
 
                         node.properties.quality = dalleQuality;

@@ -3,7 +3,7 @@
     top: 0vh;
     left: 0vw;
     height: 100vh;    
-    z-index: 10001;
+    z-index: 2000;
     position: fixed;
     cursor: pointer;
 }
@@ -64,7 +64,6 @@
     top: 0vh;
     left: 0vw;
     width: calc(0vw);
-    height: calc(100vh);
     color: var(--appColorSecondary);
     background-color: var(--appColorPrimaryTransparent);
     backdrop-filter: blur(3px);

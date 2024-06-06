@@ -42,7 +42,7 @@ class NodeTextFormat extends Node {
     onEditPre(evt) {
 
         const nameValue = new ValueText(this.properties.pre);
-        const valueEditor = new ValueEditor(null, nameValue, this.updatePre.bind(this));
+        const valueEditor = new ValueEditor(`edit ${this.properties.type} agent prefix text`, nameValue, this.updatePre.bind(this));
         valueEditor.initUi();
 
         evt.preventDefault();
@@ -58,7 +58,7 @@ class NodeTextFormat extends Node {
     onEditPost(evt) {
 
         const nameValue = new ValueText(this.properties.post);
-        const valueEditor = new ValueEditor(null, nameValue, this.updatePost.bind(this));
+        const valueEditor = new ValueEditor(`edit ${this.properties.type} agent postfix text`, nameValue, this.updatePost.bind(this));
         valueEditor.initUi();
 
         evt.preventDefault();
