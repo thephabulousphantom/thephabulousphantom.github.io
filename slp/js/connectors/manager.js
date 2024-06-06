@@ -14,7 +14,24 @@ class ConnectorManager {
 
     constructor() {
 
-        document.addEventListener("mouseup", this.onMouseUp.bind(this));
+        document.addEventListener("mouseup", this.onPointerUp.bind(this));
+        document.addEventListener("touchend", this.onPointerUp.bind(this));
+    }
+
+    findForNode(node) {
+
+        var connectors = [];
+        for (var i = 0; i < this.connectors.length; i++) {
+
+            if (this.connectors[i].from.node == node
+                || this.connectors[i].to.node == node
+            ) {
+
+                connectors.push(this.connectors[i]);
+            }
+        }
+
+        return connectors;
     }
 
     add(from, to, type) {
@@ -149,7 +166,7 @@ class ConnectorManager {
         return false;
     }
 
-    onSocketMouseDown(socket) {
+    onSocketPointerDown(socket) {
 
         for (const connector of this.connectors) {
 
@@ -202,7 +219,7 @@ class ConnectorManager {
         }
     }
 
-    onMouseUp() {
+    onPointerUp() {
 
         if (!this.dragging.type) {
 

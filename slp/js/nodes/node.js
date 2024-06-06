@@ -289,15 +289,49 @@ class Node {
 
         for (const node of window.document.querySelectorAll(".uiNode")) {
 
-            if ((node.style.zIndex | 0) >= 10000) {
+            if ((node.style.zIndex | 0) >= 1500) {
 
-                node.style.zIndex = (node.style.zIndex | 0) - 10000;
+                node.style.zIndex = (node.style.zIndex | 0) - 1500;
             }
         }
 
-        if ((this.dom.style.zIndex | 0) < 10000) {
+        if ((this.dom.style.zIndex | 0) < 1500) {
 
-            this.dom.style.zIndex = (this.dom.style.zIndex | 0) + 10000;
+            this.dom.style.zIndex = (this.dom.style.zIndex | 0) + 1500;
+        }
+    }
+
+    getLinkedNodesInfo(node, nodesInfo, downstream, upstream) {
+
+        const connectors = ConnectorManager.findForNode(node);
+        for (const connector of connectors) {
+
+            var linkedNode = null;
+            if (downstream && connector.from.node == node) {
+                
+                linkedNode = connector.to.node;
+                nodesInfo.push({
+                    node: linkedNode,
+                    startUiPosition: {
+                        x: linkedNode.dom.getBoundingClientRect().left,
+                        y: linkedNode.dom.getBoundingClientRect().top
+                    }
+                });
+                this.getLinkedNodesInfo(linkedNode, nodesInfo, downstream, false);
+            }
+
+            if (upstream && connector.to.node == node) {
+                
+                linkedNode = connector.from.node;
+                nodesInfo.push({
+                    node: linkedNode,
+                    startUiPosition: {
+                        x: linkedNode.dom.getBoundingClientRect().left,
+                        y: linkedNode.dom.getBoundingClientRect().top
+                    }
+                });
+                this.getLinkedNodesInfo(linkedNode, nodesInfo, false, upstream);
+            }
         }
     }
 
@@ -306,16 +340,24 @@ class Node {
         App.pointer.x = evt.touches ? evt.touches[0].clientX : evt.clientX;
         App.pointer.y = evt.touches ? evt.touches[0].clientY : evt.clientY;
 
-        this.dragging = {
-
+        const nodesInfo = [];
+        nodesInfo.push({
+            node: this,
             startUiPosition: {
                 x: this.dom.getBoundingClientRect().left,
                 y: this.dom.getBoundingClientRect().top
-            },
+            }
+        });
+
+        this.getLinkedNodesInfo(this, nodesInfo, evt.ctrlKey, evt.shiftKey);
+
+        this.dragging = {
+
             startPointerPosition: {
                 x: App.pointer.x,
                 y: App.pointer.y
-            }
+            },
+            nodesInfo: nodesInfo
         };
 
         this.bringToTop();
@@ -345,8 +387,11 @@ class Node {
 
         if (this.dragging) {
 
-            this.dom.style.left = `${this.dragging.startUiPosition.x + App.pointer.x - this.dragging.startPointerPosition.x}px`;
-            this.dom.style.top = `${this.dragging.startUiPosition.y + App.pointer.y - this.dragging.startPointerPosition.y}px`;
+            for (const nodeInfo of this.dragging.nodesInfo) {
+
+                nodeInfo.node.dom.style.left = `${nodeInfo.startUiPosition.x + App.pointer.x - this.dragging.startPointerPosition.x}px`;
+                nodeInfo.node.dom.style.top = `${nodeInfo.startUiPosition.y + App.pointer.y - this.dragging.startPointerPosition.y}px`;
+            }
         }
 
         for (const socketConnector of this.sockets.input) {

@@ -39,14 +39,15 @@ class ConnectorSocket {
         circle.setAttribute("r", "0");
         circle.setAttribute("fill", "var(--appColorSecondary)");
 
-        circle.addEventListener("mousedown", this.onMouseDown.bind(this));
+        circle.addEventListener("mousedown", this.onPointerDown.bind(this));
+        circle.addEventListener("touchstart", this.onPointerDown.bind(this));
 
         App.svg.insertBefore(this.svg, App.svg.firstChild);
     }
 
-    onMouseDown(evt) {
+    onPointerDown(evt) {
 
-        ConnectorManager.onSocketMouseDown(this);
+        ConnectorManager.onSocketPointerDown(this);
 
         evt.preventDefault();
         evt.stopPropagation();
