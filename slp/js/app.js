@@ -32,7 +32,9 @@ class App {
         dall_eModel: "dall-e-3",
         dall_eSize: "1024x1024",
         maxTokens: 2048,
-        openAiKey: ""
+        openAiKey: "",
+        googleKey: "",
+        googleEngineId: ""
     };
 
     size = {
@@ -101,6 +103,7 @@ class App {
         this.toolbar.add("+ agent: openAi chat", "!new openaichat");
         this.toolbar.add("+ agent: dall-e 2", "!new dalle2");
         this.toolbar.add("+ agent: dall-e 3", "!new dalle3");
+        this.toolbar.add("+ agent: google", "!new google");
 
 
         window.requestAnimationFrame(this.onUpdateFrame.bind(this));
@@ -300,7 +303,7 @@ class App {
                 response.value.type == "error"
                     ? "! "
                     : "> "
-                );
+            );
 
             ConnectorManager.onResult(response);
         }

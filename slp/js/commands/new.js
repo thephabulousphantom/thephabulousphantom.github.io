@@ -5,6 +5,7 @@ import NodeOpenAiChat from "../nodes/openAiChat.js";
 import NodeTextFormat from "../nodes/textFormat.js";
 import NodeDalle2 from "../nodes/dalle2.js";
 import NodeDalle3 from "../nodes/dalle3.js";
+import NodeGoogle from "../nodes/google.js";
 import ValueError from "../values/error.js";
 import ValueText from "../values/text.js";
 
@@ -139,7 +140,32 @@ class CommandNew extends Command {
                 }
 
                 return new ValueText(`TextFormat node ${name} constructed.`);
-                break;
+
+            case "google":
+                {
+                    Console.writeVerbose(`Constructing Google node ${name}...`);
+                    const node = new NodeGoogle(name);
+
+                    const googleApiKey = this.parameters[2];
+                    if (googleApiKey) {
+
+                        node.properties.key = googleApiKey;
+                    }
+
+                    const engine = this.parameters[3];
+                    if (engine) {
+
+                        node.properties.engine = engine;
+                    }
+
+                    const results = this.parameters[4]
+                    if (results) {
+
+                        node.properties.results = results;
+                    }
+                }
+
+                return new ValueText(`Google node ${name} constructed.`);
 
             default:
                 return new ValueError(`Unsupported node type: ${type}`);
