@@ -7,6 +7,7 @@
     height: 100dvh;
     margin: 0;
     z-index: 20;
+    pointer-events: none;
 }
 
 .uiSvg .uiConnector {
@@ -42,6 +43,7 @@
     stroke-width: calc(var(--appZoom) * 0.4);
     fill: var(--appColorPrimary);
     cursor: pointer;
+    pointer-events: visiblePainted;
 }
 
 .uiSvg .uiHidden {
