@@ -16,6 +16,7 @@ import CommandContinue from "./continue.js";
 import CommandHide from "./hide.js";
 import CommandShow from "./show.js";
 import CommandVerbose from "./verbose.js";
+import CommandAutoView from "./autoview.js";
 
 class CommandFactory {
 
@@ -37,7 +38,8 @@ class CommandFactory {
         "continue": CommandContinue,
         "hide": CommandHide,
         "show": CommandShow,
-        "verbose": CommandVerbose
+        "verbose": CommandVerbose,
+        "autoview": CommandAutoView
     };
 
     constructor() {

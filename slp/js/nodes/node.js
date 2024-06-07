@@ -258,8 +258,11 @@ class Node {
         const valueViewer = new ValueViewer(this.results);
         valueViewer.initUi();
 
-        evt.preventDefault();
-        evt.stopPropagation();
+        if (evt) {
+
+            evt.preventDefault();
+            evt.stopPropagation();
+        }
     }
 
     onEditName(evt) {

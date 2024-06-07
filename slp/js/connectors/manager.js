@@ -12,6 +12,8 @@ class ConnectorManager {
         to: null
     }
 
+    lastResult = null;
+
     constructor() {
 
         document.addEventListener("mouseup", this.onPointerUp.bind(this));
@@ -161,6 +163,8 @@ class ConnectorManager {
                     }
                 }
             }
+
+            this.lastResult = result;
         }
 
         return false;

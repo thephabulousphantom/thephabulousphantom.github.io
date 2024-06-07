@@ -45,6 +45,7 @@ class App {
     };
 
     verbose = false;
+    autoView = true;
 
     _sizeHelpers = { zoom: null, padding: null, app: null };
 
@@ -93,6 +94,7 @@ class App {
         this.svg = document.querySelector("#appVectorContainer");
 
         this.verboseUpdated(!!DataManager.get(`app.verbose`, false));
+        this.autoViewUpdated(!!DataManager.get(`app.autoview`, true));
 
         this.toolbar = new Toolbar();
         this.toolbar.add("clear console", "!clear");
@@ -124,6 +126,14 @@ class App {
         }
 
         Console.writeVerbose(`Verbose set to ${verbose}...`);
+    }
+
+    autoViewUpdated(autoView) {
+
+        this.autoView = autoView;
+        DataManager.set(`app.autoView`, autoView);
+
+        Console.writeVerbose(`Auto view set to ${autoView}...`);
     }
 
     async saveState() {
@@ -305,7 +315,13 @@ class App {
                     : "> "
             );
 
-            ConnectorManager.onResult(response);
+            if (!ConnectorManager.onResult(response)) {
+
+                if (this.autoView && response.source && response.source instanceof Node) {
+
+                    response.source.onViewResult();
+                }
+            }
         }
 
         if (saveInHistory) {
