@@ -57,22 +57,72 @@ class CommandFactory {
             input = `text input,"${input}"`;
         }
 
-        const match = input.match(/(\w+)/);
-        if (match) {
+        // State variables
+        let command = '';
+        const params = [];
+        let currentParam = '';
+        let inQuotes = false;
+        let escapeNext = false;
+        let quoteChar = null;
+        let i = 0;
 
-            const commandName = match[1].toLowerCase();
-            const argumentString = input.substring(commandName.length).trim();
-            const matches = [...argumentString.matchAll(/("(?:\\"|[^"])*"|[^",]*)(?:,|$)/g)];
-            const args = [];
-            matches.map(match => args.push(match[1].replace(/"/g, "").trim()));
-
-            return {
-                commandName: commandName,
-                args: (args ? args.map(arg => arg.replace(/"/g, "").trim()) : null)
-            };
+        // Read command
+        while (i < input.length && !/\s/.test(input[i])) {
+            command += input[i++];
         }
-        
-        return null;
+
+        // Skip whitespace after command
+        while (i < input.length && /\s/.test(input[i])) {
+            i++;
+        }
+
+        // Read parameters
+        while (i < input.length) {
+            const char = input[i];
+
+            if (escapeNext) {
+                currentParam += char;
+                escapeNext = false;
+            } else if (char === '\\') {
+                escapeNext = true;
+            } else if (inQuotes) {
+                if (char === quoteChar) {
+                    inQuotes = false;
+                    quoteChar = null;
+                } else {
+                    currentParam += char;
+                }
+            } else if (char === '"' || char === "'") {
+                inQuotes = true;
+                quoteChar = char;
+            } else if (char === ',') {
+                params.push(currentParam.trim());
+                currentParam = '';
+                // Skip whitespace after comma
+                while (i + 1 < input.length && /\s/.test(input[i + 1])) {
+                    i++;
+                }
+            } else {
+                currentParam += char;
+            }
+
+            i++;
+        }
+
+        // Push the last parameter if there is any
+        if (currentParam.trim() !== '') {
+            params.push(currentParam.trim());
+        }
+
+        // Remove surrounding quotes from parameters
+        const processedParams = params.map(param => {
+            if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
+                param = param.slice(1, -1);
+            }
+            return param.replace(/\\"/g, '"').replace(/\\'/g, "'");
+        });
+
+        return { commandName: command, args: processedParams };
     }
 
     async get(commandLine) {
