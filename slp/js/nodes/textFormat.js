@@ -74,7 +74,7 @@ class NodeTextFormat extends Node {
     async invoke(text) {
 
         return this.saveResult( new ValueText(
-            `${this.properties.pre}${text}${this.properties.post}`,
+            `${this.properties.pre} ${text} ${this.properties.post}`,
             this
         ));
     }
