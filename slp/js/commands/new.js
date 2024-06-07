@@ -38,6 +38,18 @@ class CommandNew extends Command {
 
                         node.properties.model = openAiModel;
                     }
+
+                    const openAiHeat = this.parameters[4];
+                    if (openAiHeat) {
+
+                        node.properties.temperature = openAiHeat;
+                    }
+
+                    const openAiMaxTokens = this.parameters[5];
+                    if (openAiMaxTokens) {
+
+                        node.properties.maxTokens = openAiMaxTokens;
+                    }
                 }
 
                 return new ValueText(`OpenAI instruct node ${name} constructed.`);
