@@ -1,7 +1,6 @@
 import Command from "./command.js";
 import Node from "../nodes/node.js";
 import ValueText from "../values/text.js";
-import ValueError from "../values/error.js";
 
 class CommandToggle extends Command {
 

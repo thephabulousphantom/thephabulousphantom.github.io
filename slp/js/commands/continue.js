@@ -1,6 +1,7 @@
 import Command from "./command.js";
 import Node from "../nodes/node.js";
 import ConnectorManager from "../connectors/manager.js";
+import ValueError from "../values/error.js";
 
 class CommandContinue extends Command {
 

@@ -1,5 +1,6 @@
 import Command from "./command.js";
 import Node from "../nodes/node.js";
+import ValueError from "../values/error.js";
 
 class CommandKill extends Command {
 
