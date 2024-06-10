@@ -18,7 +18,7 @@ class CommandNew extends Command {
 
     async execute() {
 
-        const type = this.parameters[0];
+        const type = this.parameters.length ? this.parameters[0] : "";
         const name = this.parameters[1];
 
         switch (type.toLowerCase()) {

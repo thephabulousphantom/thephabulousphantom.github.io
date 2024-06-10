@@ -12,7 +12,7 @@ class CommandVerbose extends Command {
 
     async execute() {
 
-        var verbose = this.parameters[0];
+        var verbose = this.parameters.length ? this.parameters[0] : "";
         switch (verbose.toLowerCase()) {
 
             case "0":

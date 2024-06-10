@@ -19,7 +19,7 @@
 
 #appContainer.uiVerbose .uiVerbose {
 
-    display: unset;
+    display: inherit;
 }
 
 

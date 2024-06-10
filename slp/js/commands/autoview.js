@@ -11,7 +11,7 @@ class CommandAutoView extends Command {
 
     async execute() {
 
-        var autoView = this.parameters[0];
+        var autoView = this.parameters.length ? this.parameters[0] : "";
         switch (autoView.toLowerCase()) {
 
             case "0":
