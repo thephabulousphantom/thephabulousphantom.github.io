@@ -6,8 +6,8 @@
   "display": "standalone",
   "display_override": ["fullscreen", "minimal-ui"],
   "orientation": "portrait",
-  "scope": "./slp/",
-  "start_url": "./slp/",
+  "scope": "./",
+  "start_url": "./",
   "icons": [
     {
       "src": "./img/icons/icon-72x72.png",
@@ -55,7 +55,7 @@
           "name": "Silly Little People",
           "short_name": "slp",
           "description": "Basic Agentic AI.",
-          "url": "./slp/",
+          "url": "./",
           "icons": [{ "src": "./img/icons/icon-192x192.png", "sizes": "192x192" }]
       }
   ]
