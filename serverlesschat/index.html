@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>WebRTC Chat with Sound Signaling</title>
-  <!--<script type="text/javascript" src="./lib/quiet.js/libfec.js"></script>-->
-  <script type="text/javascript" src="./lib/quiet.js/quiet.js"></script>
-  <script async type="text/javascript" src="./lib/quiet.js/quiet-emscripten.js"></script>
-
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>WebRTC Chat with Sound Signaling</h1>
-  <button id="start">Start</button>
+  <button id="host">Host</button>
+  <button id="join">Join</button>
   <input type="text" id="message" placeholder="Type a message" disabled>
   <button id="send" disabled>Send</button>
   <div id="chat"></div>
-  <script type="text/javascript" src="./app.js"></script>
+
+    <!-- Include Quiet.js -->
+    <script src="scripts/quiet.js"></script>
+    <script type="module" src="scripts/signaling.js"></script>
+    <script type="module" src="scripts/webrtc.js"></script>
+    <script type="module" src="scripts/main.js"></script>
+    <script async src="scripts/quiet-emscripten.js"></script>
 </body>
 </html>
