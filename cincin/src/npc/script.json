@@ -1,0 +1,66 @@
+{
+  "repeats": 5,
+  "cycleDuration": 30,
+  "events": [
+    {
+      "type": "spawn",
+      "npc": "lieutenant",
+      "side": "B",
+      "t": 2.0,
+      "speed": 350,
+      "shots": [
+        { "t": 2.8, "target": "p2", "angleOffset": 0.10, "speed": 600 }
+      ]
+    },
+    {
+      "type": "spawn",
+      "npc": "lieutenant",
+      "side": "A",
+      "t": 7.0,
+      "speed": 350,
+      "shots": [
+        { "t": 7.8, "target": "p1", "angleOffset": -0.15, "speed": 600 }
+      ]
+    },
+    {
+      "type": "spawn",
+      "npc": "lieutenant",
+      "side": "B",
+      "t": 12.0,
+      "speed": 350,
+      "shots": [
+        { "t": 12.8, "target": "p2", "angleOffset": 0.20, "speed": 600 }
+      ]
+    },
+    {
+      "type": "spawn",
+      "npc": "lieutenant",
+      "side": "A",
+      "t": 17.0,
+      "speed": 350,
+      "shots": [
+        { "t": 17.8, "target": "p1", "angleOffset": 0.00, "speed": 600 }
+      ]
+    },
+    {
+      "type": "spawn",
+      "npc": "lieutenant",
+      "side": "B",
+      "t": 22.0,
+      "speed": 350,
+      "shots": [
+        { "t": 22.8, "target": "p1", "angleOffset": 0.00, "speed": 600 }
+      ]
+    },
+    {
+      "type": "spawn",
+      "npc": "boss",
+      "side": "A",
+      "t": 27.0,
+      "speed": 420,
+      "shots": [
+        { "t": 27.9, "target": "p2", "angleOffset": -0.30, "speed": 660 }
+      ]
+    }
+  ]
+}

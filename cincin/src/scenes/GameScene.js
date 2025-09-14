@@ -1,5 +1,9 @@
 import { Background } from "../entities/Background.js";
 import { Character } from "../entities/Character.js";
+import { NPC } from "../entities/NPC.js";
+import { Pellet } from "../entities/Pellet.js";
+import { ScriptEngine } from "../npc/ScriptEngine.js";
+import { MenuScene } from "./MenuScene.js";
 
 export class GameScene {
   constructor(colors) {
@@ -22,7 +26,6 @@ export class GameScene {
     if (p1Cfg.headImage) {
       this.p1.setHeadImage(p1Cfg.headImage);
     }
-
     if (p2Cfg.headImage) {
       this.p2.setHeadImage(p2Cfg.headImage);
     }
@@ -54,6 +57,26 @@ export class GameScene {
 
     // Track whether a given active pointer started on a head hot-zone, and for which player ("p1", "p2")
     this._pointerStartedOnHead = new Map();
+
+    // NPCs and Pellets
+    this.npcs = [];
+    this.pellets = [];
+
+    this._npcImages = {
+      boss: { body: null, head: null },
+      lieutenant: { body: null, head: null }
+    };
+
+    this._pelletImage = null;
+
+    this.script = new ScriptEngine({ orientationProvider: this._getOrientation.bind(this) });
+    this._gameTime = 0;
+    this._pendingShots = [];
+    this._localEvents = [];
+
+    // Scores (increment when absorbing pellets while eating)
+    this.p1Score = 0;
+    this.p2Score = 0;
   }
 
   async _loadTiles() {
@@ -69,11 +92,36 @@ export class GameScene {
     }
   }
 
+  async _loadNPCAssets() {
+
+    try {
+      const bossBody = await this.loader.loadImage("./img/characters/npc1-body.png");
+      const bossBodyShoot = await this.loader.loadImage("./img/characters/npc1-body-shoot.png");
+      const bossHead = await this.loader.loadImage("./img/characters/npc1-head.png");
+      const ltBody = await this.loader.loadImage("./img/characters/npc2-body.png");
+      const ltBodyShoot = await this.loader.loadImage("./img/characters/npc2-body-shoot.png");
+      const ltHead = await this.loader.loadImage("./img/characters/npc2-head.png");
+      const pelletImg = await this.loader.loadImage("./img/other/poo.png");
+      const hpImg = await this.loader.loadImage("./img/ui/health.png");
+
+      this._npcImages.boss.body = bossBody;
+      this._npcImages.boss.bodyShoot = bossBodyShoot;
+      this._npcImages.boss.head = bossHead;
+      this._npcImages.lieutenant.body = ltBody;
+      this._npcImages.lieutenant.bodyShoot = ltBodyShoot;
+      this._npcImages.lieutenant.head = ltHead;
+      this._pelletImage = pelletImg;
+      this._healthImage = hpImg;
+    } catch (e) {
+    }
+  }
+
   onEnter(ctx) {
 
     this.renderer = ctx.renderer;
     this.input = ctx.input;
     this.loader = ctx.loader;
+    this.app = ctx.app;
 
     if (this.renderer && typeof this.renderer.setActiveTileScale === "function") {
       this.renderer.setActiveTileScale(0.1);
@@ -84,8 +132,18 @@ export class GameScene {
 
     this._loadTiles();
 
+    this._loadNPCAssets();
+
+    // Load scripted NPC schedule from JSON (non-blocking)
+    this.script.load("./src/npc/script.json");
+
     // Initialize world positions near edges
     this._layoutPlayers();
+
+    // Initialize health
+    this.p1HP = 5;
+    this.p2HP = 5;
+    this._ended = false;
   }
 
   onExit() {
@@ -212,6 +270,104 @@ export class GameScene {
     }
 
     this._applyPhysics(dt, desired);
+
+    // Advance scripted NPC engine and process events
+    this._gameTime += dt;
+    this.script.advance(dt);
+    const due = this.script.consumeDueEvents();
+    // also process locally deferred events
+    for (let i = 0; i < this._localEvents.length; ) {
+      if (this._localEvents[i].t <= this._gameTime) {
+        due.push(this._localEvents[i]);
+        this._localEvents.splice(i, 1);
+        continue;
+      }
+      i += 1;
+    }
+
+    for (let i = 0; i < due.length; i++) {
+      const ev = due[i];
+      if (ev.type === "spawn") {
+        this._trySpawnNPC(ev);
+      }
+    }
+
+    // Fire pending shots
+    this._processShots();
+
+    // Update NPCs
+    for (let i = 0; i < this.npcs.length; i++) {
+      const n = this.npcs[i];
+      n.setOrientation(this.orientation);
+      n.update(dt);
+
+      // Toggle shoot pose if within any scheduled shoot window
+      if (!n._shootWindows || n._shootWindows.length === 0) {
+        if (n._bodyNormal) {
+          n.character.setBodyImage(n._bodyNormal);
+        }
+      } else {
+        let active = false;
+        for (let w = 0; w < n._shootWindows.length; w++) {
+          const win = n._shootWindows[w];
+          if (this._gameTime >= win.start && this._gameTime <= win.end) {
+            active = true;
+            break;
+          }
+        }
+        if (active && n._bodyShoot) {
+          n.character.setBodyImage(n._bodyShoot);
+        } else if (n._bodyNormal) {
+          n.character.setBodyImage(n._bodyNormal);
+        }
+      }
+    }
+    this._cullNPCs();
+
+    // Sync character screen positions so absorption checks use accurate head hot-zones
+    const p1sNow = this._worldToScreenFor(this.p1Pos.x, this.p1Pos.y, this.p1.w, this.p1.h);
+    const p2sNow = this._worldToScreenFor(this.p2Pos.x, this.p2Pos.y, this.p2.w, this.p2.h);
+    this.p1.setPosition(p1sNow.x, p1sNow.y);
+    this.p2.setPosition(p2sNow.x, p2sNow.y);
+
+    // Update pellets and handle reflections / despawn
+    for (let i = 0; i < this.pellets.length; i++) {
+      const p = this.pellets[i];
+      p.setOrientation(this.orientation);
+      p.update(dt);
+      this._handlePelletBounds(p);
+      this._handlePelletAbsorption(p);
+
+      // NPC can eat pellets after at least one bounce if overlapping head hot-zone, if allowed
+      if (p.alive && p.bounces >= 1) {
+        const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
+        const cx = rect.x + Math.floor(rect.w * 0.5);
+        const cy = rect.y + Math.floor(rect.h * 0.5);
+        for (let n = 0; n < this.npcs.length && p.alive; n++) {
+          const npc = this.npcs[n];
+          if (this._pointInHeadHot(npc.character, cx, cy)) {
+            const eater = npc.kind === "boss" ? "boss" : "lieutenant";
+            if (eater === "lieutenant") {
+              const nextP1 = Math.max(0, this.p1HP - 1);
+              const nextP2 = Math.max(0, this.p2HP - 1);
+              if (nextP1 === 0 && nextP2 === 0) {
+                // skip eat to avoid both hitting 0
+                continue;
+              }
+            }
+            // For boss, we always allow eating; HP adjustment is handled in _cullPellets with special rule
+            npc.character.eat();
+            p.alive = false;
+            p._death = "npc";
+            p._npcEaterKind = eater;
+          }
+        }
+      }
+    }
+    this._cullPellets();
+
+    // Check win/lose condition
+    this._checkWin();
   }
 
   render(renderer) {
@@ -244,6 +400,144 @@ export class GameScene {
       this.p1.render(renderer);
     }
     this.p2.render(renderer);
+
+    // Render NPCs
+    for (let i = 0; i < this.npcs.length; i++) {
+      const n = this.npcs[i];
+      // Keep NPC visual size equal to players
+      n.character.w = this.p1.w;
+      n.character.h = this.p1.h;
+      const s = this._worldToScreenFor(n.wx, n.wy, n.character.w, n.character.h);
+      n.setScreenRect(s.x, s.y, n.character.w, n.character.h);
+      n.render(renderer);
+    }
+
+    // Render pellets
+    for (let i = 0; i < this.pellets.length; i++) {
+      const pl = this.pellets[i];
+      const rect = this._screenRectForSize(pl.wx, pl.wy, pl.sizePx, pl.sizePx);
+      pl.render(renderer, rect);
+    }
+
+    // Render health UI
+    this._renderHealth(renderer, p1s, p2s);
+    // Render scores opposite to health
+    this._renderScores(renderer);
+  }
+
+  _renderHealth(renderer, p1s, p2s) {
+
+    if (!this._healthImage) {
+      return;
+    }
+
+    // Compute screen-space positions and sizes anchored to the screen edges
+    const sw = renderer.displayWidth;
+    const sh = renderer.displayHeight;
+    const base = Math.min(sw, sh);
+    const iconW = Math.max(8, Math.floor(base * 0.12));
+    const iconH = iconW;
+    const margin = Math.max(6, Math.floor(base * 0.008));
+    // Overlap: 50% in landscape, 25% in portrait
+    const overlap = this.orientation === "landscape" ? 0.5 : 0.25;
+    const step = Math.max(1, Math.floor(iconH * (1 - overlap)));
+
+    renderer.screenPush();
+
+    if (this.orientation === "landscape") {
+      // Left screen edge (P1): from top to bottom
+      const x1 = margin;
+      let y = margin;
+      for (let i = 0; i < this.p1HP; i++) {
+        renderer.drawImageScreen(this._healthImage, x1, y, iconW, iconH);
+        y += step;
+      }
+
+      // Right screen edge (P2): from top to bottom
+      const x2 = sw - iconW - margin;
+      y = margin;
+      for (let i = 0; i < this.p2HP; i++) {
+        renderer.drawImageScreen(this._healthImage, x2, y, iconW, iconH);
+        y += step;
+      }
+    } else {
+      // Portrait
+      // Top screen edge (P1): right-to-left, rotated 180°
+      let x = sw - margin - iconW;
+      for (let i = 0; i < this.p1HP; i++) {
+        const bx = x - i * step;
+        const by = margin;
+        // rotate 180 degrees about the center of the icon in screen space
+        const cx = bx + Math.floor(iconW * 0.5);
+        const cy = by + Math.floor(iconH * 0.5);
+        renderer.screenPush();
+        renderer.translate(cx, cy);
+        renderer.rotate(Math.PI);
+        renderer.translate(-cx, -cy);
+        renderer.drawImageScreen(this._healthImage, bx, by, iconW, iconH);
+        renderer.screenPop();
+      }
+
+      // Bottom screen edge (P2): left-to-right
+      const yBot = sh - margin - iconH;
+      x = margin;
+      for (let i = 0; i < this.p2HP; i++) {
+        const bx = x + i * step;
+        renderer.drawImageScreen(this._healthImage, bx, yBot, iconW, iconH);
+      }
+    }
+
+    renderer.screenPop();
+  }
+
+  _renderScores(renderer) {
+
+    // Draw scores in screen space, opposite to health anchors.
+    const sw = renderer.displayWidth;
+    const sh = renderer.displayHeight;
+    const base = Math.min(sw, sh);
+    const margin = Math.max(6, Math.floor(base * 0.008));
+    const fontPx = Math.max(10, Math.floor(base * 0.09));
+
+    renderer.screenPush();
+    const ctx = renderer.ctx;
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "top";
+    ctx.font = "bold " + fontPx + "px sans-serif";
+
+    if (this.orientation === "landscape") {
+      // Bottom-align scores on the SAME side as each player
+      // P1 (left player) score at bottom-left
+      ctx.textAlign = "left";
+      ctx.fillText(String(this.p1Score), margin, sh - margin - fontPx);
+
+      // P2 (right player) score at bottom-right
+      ctx.textAlign = "right";
+      ctx.fillText(String(this.p2Score), sw - margin, sh - margin - fontPx);
+    } else {
+      // Portrait
+      // Show scores on the SAME vertical side as each player for clearer association.
+      // P1 (top player): top-left, rotated 180° to match orientation feel
+      const p1x = margin;
+      const p1y = margin;
+      renderer.screenPush();
+      renderer.translate(p1x, p1y);
+      renderer.rotate(Math.PI);
+      renderer.translate(-p1x, -p1y);
+      // After rotation, align bottom-right so text stays within the visible screen corner
+      ctx.textAlign = "right";
+      ctx.textBaseline = "bottom";
+      ctx.fillText(String(this.p1Score), p1x, p1y);
+      // restore baseline for subsequent draws
+      ctx.textBaseline = "top";
+      renderer.screenPop();
+
+      // P2 (bottom player): bottom-right, unrotated
+      ctx.textAlign = "right";
+      ctx.fillText(String(this.p2Score), sw - margin, sh - margin - fontPx);
+    }
+
+    renderer.screenPop();
   }
 
   _layoutPlayers() {
@@ -482,5 +776,352 @@ export class GameScene {
     const wx = (cx / this.width) * this.worldW;
     const wy = (cy / this.height) * this.worldH;
     return { x: Math.floor(wx), y: Math.floor(wy) };
+  }
+
+  _getOrientation() {
+
+    return this.orientation;
+  }
+
+  _screenRectForSize(wx, wy, pw, ph) {
+    const s = this._worldToScreenFor(wx, wy, pw, ph);
+    return { x: s.x, y: s.y, w: pw, h: ph };
+  }
+
+  _trySpawnNPC(ev) {
+
+    const kind = ev.npc === "boss" ? "boss" : "lieutenant";
+    // If any NPC is still on screen, defer this spawn until it exits
+    const existing = this._findAnyActiveNPC();
+    if (existing) {
+      const remaining = this._npcRemainingTime(existing);
+      const delay = Math.max(0.1, remaining + 0.2);
+      const copy = { ...ev, t: this._gameTime + delay };
+      if (ev.shots && ev.shots.length) {
+        copy.shots = ev.shots.map(function reshot(s) { return { ...s, t: (s.t - ev.t) + copy.t }; });
+      }
+      this._localEvents.push(copy);
+      return;
+    }
+
+    this._spawnNPC(ev);
+  }
+
+  _spawnNPC(ev) {
+
+    const kind = ev.npc === "boss" ? "boss" : "lieutenant";
+    const imgs = this._npcImages[kind];
+    const ch = new Character({ bodyColor: "#888", faceTopColor: "#bbb", faceBottomColor: "#666", w: this.p1.w, h: this.p1.h });
+    if (imgs && imgs.head) { ch.setHeadImage(imgs.head); }
+    if (imgs && imgs.body) { ch.setBodyImage(imgs.body); }
+
+    const npc = new NPC(kind, ch, { widthPx: ch.w, heightPx: ch.h });
+    npc.setOrientation(this.orientation);
+
+    // Initialize shoot pose assets and windows
+    npc._bodyNormal = imgs && imgs.body ? imgs.body : null;
+    npc._bodyShoot = imgs && imgs.bodyShoot ? imgs.bodyShoot : (npc._bodyNormal || null);
+    if (npc._bodyNormal) {
+      npc.character.setBodyImage(npc._bodyNormal);
+    }
+    npc._shootWindows = [];
+
+    if (this.orientation === "portrait") {
+      const halfW = this._charWorldSizeX(this._hotLogicalSize(ch).w);
+      const wy = Math.floor(this.worldH * 0.5);
+      npc.wy = wy;
+      if (ev.side === "A") {
+        npc.wx = -halfW - 10;
+        npc.vx = Math.abs(ev.speed);
+      } else {
+        npc.wx = this.worldW + halfW + 10;
+        npc.vx = -Math.abs(ev.speed);
+      }
+      npc.vy = 0;
+    } else {
+      const halfH = this._charWorldSizeY(this._hotLogicalSize(ch).h);
+      const wx = Math.floor(this.worldW * 0.5);
+      npc.wx = wx;
+      if (ev.side === "A") {
+        npc.wy = -halfH - 10;
+        npc.vy = Math.abs(ev.speed);
+      } else {
+        npc.wy = this.worldH + halfH + 10;
+        npc.vy = -Math.abs(ev.speed);
+      }
+      npc.vx = 0;
+    }
+
+    npc.character.laugh();
+
+    this.npcs.push(npc);
+
+    if (ev.shots && ev.shots.length) {
+      for (let i = 0; i < ev.shots.length; i++) {
+        const s = ev.shots[i];
+        // Align shot timing relative to now if this was locally deferred
+        const shotTime = s.t >= ev.t ? (this._gameTime + (s.t - ev.t)) : (this._gameTime + 0.5);
+        this._pendingShots.push({ t: shotTime, npc: npc, target: s.target, angleOffset: s.angleOffset || 0, speed: s.speed || 600 });
+
+        // Create a small window around shot time to display shoot body pose
+        const pre = 0.15;
+        const post = 0.25;
+        npc._shootWindows.push({ start: shotTime - pre, end: shotTime + post });
+      }
+    }
+  }
+
+  _findAnyActiveNPC() {
+
+    for (let i = 0; i < this.npcs.length; i++) {
+      const n = this.npcs[i];
+      // Consider on-screen if still within extended bounds (not yet culled)
+      return n;
+    }
+    return null;
+  }
+
+  _npcRemainingTime(n) {
+
+    if (this.orientation === "portrait") {
+      const halfW = this._charWorldSizeX(this._hotLogicalSize(n.character).w);
+      if (n.vx > 0) {
+        const dist = (this.worldW + halfW + 20) - (n.wx - halfW);
+        return Math.max(0, dist / Math.max(1, n.vx));
+      } else {
+        const dist = (n.wx + halfW) - (-halfW - 20);
+        return Math.max(0, dist / Math.max(1, -n.vx));
+      }
+    } else {
+      const halfH = this._charWorldSizeY(this._hotLogicalSize(n.character).h);
+      if (n.vy > 0) {
+        const dist = (this.worldH + halfH + 20) - (n.wy - halfH);
+        return Math.max(0, dist / Math.max(1, n.vy));
+      } else {
+        const dist = (n.wy + halfH) - (-halfH - 20);
+        return Math.max(0, dist / Math.max(1, -n.vy));
+      }
+    }
+  }
+
+  _processShots() {
+
+    for (let i = 0; i < this._pendingShots.length; ) {
+      const sh = this._pendingShots[i];
+      if (sh.t > this._gameTime) {
+        i += 1;
+        continue;
+      }
+
+      this._pendingShots.splice(i, 1);
+
+      if (!sh.npc || !this._isNPCAlive(sh.npc)) {
+        continue;
+      }
+
+      const np = this._npcBodyCenterWorld(sh.npc);
+      const tp = sh.target === "p1" ? this.p1Pos : this.p2Pos;
+      let dx = tp.x - np.x;
+      let dy = tp.y - np.y;
+      const len = Math.max(0.0001, Math.sqrt(dx * dx + dy * dy));
+      dx /= len;
+      dy /= len;
+
+      const a = Math.atan2(dy, dx) + (sh.angleOffset || 0);
+
+      // Adjust pellet speed/size based on shooter NPC kind
+      const isLt = sh.npc && sh.npc.kind === "lieutenant";
+      const speed = (sh.speed || 600) * (isLt ? 0.5 : 1.0);
+      const vx = Math.cos(a) * speed;
+      const vy = Math.sin(a) * speed;
+      const sizePx = isLt ? 96 : 48;
+
+      const pellet = new Pellet(this._pelletImage, { wx: np.x, wy: np.y, vx: vx, vy: vy, sizePx: sizePx });
+      pellet.shooterKind = isLt ? "lieutenant" : "boss";
+      pellet.setOrientation(this.orientation);
+      this.pellets.push(pellet);
+    }
+  }
+
+  _isNPCAlive(npc) {
+
+    for (let i = 0; i < this.npcs.length; i++) {
+      if (this.npcs[i] === npc) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  _cullNPCs() {
+
+    for (let i = 0; i < this.npcs.length; ) {
+      const n = this.npcs[i];
+      if (this.orientation === "portrait") {
+        const halfW = this._charWorldSizeX(this._hotLogicalSize(n.character).w);
+        if ((n.vx > 0 && n.wx - halfW > this.worldW + 20) || (n.vx < 0 && n.wx + halfW < -20)) {
+          this.npcs.splice(i, 1);
+          continue;
+        }
+      } else {
+        const halfH = this._charWorldSizeY(this._hotLogicalSize(n.character).h);
+        if ((n.vy > 0 && n.wy - halfH > this.worldH + 20) || (n.vy < 0 && n.wy + halfH < -20)) {
+          this.npcs.splice(i, 1);
+          continue;
+        }
+      }
+      i += 1;
+    }
+  }
+
+  _handlePelletBounds(p) {
+
+    const halfX = this._pelletWorldHalfX(p.sizePx);
+    const halfY = this._pelletWorldHalfY(p.sizePx);
+
+    // Reflect on left/right walls
+    if (p.wx - halfX < 0) {
+      p.wx = halfX;
+      p.vx = Math.abs(p.vx);
+      p.bounces += 1;
+    }
+    if (p.wx + halfX > this.worldW) {
+      p.wx = this.worldW - halfX;
+      p.vx = -Math.abs(p.vx);
+      p.bounces += 1;
+    }
+
+    // Reflect on top/bottom walls
+    if (p.wy - halfY < 0) {
+      p.wy = halfY;
+      p.vy = Math.abs(p.vy);
+      p.bounces += 1;
+    }
+    if (p.wy + halfY > this.worldH) {
+      p.wy = this.worldH - halfY;
+      p.vy = -Math.abs(p.vy);
+      p.bounces += 1;
+    }
+
+    // After 5 total bounces, remove pellet (mark reason)
+    if (p.bounces >= 5) {
+      p.alive = false;
+      p._death = "bounces";
+    }
+  }
+
+  _cullPellets() {
+
+    for (let i = 0; i < this.pellets.length; ) {
+      const p = this.pellets[i];
+      if (!p.alive) {
+        // Apply health rules based on death reason
+        if (p._death === "bounces") {
+          const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
+          const cx = rect.x + Math.floor(rect.w * 0.5);
+          const cy = rect.y + Math.floor(rect.h * 0.5);
+          if (this.orientation === "landscape") {
+            if (cx < this.width * 0.5) { this.p1HP = Math.max(0, this.p1HP - 1); }
+            else { this.p2HP = Math.max(0, this.p2HP - 1); }
+          } else {
+            if (cy < this.height * 0.5) { this.p1HP = Math.max(0, this.p1HP - 1); }
+            else { this.p2HP = Math.max(0, this.p2HP - 1); }
+          }
+        } else if (p._death === "npc") {
+          // HP effects depend on eater kind
+          const eater = p._npcEaterKind || "lieutenant";
+          if (eater === "boss") {
+            // Boss: both lose up to 2 points; if both would hit 0, set both to 1 instead
+            let np1 = Math.max(0, this.p1HP - 2);
+            let np2 = Math.max(0, this.p2HP - 2);
+            if (np1 === 0 && np2 === 0) {
+              np1 = Math.max(1, this.p1HP - 1);
+              np2 = Math.max(1, this.p2HP - 1);
+            }
+            this.p1HP = np1;
+            this.p2HP = np2;
+          } else {
+            // Lieutenant: both lose one; skip case where both go 0 was already handled at eat time
+            this.p1HP = Math.max(0, this.p1HP - 1);
+            this.p2HP = Math.max(0, this.p2HP - 1);
+          }
+        }
+        this.pellets.splice(i, 1);
+        continue;
+      }
+      i += 1;
+    }
+  }
+
+  _checkWin() {
+
+    if (this._ended) {
+      return;
+    }
+
+    if (this.p1HP <= 0 || this.p2HP <= 0) {
+      this._ended = true;
+      // Clear any lingering inputs so Menu doesn't immediately start a new game
+      if (this.input && typeof this.input.reset === "function") {
+        this.input.reset();
+      }
+      if (this.app && typeof this.app.setScene === "function") {
+        this.app.setScene(new MenuScene());
+      }
+    }
+  }
+
+  _handlePelletAbsorption(p) {
+
+    if (!p.alive) {
+      return;
+    }
+
+    const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
+    const cx = rect.x + Math.floor(rect.w * 0.5);
+    const cy = rect.y + Math.floor(rect.h * 0.5);
+
+    if (this.p1 && this.p1.isEating() && this._pointInHeadHot(this.p1, cx, cy)) {
+      p.alive = false;
+      if (p.shooterKind === "boss") { this.p1Score += 5; }
+      else { this.p1Score += 1; }
+      return;
+    }
+
+    if (this.p2 && this.p2.isEating() && this._pointInHeadHot(this.p2, cx, cy)) {
+      p.alive = false;
+      if (p.shooterKind === "boss") { this.p2Score += 5; }
+      else { this.p2Score += 1; }
+      return;
+    }
+  }
+
+  _pelletWorldHalfX(px) {
+
+    const sx = px / this.width;
+    return Math.max(1, Math.floor(0.5 * sx * this.worldW));
+  }
+
+  _pelletWorldHalfY(py) {
+
+    const sy = py / this.height;
+    return Math.max(1, Math.floor(0.5 * sy * this.worldH));
+  }
+
+  _npcBodyCenterWorld(npc) {
+
+    // Compute world position corresponding to the center of the NPC's body part
+    // Body center is offset by ~108*s logical pixels from character center (see render math)
+    const s = this._computeRenderScale(npc.character);
+    const offsetLogical = Math.floor(108 * s);
+
+    // In portrait, NPCs flip (-1,-1) when moving right; invert offset in that case
+    let offset = offsetLogical;
+    if (this.orientation === "portrait" && npc.vx > 0.0001) {
+      offset = -offsetLogical;
+    }
+
+    const dyWorld = Math.floor((offset / this.height) * this.worldH);
+    return { x: npc.wx, y: npc.wy + dyWorld };
   }
 }

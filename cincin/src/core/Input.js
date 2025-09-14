@@ -18,6 +18,16 @@ export class Input {
     this._install();
   }
 
+  reset() {
+
+    // Clear all transient input state so new scenes don't get spurious actions
+    this.keysDown.clear();
+    this._pressedOnce.clear();
+    this.pointerStates.length = 0;
+    this._tapQueue.length = 0;
+    this._pointerDownMeta.clear();
+  }
+
   _install() {
     window.addEventListener("keydown", this._onKeyDown);
     window.addEventListener("keyup", this._onKeyUp);
