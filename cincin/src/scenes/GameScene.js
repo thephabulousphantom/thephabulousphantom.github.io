@@ -73,10 +73,18 @@ export class GameScene {
     this._gameTime = 0;
     this._pendingShots = [];
     this._localEvents = [];
+    this._eventQueue = [];
+    this._pendingEmotes = [];
+    this._nextSpawnReadyAt = 0;
 
     // Scores (increment when absorbing pellets while eating)
     this.p1Score = 0;
     this.p2Score = 0;
+
+    // Readiness flags to start gameplay only after assets and script are loaded
+    this._assetsReady = false;
+    this._scriptReady = false;
+    this._ready = false;
   }
 
   async _loadTiles() {
@@ -114,6 +122,9 @@ export class GameScene {
       this._healthImage = hpImg;
     } catch (e) {
     }
+    // Mark assets ready regardless; if some fail, placeholders/nulls render, but timing gate is lifted only after attempt
+    this._assetsReady = true;
+    this._updateReadyState();
   }
 
   onEnter(ctx) {
@@ -127,15 +138,14 @@ export class GameScene {
       this.renderer.setActiveTileScale(0.1);
     }
 
-    this.p1.laugh();
-    this.p2.laugh();
+    // Do not trigger initial laughs for players; laughs are event-driven
 
     this._loadTiles();
 
     this._loadNPCAssets();
 
     // Load scripted NPC schedule from JSON (non-blocking)
-    this.script.load("./src/npc/script.json");
+    this.script.load("./src/npc/script.json").then(this._onScriptLoaded.bind(this));
 
     // Initialize world positions near edges
     this._layoutPlayers();
@@ -144,6 +154,27 @@ export class GameScene {
     this.p1HP = 5;
     this.p2HP = 5;
     this._ended = false;
+
+    // Cursor to keep deferred spawns in chronological order
+    this._deferCursor = 0;
+  }
+
+  _onScriptLoaded() {
+
+    this._scriptReady = true;
+    this._updateReadyState();
+  }
+
+  _updateReadyState() {
+
+    this._ready = this._assetsReady && this._scriptReady;
+    if (this._ready) {
+      // Reset script engine timeline to start from zero when ready
+      if (this.script && typeof this.script.reset === "function") {
+        this.script.reset();
+      }
+      this._gameTime = 0;
+    }
   }
 
   onExit() {
@@ -271,26 +302,23 @@ export class GameScene {
 
     this._applyPhysics(dt, desired);
 
-    // Advance scripted NPC engine and process events
-    this._gameTime += dt;
-    this.script.advance(dt);
-    const due = this.script.consumeDueEvents();
-    // also process locally deferred events
-    for (let i = 0; i < this._localEvents.length; ) {
-      if (this._localEvents[i].t <= this._gameTime) {
-        due.push(this._localEvents[i]);
-        this._localEvents.splice(i, 1);
-        continue;
-      }
-      i += 1;
+    // Advance scripted NPC engine and process events only when fully ready
+    let due = [];
+    if (this._ready) {
+      this._gameTime += dt;
+      this.script.advance(dt);
+      due = this.script.consumeDueEvents();
     }
-
+    // Queue all due spawn events; preserve strict FIFO ordering
     for (let i = 0; i < due.length; i++) {
       const ev = due[i];
       if (ev.type === "spawn") {
-        this._trySpawnNPC(ev);
+        this._eventQueue.push(ev);
       }
     }
+
+    // Spawn at most one NPC per frame and only when no NPC is active and delay window allows
+    this._drainSpawnQueueOnce();
 
     // Fire pending shots
     this._processShots();
@@ -379,6 +407,10 @@ export class GameScene {
 
     this.bg.render(renderer, this.width, this.height);
 
+    // Render health UI behind players
+    // Compute screen-space positions for current characters to anchor UI if needed
+    this._renderHealth(renderer, { x: 0, y: 0 }, { x: 0, y: 0 });
+
     // Compute screen-space rectangles from world positions (center positions)
     const p1s = this._worldToScreenFor(this.p1Pos.x, this.p1Pos.y, this.p1.w, this.p1.h);
     const p2s = this._worldToScreenFor(this.p2Pos.x, this.p2Pos.y, this.p2.w, this.p2.h);
@@ -419,8 +451,7 @@ export class GameScene {
       pl.render(renderer, rect);
     }
 
-    // Render health UI
-    this._renderHealth(renderer, p1s, p2s);
+    // Health already rendered behind players
     // Render scores opposite to health
     this._renderScores(renderer);
   }
@@ -790,20 +821,7 @@ export class GameScene {
 
   _trySpawnNPC(ev) {
 
-    const kind = ev.npc === "boss" ? "boss" : "lieutenant";
-    // If any NPC is still on screen, defer this spawn until it exits
-    const existing = this._findAnyActiveNPC();
-    if (existing) {
-      const remaining = this._npcRemainingTime(existing);
-      const delay = Math.max(0.1, remaining + 0.2);
-      const copy = { ...ev, t: this._gameTime + delay };
-      if (ev.shots && ev.shots.length) {
-        copy.shots = ev.shots.map(function reshot(s) { return { ...s, t: (s.t - ev.t) + copy.t }; });
-      }
-      this._localEvents.push(copy);
-      return;
-    }
-
+    // Legacy path no longer used: we now enforce strict FIFO via _eventQueue
     this._spawnNPC(ev);
   }
 
@@ -852,18 +870,48 @@ export class GameScene {
       npc.vx = 0;
     }
 
-    npc.character.laugh();
-
     this.npcs.push(npc);
 
+    // Debug spawn order
+    try {
+      /* eslint-disable no-console */
+      console.log("[GameScene] spawn", { id: ev._id || "?", npc: kind, side: ev.side, t: this._gameTime.toFixed(3), speed: ev.speed });
+      /* eslint-enable no-console */
+    } catch (err) {
+    }
+
     if (ev.shots && ev.shots.length) {
+      const enterTime = this._npcTimeToEnter(npc);
+      const travel = this._npcRemainingTime(npc);
+
       for (let i = 0; i < ev.shots.length; i++) {
         const s = ev.shots[i];
-        // Align shot timing relative to now if this was locally deferred
-        const shotTime = s.t >= ev.t ? (this._gameTime + (s.t - ev.t)) : (this._gameTime + 0.5);
-        this._pendingShots.push({ t: shotTime, npc: npc, target: s.target, angleOffset: s.angleOffset || 0, speed: s.speed || 600 });
+        let shotTime = this._gameTime + enterTime + 0.15;
 
-        // Create a small window around shot time to display shoot body pose
+        // If author specifies fractional progress, schedule exactly at that fraction of the travel
+        if (typeof s.frac === "number") {
+          const f = Math.max(0, Math.min(1, s.frac));
+          shotTime = this._gameTime + enterTime + f * travel;
+        } else {
+          // Fallback to absolute timing relative to script event if provided
+          if (typeof s.t === "number" && typeof ev.t === "number") {
+            const baseline = this._gameTime + Math.max(0, (s.t - ev.t));
+            shotTime = Math.max(shotTime, baseline);
+          }
+        }
+
+        this._pendingShots.push({
+          t: shotTime,
+          npc: npc,
+          target: s.target,
+          // Angle fields are copied verbatim; interpretation happens in _processShots
+          angleDeg: typeof s.angleDeg === "number" ? s.angleDeg : undefined,
+          absAngleDeg: typeof s.absAngleDeg === "number" ? s.absAngleDeg : undefined,
+          perpSign: typeof s.perpSign === "number" ? s.perpSign : undefined,
+          speed: typeof s.speed === "number" ? s.speed : 600
+        });
+
+        // Window to show shoot pose
         const pre = 0.15;
         const post = 0.25;
         npc._shootWindows.push({ start: shotTime - pre, end: shotTime + post });
@@ -879,6 +927,26 @@ export class GameScene {
       return n;
     }
     return null;
+  }
+
+  _drainSpawnQueueOnce() {
+
+    if (!this._eventQueue || this._eventQueue.length === 0) {
+      return;
+    }
+
+    const existing = this._findAnyActiveNPC();
+    if (existing) {
+      return;
+    }
+
+    // Respect inter-spawn delay window that is set when previous NPC exits
+    if (this._gameTime < this._interSpawnUnlockTime) {
+      return;
+    }
+
+    const ev = this._eventQueue.shift();
+    this._spawnNPC(ev);
   }
 
   _npcRemainingTime(n) {
@@ -920,14 +988,53 @@ export class GameScene {
       }
 
       const np = this._npcBodyCenterWorld(sh.npc);
-      const tp = sh.target === "p1" ? this.p1Pos : this.p2Pos;
-      let dx = tp.x - np.x;
-      let dy = tp.y - np.y;
-      const len = Math.max(0.0001, Math.sqrt(dx * dx + dy * dy));
-      dx /= len;
-      dy /= len;
-
-      const a = Math.atan2(dy, dx) + (sh.angleOffset || 0);
+      // Baseline direction: perpendicular to NPC movement
+      let vxn = sh.npc.vx;
+      let vyn = sh.npc.vy;
+      const vlen = Math.max(0.0001, Math.sqrt(vxn * vxn + vyn * vyn));
+      vxn /= vlen;
+      vyn /= vlen;
+      // Perpendicular unit base
+      const base1x = -vyn;
+      const base1y = vxn;
+      const base2x = vyn;
+      const base2y = -vxn;
+      // Determine desired player direction if perpSign specified: +1 => P1, -1 => P2
+      // Use a canonical world-space direction toward each player depending on orientation.
+      // Landscape: P1 is left (-1,0), P2 is right (1,0).
+      // Portrait:  P1 is up (0,-1), P2 is down (0,1).
+      let px;
+      let py;
+      if (typeof sh.perpSign === "number" && (sh.perpSign === 1 || sh.perpSign === -1)) {
+        let aimx = 0;
+        let aimy = 0;
+        if (this.orientation === "landscape") {
+          if (sh.perpSign === 1) { aimx = -1; aimy = 0; } else { aimx = 1; aimy = 0; }
+        } else {
+          if (sh.perpSign === 1) { aimx = 0; aimy = -1; } else { aimx = 0; aimy = 1; }
+        }
+        // Choose the perpendicular closer to desired aim direction
+        const dot1 = base1x * aimx + base1y * aimy;
+        const dot2 = base2x * aimx + base2y * aimy;
+        const use1 = dot1 >= dot2;
+        px = use1 ? base1x : base2x;
+        py = use1 ? base1y : base2y;
+      } else {
+        // Fallback: pick the perpendicular pointing roughly toward arena center to keep pellets in play
+        const cx = this.worldW * 0.5 - np.x;
+        const cy = this.worldH * 0.5 - np.y;
+        const dot1 = base1x * cx + base1y * cy;
+        const use1 = dot1 >= 0;
+        px = use1 ? base1x : base2x;
+        py = use1 ? base1y : base2y;
+      }
+      let a = Math.atan2(py, px);
+      // Apply scripted angle overrides
+      if (typeof sh.absAngleDeg === "number") {
+        a = (sh.absAngleDeg * Math.PI) / 180.0;
+      } else if (typeof sh.angleDeg === "number") {
+        a += (sh.angleDeg * Math.PI) / 180.0;
+      }
 
       // Adjust pellet speed/size based on shooter NPC kind
       const isLt = sh.npc && sh.npc.kind === "lieutenant";
@@ -940,6 +1047,50 @@ export class GameScene {
       pellet.shooterKind = isLt ? "lieutenant" : "boss";
       pellet.setOrientation(this.orientation);
       this.pellets.push(pellet);
+    }
+  }
+
+  _processEmotes() {
+
+    for (let i = 0; i < this._pendingEmotes.length; ) {
+      const em = this._pendingEmotes[i];
+      if (em.t > this._gameTime) {
+        i += 1;
+        continue;
+      }
+
+      this._pendingEmotes.splice(i, 1);
+
+      if (!em.npc || !this._isNPCAlive(em.npc)) {
+        continue;
+      }
+
+      if (em.kind === "laugh") {
+        em.npc.character.laugh();
+      }
+    }
+  }
+
+  _npcTimeToEnter(npc) {
+
+    if (this.orientation === "portrait") {
+      const halfW = this._charWorldSizeX(this._hotLogicalSize(npc.character).w);
+      if (npc.vx > 0) {
+        const dist = (0 - (-halfW - 10)) + 1; // from offscreen left to edge
+        return Math.max(0, dist / Math.max(1, npc.vx));
+      } else {
+        const dist = ((this.worldW + halfW + 10) - this.worldW) + 1; // from offscreen right to edge
+        return Math.max(0, dist / Math.max(1, -npc.vx));
+      }
+    } else {
+      const halfH = this._charWorldSizeY(this._hotLogicalSize(npc.character).h);
+      if (npc.vy > 0) {
+        const dist = (0 - (-halfH - 10)) + 1; // from offscreen top to edge
+        return Math.max(0, dist / Math.max(1, npc.vy));
+      } else {
+        const dist = ((this.worldH + halfH + 10) - this.worldH) + 1; // from offscreen bottom to edge
+        return Math.max(0, dist / Math.max(1, -npc.vy));
+      }
     }
   }
 
@@ -961,12 +1112,20 @@ export class GameScene {
         const halfW = this._charWorldSizeX(this._hotLogicalSize(n.character).w);
         if ((n.vx > 0 && n.wx - halfW > this.worldW + 20) || (n.vx < 0 && n.wx + halfW < -20)) {
           this.npcs.splice(i, 1);
+          // NPC exited screen horizontally; schedule delay for next spawn using head event's t
+          const nextEv = this._eventQueue.length > 0 ? this._eventQueue[0] : null;
+          const d = nextEv && typeof nextEv.t === "number" ? nextEv.t : 0;
+          this._nextSpawnReadyAt = this._gameTime + d;
           continue;
         }
       } else {
         const halfH = this._charWorldSizeY(this._hotLogicalSize(n.character).h);
         if ((n.vy > 0 && n.wy - halfH > this.worldH + 20) || (n.vy < 0 && n.wy + halfH < -20)) {
           this.npcs.splice(i, 1);
+          // NPC exited screen vertically; schedule delay for next spawn using head event's t
+          const nextEv = this._eventQueue.length > 0 ? this._eventQueue[0] : null;
+          const d = nextEv && typeof nextEv.t === "number" ? nextEv.t : 0;
+          this._nextSpawnReadyAt = this._gameTime + d;
           continue;
         }
       }
@@ -984,11 +1143,13 @@ export class GameScene {
       p.wx = halfX;
       p.vx = Math.abs(p.vx);
       p.bounces += 1;
+      this._onPelletBounce(p);
     }
     if (p.wx + halfX > this.worldW) {
       p.wx = this.worldW - halfX;
       p.vx = -Math.abs(p.vx);
       p.bounces += 1;
+      this._onPelletBounce(p);
     }
 
     // Reflect on top/bottom walls
@@ -996,11 +1157,13 @@ export class GameScene {
       p.wy = halfY;
       p.vy = Math.abs(p.vy);
       p.bounces += 1;
+      this._onPelletBounce(p);
     }
     if (p.wy + halfY > this.worldH) {
       p.wy = this.worldH - halfY;
       p.vy = -Math.abs(p.vy);
       p.bounces += 1;
+      this._onPelletBounce(p);
     }
 
     // After 5 total bounces, remove pellet (mark reason)
@@ -1008,6 +1171,13 @@ export class GameScene {
       p.alive = false;
       p._death = "bounces";
     }
+  }
+
+  _onPelletBounce(p) {
+
+    // Shrink pellet slightly on each bounce so it disappears by the 5th (handled by bounce count rule)
+    const next = Math.max(8, Math.floor(p.sizePx * 0.85));
+    p.sizePx = next;
   }
 
   _cullPellets() {
