@@ -151,8 +151,8 @@ export class GameScene {
     this._layoutPlayers();
 
     // Initialize health
-    this.p1HP = 5;
-    this.p2HP = 5;
+    this.p1HP = 500;
+    this.p2HP = 500;
     this._ended = false;
 
     // Cursor to keep deferred spawns in chronological order
@@ -317,9 +317,6 @@ export class GameScene {
       }
     }
 
-    // Spawn at most one NPC per frame and only when no NPC is active and delay window allows
-    this._drainSpawnQueueOnce();
-
     // Fire pending shots
     this._processShots();
 
@@ -350,7 +347,18 @@ export class GameScene {
         }
       }
     }
+    // Cull NPCs first so exit-driven delay is applied before we consider spawning next
     this._cullNPCs();
+
+    // If screen is empty and no delay is currently pending, honor the first event's delay
+    if (this._eventQueue.length > 0 && !this._findAnyActiveNPC() && this._nextSpawnReadyAt === 0) {
+      const head = this._eventQueue[0];
+      const d = head && typeof head.t === "number" ? head.t : 0;
+      this._nextSpawnReadyAt = this._gameTime + d;
+    }
+
+    // Spawn at most one NPC per frame and only when no NPC is active and delay window allows
+    this._drainSpawnQueueOnce();
 
     // Sync character screen positions so absorption checks use accurate head hot-zones
     const p1sNow = this._worldToScreenFor(this.p1Pos.x, this.p1Pos.y, this.p1.w, this.p1.h);
@@ -376,8 +384,8 @@ export class GameScene {
           if (this._pointInHeadHot(npc.character, cx, cy)) {
             const eater = npc.kind === "boss" ? "boss" : "lieutenant";
             if (eater === "lieutenant") {
-              const nextP1 = Math.max(0, this.p1HP - 1);
-              const nextP2 = Math.max(0, this.p2HP - 1);
+              const nextP1 = Math.max(0, this.p1HP - 100);
+              const nextP2 = Math.max(0, this.p2HP - 100);
               if (nextP1 === 0 && nextP2 === 0) {
                 // skip eat to avoid both hitting 0
                 continue;
@@ -475,11 +483,15 @@ export class GameScene {
 
     renderer.screenPush();
 
+    // Determine icon counts: one per 100 HP, rounded up; if hp > 0, show at least 1 icon
+    const p1Icons = this.p1HP > 0 ? Math.max(1, Math.ceil(this.p1HP / 100)) : 0;
+    const p2Icons = this.p2HP > 0 ? Math.max(1, Math.ceil(this.p2HP / 100)) : 0;
+
     if (this.orientation === "landscape") {
       // Left screen edge (P1): from top to bottom
       const x1 = margin;
       let y = margin;
-      for (let i = 0; i < this.p1HP; i++) {
+      for (let i = 0; i < p1Icons; i++) {
         renderer.drawImageScreen(this._healthImage, x1, y, iconW, iconH);
         y += step;
       }
@@ -487,7 +499,7 @@ export class GameScene {
       // Right screen edge (P2): from top to bottom
       const x2 = sw - iconW - margin;
       y = margin;
-      for (let i = 0; i < this.p2HP; i++) {
+      for (let i = 0; i < p2Icons; i++) {
         renderer.drawImageScreen(this._healthImage, x2, y, iconW, iconH);
         y += step;
       }
@@ -495,7 +507,7 @@ export class GameScene {
       // Portrait
       // Top screen edge (P1): right-to-left, rotated 180°
       let x = sw - margin - iconW;
-      for (let i = 0; i < this.p1HP; i++) {
+      for (let i = 0; i < p1Icons; i++) {
         const bx = x - i * step;
         const by = margin;
         // rotate 180 degrees about the center of the icon in screen space
@@ -512,7 +524,7 @@ export class GameScene {
       // Bottom screen edge (P2): left-to-right
       const yBot = sh - margin - iconH;
       x = margin;
-      for (let i = 0; i < this.p2HP; i++) {
+      for (let i = 0; i < p2Icons; i++) {
         const bx = x + i * step;
         renderer.drawImageScreen(this._healthImage, bx, yBot, iconW, iconH);
       }
@@ -941,12 +953,14 @@ export class GameScene {
     }
 
     // Respect inter-spawn delay window that is set when previous NPC exits
-    if (this._gameTime < this._interSpawnUnlockTime) {
+    if (this._gameTime < this._nextSpawnReadyAt) {
       return;
     }
 
     const ev = this._eventQueue.shift();
     this._spawnNPC(ev);
+    // Reset delay gate so the next delay will be scheduled on next empty-screen interval
+    this._nextSpawnReadyAt = 0;
   }
 
   _npcRemainingTime(n) {
@@ -1143,13 +1157,19 @@ export class GameScene {
       p.wx = halfX;
       p.vx = Math.abs(p.vx);
       p.bounces += 1;
-      this._onPelletBounce(p);
+      if (this.orientation === "landscape") {
+        p.valueBounces += 1;
+        this._onPelletBounce(p);
+      }
     }
     if (p.wx + halfX > this.worldW) {
       p.wx = this.worldW - halfX;
       p.vx = -Math.abs(p.vx);
       p.bounces += 1;
-      this._onPelletBounce(p);
+      if (this.orientation === "landscape") {
+        p.valueBounces += 1;
+        this._onPelletBounce(p);
+      }
     }
 
     // Reflect on top/bottom walls
@@ -1157,13 +1177,19 @@ export class GameScene {
       p.wy = halfY;
       p.vy = Math.abs(p.vy);
       p.bounces += 1;
-      this._onPelletBounce(p);
+      if (this.orientation === "portrait") {
+        p.valueBounces += 1;
+        this._onPelletBounce(p);
+      }
     }
     if (p.wy + halfY > this.worldH) {
       p.wy = this.worldH - halfY;
       p.vy = -Math.abs(p.vy);
       p.bounces += 1;
-      this._onPelletBounce(p);
+      if (this.orientation === "portrait") {
+        p.valueBounces += 1;
+        this._onPelletBounce(p);
+      }
     }
 
     // After 5 total bounces, remove pellet (mark reason)
@@ -1175,7 +1201,7 @@ export class GameScene {
 
   _onPelletBounce(p) {
 
-    // Shrink pellet slightly on each bounce so it disappears by the 5th (handled by bounce count rule)
+    // Shrink pellet slightly only on value-affecting bounces
     const next = Math.max(8, Math.floor(p.sizePx * 0.85));
     p.sizePx = next;
   }
@@ -1191,29 +1217,29 @@ export class GameScene {
           const cx = rect.x + Math.floor(rect.w * 0.5);
           const cy = rect.y + Math.floor(rect.h * 0.5);
           if (this.orientation === "landscape") {
-            if (cx < this.width * 0.5) { this.p1HP = Math.max(0, this.p1HP - 1); }
-            else { this.p2HP = Math.max(0, this.p2HP - 1); }
+            if (cx < this.width * 0.5) { this.p1HP = Math.max(0, this.p1HP - 100); }
+            else { this.p2HP = Math.max(0, this.p2HP - 100); }
           } else {
-            if (cy < this.height * 0.5) { this.p1HP = Math.max(0, this.p1HP - 1); }
-            else { this.p2HP = Math.max(0, this.p2HP - 1); }
+            if (cy < this.height * 0.5) { this.p1HP = Math.max(0, this.p1HP - 100); }
+            else { this.p2HP = Math.max(0, this.p2HP - 100); }
           }
         } else if (p._death === "npc") {
           // HP effects depend on eater kind
           const eater = p._npcEaterKind || "lieutenant";
           if (eater === "boss") {
             // Boss: both lose up to 2 points; if both would hit 0, set both to 1 instead
-            let np1 = Math.max(0, this.p1HP - 2);
-            let np2 = Math.max(0, this.p2HP - 2);
+            let np1 = Math.max(0, this.p1HP - 200);
+            let np2 = Math.max(0, this.p2HP - 200);
             if (np1 === 0 && np2 === 0) {
-              np1 = Math.max(1, this.p1HP - 1);
-              np2 = Math.max(1, this.p2HP - 1);
+              np1 = Math.max(100, this.p1HP - 100);
+              np2 = Math.max(100, this.p2HP - 100);
             }
             this.p1HP = np1;
             this.p2HP = np2;
           } else {
             // Lieutenant: both lose one; skip case where both go 0 was already handled at eat time
-            this.p1HP = Math.max(0, this.p1HP - 1);
-            this.p2HP = Math.max(0, this.p2HP - 1);
+            this.p1HP = Math.max(0, this.p1HP - 100);
+            this.p2HP = Math.max(0, this.p2HP - 100);
           }
         }
         this.pellets.splice(i, 1);
@@ -1253,15 +1279,21 @@ export class GameScene {
 
     if (this.p1 && this.p1.isEating() && this._pointInHeadHot(this.p1, cx, cy)) {
       p.alive = false;
-      if (p.shooterKind === "boss") { this.p1Score += 5; }
-      else { this.p1Score += 1; }
+      const base = p.shooterKind === "boss" ? 500 : 100;
+      const b = Math.min(4, Math.max(0, p.valueBounces));
+      const mult = Math.max(0, 1 - 0.2 * b);
+      const points = Math.floor(base * mult);
+      this.p1Score += points;
       return;
     }
 
     if (this.p2 && this.p2.isEating() && this._pointInHeadHot(this.p2, cx, cy)) {
       p.alive = false;
-      if (p.shooterKind === "boss") { this.p2Score += 5; }
-      else { this.p2Score += 1; }
+      const base = p.shooterKind === "boss" ? 500 : 100;
+      const b = Math.min(4, Math.max(0, p.valueBounces));
+      const mult = Math.max(0, 1 - 0.2 * b);
+      const points = Math.floor(base * mult);
+      this.p2Score += points;
       return;
     }
   }

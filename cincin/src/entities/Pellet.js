@@ -15,6 +15,7 @@ export class Pellet {
     this.orientation = "landscape";
 
     this.bounces = 0;
+    this.valueBounces = 0;
   }
 
   setOrientation(o) {

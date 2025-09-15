@@ -4,8 +4,6 @@ export class ScriptEngine {
     this.orientationProvider = params && params.orientationProvider ? params.orientationProvider : function get() { return "landscape"; };
 
     this._events = [];
-    this._cycleDuration = 0;
-    this._repeats = 1;
 
     this._time = 0;
     this._idx = 0;
@@ -17,59 +15,43 @@ export class ScriptEngine {
     const res = await fetch(url);
     const data = await res.json();
 
-    // Data format: { repeats:number, cycleDuration:number, events:[ {type,npc,side,t,speed,shots:[{frac|t,angleDeg|absAngleDeg,perpSign,speed}]} ] }
-    // IMPORTANT: 't' on events is now an inter-spawn delay (seconds) after the previous NPC exits.
-    // Timing is no longer driven by the engine clock; GameScene applies these delays strictly FIFO.
-    this._events = Array.isArray(data.events) ? data.events : [];
-    this._cycleDuration = typeof data.cycleDuration === "number" ? data.cycleDuration : 0;
-    this._repeats = typeof data.repeats === "number" ? data.repeats : 1;
-
-    // Expand events list by repeats. Only speed scales per cycle; 't' remains author-provided delay.
+    // Data format: { events:[ {type,npc,side,t,speed,shots:[{frac|t,angleDeg|absAngleDeg,perpSign,speed}]} ] }
+    // IMPORTANT: 't' on events is an inter-spawn delay (seconds) after the previous NPC exits.
+    // Timing is not driven by an engine clock; GameScene applies these delays strictly FIFO.
+    const raw = Array.isArray(data.events) ? data.events : [];
     const expanded = [];
-    let runningOffset = 0; // no longer used for time; retained for compatibility
-    for (let c = 0; c < this._repeats; c++) {
-      const speedScale = Math.pow(1.5, c);
-      const timeScale = 1 / speedScale;
-      for (let i = 0; i < this._events.length; i++) {
-        const e = this._events[i];
-        const dup = { ...e };
-        // Keep 't' as authored delay; do not scale or offset
-        dup.t = typeof e.t === "number" ? e.t : 0;
-        if (typeof e.speed === "number") {
-          dup.speed = e.speed * speedScale;
-        }
-        dup._cycle = c;
-        dup._seq = expanded.length;
-        dup._id = "C" + String(c) + "-E" + String(i);
-        dup._repeats = this._repeats;
-        if (e.shots && e.shots.length) {
-          dup.shots = e.shots.map(function copy(s, si) {
-            const sc = { ...s };
-            // If author provides fractional progress 'frac' in [0,1], keep as-is.
-            // If author provides absolute shot time 't', leave it relative to the spawn moment (no scaling/offset).
-            if (typeof s.speed === "number") {
-              sc.speed = s.speed * speedScale;
-            }
-            // Angle fields are copied verbatim (scripted), no randomness injected here.
-            // Supported: angleDeg (relative to perpendicular), absAngleDeg (absolute world angle)
-            sc._id = dup._id + "-S" + String(si);
-            return sc;
-          });
-        }
-        expanded.push(dup);
+    for (let i = 0; i < raw.length; i++) {
+      const e = raw[i];
+      const dup = { ...e };
+      // Keep 't' and 'speed' exactly as authored; no scaling, no repeats.
+      dup.t = typeof e.t === "number" ? e.t : 0;
+      if (typeof e.speed === "number") {
+        dup.speed = e.speed;
       }
-      // No timing accumulation; GameScene handles delays between spawns.
+      dup._seq = expanded.length;
+      dup._id = "E" + String(i);
+      if (e.shots && e.shots.length) {
+        dup.shots = e.shots.map(function copy(s, si) {
+          const sc = { ...s };
+          if (typeof s.speed === "number") {
+            sc.speed = s.speed;
+          }
+          sc._id = dup._id + "-S" + String(si);
+          return sc;
+        });
+      }
+      expanded.push(dup);
     }
     this._events = expanded;
 
-    // Debug: log the expanded schedule
+    // Debug: log the schedule
     try {
       /* eslint-disable no-console */
-      console.log("[ScriptEngine] Loaded script: repeats=", this._repeats, ", baseCycle=", this._cycleDuration);
+      console.log("[ScriptEngine] Loaded script: events=", this._events.length);
       for (let i = 0; i < this._events.length; i++) {
         const ev = this._events[i];
         console.log("[ScriptEngine] schedule",
-          { idx: i, id: ev._id, cycle: ev._cycle, of: this._repeats, t: ev.t.toFixed(3), npc: ev.npc, side: ev.side, speed: ev.speed });
+          { idx: i, id: ev._id, t: ev.t.toFixed(3), npc: ev.npc, side: ev.side, speed: ev.speed });
       }
       /* eslint-enable no-console */
     } catch (err) {
@@ -97,17 +79,13 @@ export class ScriptEngine {
     if (!this._loaded) {
       return [];
     }
-
-    if (!this._loaded) {
-      return [];
-    }
     // Return all remaining events immediately; GameScene enforces inter-spawn delays.
     const remaining = [];
     while (this._idx < this._events.length) {
       const ev = this._events[this._idx];
       try {
         /* eslint-disable no-console */
-        console.log("[ScriptEngine] due", { id: ev._id, cycle: ev._cycle, of: this._repeats, t: ev.t.toFixed(3), npc: ev.npc, side: ev.side, speed: ev.speed });
+        console.log("[ScriptEngine] due", { id: ev._id, t: ev.t.toFixed(3), npc: ev.npc, side: ev.side, speed: ev.speed });
         /* eslint-enable no-console */
       } catch (err) {
       }
