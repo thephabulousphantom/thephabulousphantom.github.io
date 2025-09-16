@@ -22,8 +22,7 @@ export class Renderer {
     this.tileColor1 = "#0b5";
     this.tileColor2 = "#083";
     this.tileSizePx = 32;
-
-    this.inactiveTileImage = null;
+    
     this.activeTileScale = 1.0;
     this.logicalScaleX = 1.0;
     this.logicalScaleY = 1.0;
@@ -250,10 +249,6 @@ export class Renderer {
 
   scale(sx, sy) {
     this.ctx.scale(sx, sy);
-  }
-
-  setInactiveTileImage(img) {
-    this.inactiveTileImage = img;
   }
 
   tileImageScreen(img) {

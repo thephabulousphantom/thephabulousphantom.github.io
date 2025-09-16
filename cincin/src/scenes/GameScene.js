@@ -4,6 +4,7 @@ import { NPC } from "../entities/NPC.js";
 import { Pellet } from "../entities/Pellet.js";
 import { ScriptEngine } from "../npc/ScriptEngine.js";
 import { MenuScene } from "./MenuScene.js";
+import { GameOverScene } from "./GameOverScene.js";
 
 export class GameScene {
   constructor(colors) {
@@ -19,6 +20,12 @@ export class GameScene {
 
     const p1Cfg = colors && colors.p1 ? colors.p1 : { bodyColor: "#e74c3c", faceTopColor: "#f4d03f", faceBottomColor: "#c0392b" };
     const p2Cfg = colors && colors.p2 ? colors.p2 : { bodyColor: "#3498db", faceTopColor: "#85c1e9", faceBottomColor: "#2e86c1" };
+
+    // Preserve original configs and avatar keys for Game Over scene
+    this._p1Config = p1Cfg;
+    this._p2Config = p2Cfg;
+    this._p1AvatarKey = p1Cfg && p1Cfg.avatarKey ? p1Cfg.avatarKey : "player1";
+    this._p2AvatarKey = p2Cfg && p2Cfg.avatarKey ? p2Cfg.avatarKey : "player2";
 
     this.p1 = new Character({ bodyColor: p1Cfg.bodyColor, faceTopColor: p1Cfg.faceTopColor, faceBottomColor: p1Cfg.faceBottomColor, w: 100, h: 100 });
     this.p2 = new Character({ bodyColor: p2Cfg.bodyColor, faceTopColor: p2Cfg.faceTopColor, faceBottomColor: p2Cfg.faceBottomColor, w: 100, h: 100 });
@@ -63,14 +70,23 @@ export class GameScene {
     this.pellets = [];
 
     this._npcImages = {
-      boss: { body: null, head: null },
-      lieutenant: { body: null, head: null }
+      boss: { body: null, bodyWalk: [], bodyShoot: null, head: null },
+      lieutenant: { body: null, bodyWalk: [], bodyShoot: null, head: null }
     };
 
-    this._pelletImage = null;
+    this._playerImages = {
+      p1: { body: null, bodyWalk: [], head: null },
+      p2: { body: null, bodyWalk: [], head: null },
+      p3: { body: null, bodyWalk: [], head: null },
+      p4: { body: null, bodyWalk: [], head: null }
+    };
+
+    this._pelletFrames = [];
+    this._pelletFPS = 5;
 
     this.script = new ScriptEngine({ orientationProvider: this._getOrientation.bind(this) });
     this._gameTime = 0;
+    this._baselineSpeed = 300;
     this._pendingShots = [];
     this._localEvents = [];
     this._eventQueue = [];
@@ -91,11 +107,7 @@ export class GameScene {
 
     try {
       const active = await this.loader.loadImage("./img/tiles/behaton.png");
-      const inactive = await this.loader.loadImage("./img/tiles/background-inactive.png");
       this.bg.setTileImage(active);
-      if (this.renderer && inactive) {
-        this.renderer.setInactiveTileImage(inactive);
-      }
     } catch (e) {
     }
   }
@@ -105,21 +117,82 @@ export class GameScene {
     try {
       const bossBody = await this.loader.loadImage("./img/characters/npc1-body.png");
       const bossBodyShoot = await this.loader.loadImage("./img/characters/npc1-body-shoot.png");
+      const bossBodyWalk1 = await this.loader.loadImage("./img/characters/npc1-body-walk1.png");
+      const bossBodyWalk2 = await this.loader.loadImage("./img/characters/npc1-body-walk2.png");
       const bossHead = await this.loader.loadImage("./img/characters/npc1-head.png");
       const ltBody = await this.loader.loadImage("./img/characters/npc2-body.png");
       const ltBodyShoot = await this.loader.loadImage("./img/characters/npc2-body-shoot.png");
+      const ltBodyWalk1 = await this.loader.loadImage("./img/characters/npc2-body-walk1.png");
+      const ltBodyWalk2 = await this.loader.loadImage("./img/characters/npc2-body-walk2.png");
       const ltHead = await this.loader.loadImage("./img/characters/npc2-head.png");
-      const pelletImg = await this.loader.loadImage("./img/other/poo.png");
+      const pelletImg1 = await this.loader.loadImage("./img/other/poo1.png");
+      const pelletImg2 = await this.loader.loadImage("./img/other/poo2.png");
+      // Players (1-4) body/head and walk frames
+      const p1Body = await this.loader.loadImage("./img/characters/player1-body.png");
+      const p1Walk1 = await this.loader.loadImage("./img/characters/player1-body-walk1.png");
+      const p1Walk2 = await this.loader.loadImage("./img/characters/player1-body-walk2.png");
+      const p1Head = await this.loader.loadImage("./img/characters/player1-head.png");
+
+      const p2Body = await this.loader.loadImage("./img/characters/player2-body.png");
+      const p2Walk1 = await this.loader.loadImage("./img/characters/player2-body-walk1.png");
+      const p2Walk2 = await this.loader.loadImage("./img/characters/player2-body-walk2.png");
+      const p2Head = await this.loader.loadImage("./img/characters/player2-head.png");
+
+      const p3Body = await this.loader.loadImage("./img/characters/player3-body.png");
+      const p3Walk1 = await this.loader.loadImage("./img/characters/player3-body-walk1.png");
+      const p3Walk2 = await this.loader.loadImage("./img/characters/player3-body-walk2.png");
+      const p3Head = await this.loader.loadImage("./img/characters/player3-head.png");
+
+      const p4Body = await this.loader.loadImage("./img/characters/player4-body.png");
+      const p4Walk1 = await this.loader.loadImage("./img/characters/player4-body-walk1.png");
+      const p4Walk2 = await this.loader.loadImage("./img/characters/player4-body-walk2.png");
+      const p4Head = await this.loader.loadImage("./img/characters/player4-head.png");
+
       const hpImg = await this.loader.loadImage("./img/ui/health.png");
 
       this._npcImages.boss.body = bossBody;
       this._npcImages.boss.bodyShoot = bossBodyShoot;
+      this._npcImages.boss.bodyWalk = [];
+      if (bossBodyWalk1) { this._npcImages.boss.bodyWalk.push(bossBodyWalk1); }
+      if (bossBodyWalk2) { this._npcImages.boss.bodyWalk.push(bossBodyWalk2); }
       this._npcImages.boss.head = bossHead;
       this._npcImages.lieutenant.body = ltBody;
       this._npcImages.lieutenant.bodyShoot = ltBodyShoot;
+      this._npcImages.lieutenant.bodyWalk = [];
+      if (ltBodyWalk1) { this._npcImages.lieutenant.bodyWalk.push(ltBodyWalk1); }
+      if (ltBodyWalk2) { this._npcImages.lieutenant.bodyWalk.push(ltBodyWalk2); }
       this._npcImages.lieutenant.head = ltHead;
-      this._pelletImage = pelletImg;
+      this._pelletFrames = [];
+      if (pelletImg1) { this._pelletFrames.push(pelletImg1); }
+      if (pelletImg2) { this._pelletFrames.push(pelletImg2); }
       this._healthImage = hpImg;
+
+      // Store player images
+      this._playerImages.p1.body = p1Body; this._playerImages.p1.head = p1Head; this._playerImages.p1.bodyWalk = [];
+      if (p1Walk1) { this._playerImages.p1.bodyWalk.push(p1Walk1); }
+      if (p1Walk2) { this._playerImages.p1.bodyWalk.push(p1Walk2); }
+
+      this._playerImages.p2.body = p2Body; this._playerImages.p2.head = p2Head; this._playerImages.p2.bodyWalk = [];
+      if (p2Walk1) { this._playerImages.p2.bodyWalk.push(p2Walk1); }
+      if (p2Walk2) { this._playerImages.p2.bodyWalk.push(p2Walk2); }
+
+      this._playerImages.p3.body = p3Body; this._playerImages.p3.head = p3Head; this._playerImages.p3.bodyWalk = [];
+      if (p3Walk1) { this._playerImages.p3.bodyWalk.push(p3Walk1); }
+      if (p3Walk2) { this._playerImages.p3.bodyWalk.push(p3Walk2); }
+
+      this._playerImages.p4.body = p4Body; this._playerImages.p4.head = p4Head; this._playerImages.p4.bodyWalk = [];
+      if (p4Walk1) { this._playerImages.p4.bodyWalk.push(p4Walk1); }
+      if (p4Walk2) { this._playerImages.p4.bodyWalk.push(p4Walk2); }
+
+      // Apply to p1/p2 characters if available (players 3/4 reserved for future)
+      if (this.p1) {
+        if (this._playerImages.p1.head) { this.p1.setHeadImage(this._playerImages.p1.head); }
+        this.p1.setBodyFrames({ idle: this._playerImages.p1.body || null, walk: (this._playerImages.p1.bodyWalk || []), shoot: null, fps: 5 });
+      }
+      if (this.p2) {
+        if (this._playerImages.p2.head) { this.p2.setHeadImage(this._playerImages.p2.head); }
+        this.p2.setBodyFrames({ idle: this._playerImages.p2.body || null, walk: (this._playerImages.p2.bodyWalk || []), shoot: null, fps: 5 });
+      }
     } catch (e) {
     }
     // Mark assets ready regardless; if some fail, placeholders/nulls render, but timing gate is lifted only after attempt
@@ -151,8 +224,8 @@ export class GameScene {
     this._layoutPlayers();
 
     // Initialize health
-    this.p1HP = 500;
-    this.p2HP = 500;
+    this.p1HP = 100;
+    this.p2HP = 100;
     this._ended = false;
 
     // Cursor to keep deferred spawns in chronological order
@@ -302,10 +375,22 @@ export class GameScene {
 
     this._applyPhysics(dt, desired);
 
-    // Advance scripted NPC engine and process events only when fully ready
+    // Update player body animation modes based on movement
+    const p1Moving = Math.abs(this.p1Vel) > 0.0001;
+    const p2Moving = Math.abs(this.p2Vel) > 0.0001;
+    if (this.p1 && typeof this.p1.setBodyAnimMode === "function") {
+      this.p1.setBodyAnimMode(p1Moving ? "walk" : "idle");
+    }
+    if (this.p2 && typeof this.p2.setBodyAnimMode === "function") {
+      this.p2.setBodyAnimMode(p2Moving ? "walk" : "idle");
+    }
+
+    // Advance time and baseline speed; process events only when fully ready
     let due = [];
     if (this._ready) {
       this._gameTime += dt;
+      // Baseline speed increases by 10 per second
+      this._baselineSpeed += 10 * dt;
       this.script.advance(dt);
       due = this.script.consumeDueEvents();
     }
@@ -326,29 +411,41 @@ export class GameScene {
       n.setOrientation(this.orientation);
       n.update(dt);
 
-      // Toggle shoot pose if within any scheduled shoot window
-      if (!n._shootWindows || n._shootWindows.length === 0) {
-        if (n._bodyNormal) {
-          n.character.setBodyImage(n._bodyNormal);
-        }
-      } else {
-        let active = false;
+      // Decide animation mode: shoot during active window; else walk if moving; else idle
+      let shootActive = false;
+      if (n._shootWindows && n._shootWindows.length > 0) {
         for (let w = 0; w < n._shootWindows.length; w++) {
           const win = n._shootWindows[w];
           if (this._gameTime >= win.start && this._gameTime <= win.end) {
-            active = true;
+            shootActive = true;
             break;
           }
         }
-        if (active && n._bodyShoot) {
-          n.character.setBodyImage(n._bodyShoot);
-        } else if (n._bodyNormal) {
-          n.character.setBodyImage(n._bodyNormal);
-        }
+      }
+
+      if (shootActive) {
+        n.character.setBodyAnimMode("shoot");
+      } else {
+        const moving = Math.abs(n.vx) > 0.0001 || Math.abs(n.vy) > 0.0001;
+        n.character.setBodyAnimMode(moving ? "walk" : "idle");
       }
     }
     // Cull NPCs first so exit-driven delay is applied before we consider spawning next
     this._cullNPCs();
+
+    // If we ran out of events and the screen is empty, restart the script (new cycle)
+    if (this._eventQueue.length === 0 && !this._findAnyActiveNPC() && this.script && this.script.loaded) {
+      this.script.reset();
+      const refill = this.script.consumeDueEvents();
+      for (let i = 0; i < refill.length; i++) {
+        const ev = refill[i];
+        if (ev.type === "spawn") {
+          this._eventQueue.push(ev);
+        }
+      }
+      // Clear any pending delay; will be set below based on the new head event
+      this._nextSpawnReadyAt = 0;
+    }
 
     // If screen is empty and no delay is currently pending, honor the first event's delay
     if (this._eventQueue.length > 0 && !this._findAnyActiveNPC() && this._nextSpawnReadyAt === 0) {
@@ -843,18 +940,19 @@ export class GameScene {
     const imgs = this._npcImages[kind];
     const ch = new Character({ bodyColor: "#888", faceTopColor: "#bbb", faceBottomColor: "#666", w: this.p1.w, h: this.p1.h });
     if (imgs && imgs.head) { ch.setHeadImage(imgs.head); }
-    if (imgs && imgs.body) { ch.setBodyImage(imgs.body); }
+    if (imgs) {
+      ch.setBodyFrames({ idle: imgs.body || null, walk: (imgs.bodyWalk || []), shoot: imgs.bodyShoot || null, fps: 5 });
+    }
 
     const npc = new NPC(kind, ch, { widthPx: ch.w, heightPx: ch.h });
     npc.setOrientation(this.orientation);
 
-    // Initialize shoot pose assets and windows
-    npc._bodyNormal = imgs && imgs.body ? imgs.body : null;
-    npc._bodyShoot = imgs && imgs.bodyShoot ? imgs.bodyShoot : (npc._bodyNormal || null);
-    if (npc._bodyNormal) {
-      npc.character.setBodyImage(npc._bodyNormal);
-    }
+    // Initialize shoot windows list (frames handled by Character's animation system)
     npc._shootWindows = [];
+
+    // Compute actual movement speed from baseline and relative percentage (fallback to absolute if missing)
+    const relNPC = typeof ev.speedRel === "number" ? ev.speedRel : (typeof ev.speed === "number" ? (ev.speed / 300) * 100 : 100);
+    const actualNPCSpeed = this._baselineSpeed * (relNPC / 100);
 
     if (this.orientation === "portrait") {
       const halfW = this._charWorldSizeX(this._hotLogicalSize(ch).w);
@@ -862,10 +960,10 @@ export class GameScene {
       npc.wy = wy;
       if (ev.side === "A") {
         npc.wx = -halfW - 10;
-        npc.vx = Math.abs(ev.speed);
+        npc.vx = Math.abs(actualNPCSpeed);
       } else {
         npc.wx = this.worldW + halfW + 10;
-        npc.vx = -Math.abs(ev.speed);
+        npc.vx = -Math.abs(actualNPCSpeed);
       }
       npc.vy = 0;
     } else {
@@ -874,10 +972,10 @@ export class GameScene {
       npc.wx = wx;
       if (ev.side === "A") {
         npc.wy = -halfH - 10;
-        npc.vy = Math.abs(ev.speed);
+        npc.vy = Math.abs(actualNPCSpeed);
       } else {
         npc.wy = this.worldH + halfH + 10;
-        npc.vy = -Math.abs(ev.speed);
+        npc.vy = -Math.abs(actualNPCSpeed);
       }
       npc.vx = 0;
     }
@@ -887,7 +985,7 @@ export class GameScene {
     // Debug spawn order
     try {
       /* eslint-disable no-console */
-      console.log("[GameScene] spawn", { id: ev._id || "?", npc: kind, side: ev.side, t: this._gameTime.toFixed(3), speed: ev.speed });
+      console.log("[GameScene] spawn", { id: ev._id || "?", npc: kind, side: ev.side, t: this._gameTime.toFixed(3), speedRel: relNPC.toFixed(1), baseline: this._baselineSpeed.toFixed(1), actual: actualNPCSpeed.toFixed(1) });
       /* eslint-enable no-console */
     } catch (err) {
     }
@@ -920,7 +1018,8 @@ export class GameScene {
           angleDeg: typeof s.angleDeg === "number" ? s.angleDeg : undefined,
           absAngleDeg: typeof s.absAngleDeg === "number" ? s.absAngleDeg : undefined,
           perpSign: typeof s.perpSign === "number" ? s.perpSign : undefined,
-          speed: typeof s.speed === "number" ? s.speed : 600
+          speed: typeof s.speed === "number" ? s.speed : 600,
+          speedRel: typeof s.speedRel === "number" ? s.speedRel : (typeof s.speed === "number" ? (s.speed / 300) * 100 : 100)
         });
 
         // Window to show shoot pose
@@ -1050,14 +1149,15 @@ export class GameScene {
         a += (sh.angleDeg * Math.PI) / 180.0;
       }
 
-      // Adjust pellet speed/size based on shooter NPC kind
+      // Adjust pellet speed using baseline-relative speeds; same velocity for boss and lieutenant
       const isLt = sh.npc && sh.npc.kind === "lieutenant";
-      const speed = (sh.speed || 600) * (isLt ? 0.5 : 1.0);
+      const relShot = typeof sh.speedRel === "number" ? sh.speedRel : (typeof sh.speed === "number" ? (sh.speed / 300) * 100 : 100);
+      let speed = this._baselineSpeed * (relShot / 100);
       const vx = Math.cos(a) * speed;
       const vy = Math.sin(a) * speed;
       const sizePx = isLt ? 96 : 48;
 
-      const pellet = new Pellet(this._pelletImage, { wx: np.x, wy: np.y, vx: vx, vy: vy, sizePx: sizePx });
+      const pellet = new Pellet(null, { frames: this._pelletFrames, fps: this._pelletFPS, wx: np.x, wy: np.y, vx: vx, vy: vy, sizePx: sizePx });
       pellet.shooterKind = isLt ? "lieutenant" : "boss";
       pellet.setOrientation(this.orientation);
       this.pellets.push(pellet);
@@ -1160,6 +1260,8 @@ export class GameScene {
       if (this.orientation === "landscape") {
         p.valueBounces += 1;
         this._onPelletBounce(p);
+        // Left wall is P1 side in landscape
+        p._lastMiss = "p1";
       }
     }
     if (p.wx + halfX > this.worldW) {
@@ -1169,6 +1271,8 @@ export class GameScene {
       if (this.orientation === "landscape") {
         p.valueBounces += 1;
         this._onPelletBounce(p);
+        // Right wall is P2 side in landscape
+        p._lastMiss = "p2";
       }
     }
 
@@ -1180,6 +1284,8 @@ export class GameScene {
       if (this.orientation === "portrait") {
         p.valueBounces += 1;
         this._onPelletBounce(p);
+        // Top wall is P1 side in portrait
+        p._lastMiss = "p1";
       }
     }
     if (p.wy + halfY > this.worldH) {
@@ -1189,6 +1295,8 @@ export class GameScene {
       if (this.orientation === "portrait") {
         p.valueBounces += 1;
         this._onPelletBounce(p);
+        // Bottom wall is P2 side in portrait
+        p._lastMiss = "p2";
       }
     }
 
@@ -1227,15 +1335,24 @@ export class GameScene {
           // HP effects depend on eater kind
           const eater = p._npcEaterKind || "lieutenant";
           if (eater === "boss") {
-            // Boss: both lose up to 2 points; if both would hit 0, set both to 1 instead
-            let np1 = Math.max(0, this.p1HP - 200);
-            let np2 = Math.max(0, this.p2HP - 200);
-            if (np1 === 0 && np2 === 0) {
-              np1 = Math.max(100, this.p1HP - 100);
-              np2 = Math.max(100, this.p2HP - 100);
+            // Boss: only punish the player on whose side the pellet last bounced
+            let side = p._lastMiss;
+            if (side !== "p1" && side !== "p2") {
+              // Fallback: decide by current screen position
+              const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
+              const cx = rect.x + Math.floor(rect.w * 0.5);
+              const cy = rect.y + Math.floor(rect.h * 0.5);
+              if (this.orientation === "landscape") {
+                side = (cx < this.width * 0.5) ? "p1" : "p2";
+              } else {
+                side = (cy < this.height * 0.5) ? "p1" : "p2";
+              }
             }
-            this.p1HP = np1;
-            this.p2HP = np2;
+            if (side === "p1") {
+              this.p1HP = Math.max(0, this.p1HP - 200);
+            } else if (side === "p2") {
+              this.p2HP = Math.max(0, this.p2HP - 200);
+            }
           } else {
             // Lieutenant: both lose one; skip case where both go 0 was already handled at eat time
             this.p1HP = Math.max(0, this.p1HP - 100);
@@ -1257,12 +1374,29 @@ export class GameScene {
 
     if (this.p1HP <= 0 || this.p2HP <= 0) {
       this._ended = true;
-      // Clear any lingering inputs so Menu doesn't immediately start a new game
+      // Clear any lingering inputs so next scene doesn't get accidental actions
       if (this.input && typeof this.input.reset === "function") {
         this.input.reset();
       }
+
+      // Determine winner
+      let winnerId = "p1";
+      if (this.p1HP <= 0 && this.p2HP > 0) { winnerId = "p2"; }
+      else if (this.p2HP <= 0 && this.p1HP > 0) { winnerId = "p1"; }
+      else if (this.p1HP <= 0 && this.p2HP <= 0) {
+        // If both reach 0, break tie by score
+        winnerId = (this.p2Score > this.p1Score) ? "p2" : "p1";
+      }
+
+      const params = {
+        winnerId: winnerId,
+        winnerScore: winnerId === "p1" ? this.p1Score : this.p2Score,
+        winnerAvatar: winnerId === "p1" ? this._p1AvatarKey : this._p2AvatarKey,
+        winnerConfig: winnerId === "p1" ? this._p1Config : this._p2Config
+      };
+
       if (this.app && typeof this.app.setScene === "function") {
-        this.app.setScene(new MenuScene());
+        this.app.setScene(new GameOverScene(params));
       }
     }
   }

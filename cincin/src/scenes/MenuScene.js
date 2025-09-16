@@ -52,9 +52,7 @@ export class MenuScene {
 
     try {
       const active = await this.loader.loadImage("./img/tiles/behaton.png");
-      const inactive = await this.loader.loadImage("./img/tiles/background-inactive.png");
       this._activeTile = active;
-      this._inactiveTile = inactive;
     } catch (e) {
     }
   }
@@ -124,7 +122,6 @@ export class MenuScene {
     }
 
     this._activeTile = null;
-    this._inactiveTile = null;
 
     this._loadTiles();
 
@@ -208,9 +205,7 @@ export class MenuScene {
     const cx = Math.floor(dw * 0.5);
     const orientation = this.renderer.orientation;
 
-    if (this._inactiveTile) {
-      this.renderer.setInactiveTileImage(this._inactiveTile);
-    }
+    
 
     const p1 = this.p1Avatar;
     const p2 = this.p2Avatar;
@@ -418,8 +413,8 @@ export class MenuScene {
   _startGame() {
 
     const colors = {
-      p1: { ...this.characterConfigs[this.p1Index], headImage: this._headImages[this.p1Index], bodyImage: this._bodyImages[this.p1Index] },
-      p2: { ...this.characterConfigs[this.p2Index], headImage: this._headImages[this.p2Index], bodyImage: this._bodyImages[this.p2Index] }
+      p1: { ...this.characterConfigs[this.p1Index], headImage: this._headImages[this.p1Index], bodyImage: this._bodyImages[this.p1Index], avatarKey: "player" + String(this.p1Index + 1) },
+      p2: { ...this.characterConfigs[this.p2Index], headImage: this._headImages[this.p2Index], bodyImage: this._bodyImages[this.p2Index], avatarKey: "player" + String(this.p2Index + 1) }
     };
 
     this.app.setScene(new GameScene(colors));

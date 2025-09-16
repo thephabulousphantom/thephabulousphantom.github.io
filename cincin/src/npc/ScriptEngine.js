@@ -27,6 +27,8 @@ export class ScriptEngine {
       dup.t = typeof e.t === "number" ? e.t : 0;
       if (typeof e.speed === "number") {
         dup.speed = e.speed;
+        // Derive relative speed percentage against baseline 300 (100 = baseline)
+        dup.speedRel = (e.speed / 300) * 100;
       }
       dup._seq = expanded.length;
       dup._id = "E" + String(i);
@@ -35,6 +37,7 @@ export class ScriptEngine {
           const sc = { ...s };
           if (typeof s.speed === "number") {
             sc.speed = s.speed;
+            sc.speedRel = (s.speed / 300) * 100;
           }
           sc._id = dup._id + "-S" + String(si);
           return sc;

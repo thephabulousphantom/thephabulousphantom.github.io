@@ -1,7 +1,13 @@
 export class Pellet {
   constructor(image, params) {
 
+    // Backward compatibility: if image is provided, use it as a single-frame animation.
     this.image = image;
+    this.frames = (params && params.frames && Array.isArray(params.frames)) ? params.frames.slice() : (image ? [image] : []);
+    this.frameIndex = 0;
+    this.frameTimer = 0;
+    const fps = params && typeof params.fps === "number" && params.fps > 0 ? params.fps : 10;
+    this.frameDuration = 1.0 / fps;
 
     this.wx = params && params.wx ? params.wx : 0;
     this.wy = params && params.wy ? params.wy : 0;
@@ -25,6 +31,18 @@ export class Pellet {
   update(dt) {
     this.wx += this.vx * dt;
     this.wy += this.vy * dt;
+
+    // Advance animation frames
+    if (this.frames && this.frames.length > 1) {
+      this.frameTimer += dt;
+      while (this.frameTimer >= this.frameDuration) {
+        this.frameTimer -= this.frameDuration;
+        this.frameIndex += 1;
+        if (this.frameIndex >= this.frames.length) {
+          this.frameIndex = 0;
+        }
+      }
+    }
   }
 
   getWorldPos() {
@@ -32,7 +50,8 @@ export class Pellet {
   }
 
   render(renderer, screenRect) {
-    if (!this.image) {
+    const img = this._currentImage();
+    if (!img) {
       renderer.drawRect(screenRect.x, screenRect.y, screenRect.w, screenRect.h, "#ff0");
       return;
     }
@@ -47,8 +66,19 @@ export class Pellet {
     renderer.rotate(a);
     renderer.translate(-cx, -cy);
 
-    renderer.ctx.drawImage(this.image, cx - Math.floor(screenRect.w * 0.5), cy - Math.floor(screenRect.h * 0.5), screenRect.w, screenRect.h);
+    renderer.ctx.drawImage(img, cx - Math.floor(screenRect.w * 0.5), cy - Math.floor(screenRect.h * 0.5), screenRect.w, screenRect.h);
 
     renderer.pop();
+  }
+
+  _currentImage() {
+    if (this.frames && this.frames.length > 0) {
+      const idx = Math.max(0, Math.min(this.frameIndex, this.frames.length - 1));
+      const f = this.frames[idx];
+      if (f) {
+        return f;
+      }
+    }
+    return this.image || null;
   }
 }

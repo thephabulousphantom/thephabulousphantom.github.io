@@ -16,6 +16,9 @@ export class Input {
     this._onPointerUp = this._onPointerUp.bind(this);
 
     this._install();
+
+    // Input suppression window (in ms since performance.now())
+    this._suppressUntil = 0;
   }
 
   reset() {
@@ -26,6 +29,20 @@ export class Input {
     this.pointerStates.length = 0;
     this._tapQueue.length = 0;
     this._pointerDownMeta.clear();
+
+    // Do not change suppression window here; scenes may set it explicitly
+  }
+
+  suppressFor(ms) {
+
+    const now = performance.now();
+    const dur = typeof ms === "number" && ms > 0 ? ms : 0;
+    this._suppressUntil = now + dur;
+  }
+
+  _isSuppressed() {
+
+    return performance.now() < this._suppressUntil;
   }
 
   _install() {
@@ -71,6 +88,9 @@ export class Input {
   }
 
   consumeKeyPress(code) {
+    if (this._isSuppressed()) {
+      return false;
+    }
     if (this._pressedOnce.has(code)) {
       this._pressedOnce.delete(code);
       return true;
@@ -150,6 +170,10 @@ export class Input {
   }
 
   consumeTaps() {
+    if (this._isSuppressed()) {
+      this._tapQueue.length = 0;
+      return [];
+    }
     const taps = this._tapQueue.slice();
     this._tapQueue.length = 0;
     return taps;
@@ -160,6 +184,10 @@ export class Input {
       p1: { up: false, down: false, left: false, right: false, action: false, actionKey: false, actionTouch: false },
       p2: { up: false, down: false, left: false, right: false, action: false, actionKey: false, actionTouch: false }
     };
+
+    if (this._isSuppressed()) {
+      return state;
+    }
 
     if (this.isDown("KeyW")) { state.p1.up = true; }
     if (this.isDown("KeyS")) { state.p1.down = true; }

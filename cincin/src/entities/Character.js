@@ -12,6 +12,13 @@ export class Character {
     this.rotationRad = 0;
     this.headImage = null;
     this.bodyImage = null;
+    this._bodyIdleImage = null;
+    this._bodyWalkFrames = [];
+    this._bodyShootImage = null;
+    this._bodyAnimMode = "idle"; // idle | walk | shoot
+    this._bodyFPS = 5;
+    this._bodyFrameIndex = 0;
+    this._bodyFrameTimer = 0;
 
     this._laughing = false;
     this._laughCount = 0;
@@ -41,7 +48,31 @@ export class Character {
   }
 
   setBodyImage(img) {
+    // Backward compatibility: set as idle image and default body image.
     this.bodyImage = img || null;
+    this._bodyIdleImage = this.bodyImage;
+  }
+
+  setBodyFrames(cfg) {
+    // cfg: { idle: Image|null, walk: Image[]|null, shoot: Image|null, fps: number }
+    this._bodyIdleImage = cfg && cfg.idle ? cfg.idle : (this.bodyImage || null);
+    this._bodyWalkFrames = cfg && cfg.walk && Array.isArray(cfg.walk) ? cfg.walk.slice() : [];
+    this._bodyShootImage = cfg && cfg.shoot ? cfg.shoot : null;
+    if (cfg && typeof cfg.fps === "number" && cfg.fps > 0) {
+      this._bodyFPS = cfg.fps;
+    }
+    this._bodyFrameIndex = 0;
+    this._bodyFrameTimer = 0;
+  }
+
+  setBodyAnimMode(mode) {
+    const m = (mode === "walk" || mode === "shoot") ? mode : "idle";
+    if (this._bodyAnimMode !== m) {
+      this._bodyAnimMode = m;
+      // reset timer when mode changes so animations start at first frame
+      this._bodyFrameIndex = 0;
+      this._bodyFrameTimer = 0;
+    }
   }
 
   update(dt) {
@@ -70,6 +101,20 @@ export class Character {
         this._mouthOpen = 1.0 - inPhaseT;
       }
       return;
+    }
+
+    // Advance body animation when in walk mode
+    const fps = this._bodyFPS > 0 ? this._bodyFPS : 5;
+    const frameDuration = 1.0 / fps;
+    if (this._bodyAnimMode === "walk" && this._bodyWalkFrames && this._bodyWalkFrames.length > 1) {
+      this._bodyFrameTimer += dt;
+      while (this._bodyFrameTimer >= frameDuration) {
+        this._bodyFrameTimer -= frameDuration;
+        this._bodyFrameIndex += 1;
+        if (this._bodyFrameIndex >= this._bodyWalkFrames.length) {
+          this._bodyFrameIndex = 0;
+        }
+      }
     }
 
     // Eating animation (single open then close)
@@ -162,8 +207,9 @@ export class Character {
     const bodyX = baseX;
     const bodyY = baseY + drawHeadH - drawOverlap;
 
-    if (this.bodyImage) {
-      const img = this.bodyImage;
+    const bodyImg = this._currentBodyImage();
+    if (bodyImg) {
+      const img = bodyImg;
       const ctx = renderer.ctx;
       ctx.drawImage(img, 0, 0, 256, 256, bodyX, bodyY, drawW, drawBodyH);
     }
@@ -210,8 +256,18 @@ export class Character {
     }
     renderer.pop();
 
-    
-
     renderer.pop();
+  }
+
+  _currentBodyImage() {
+    // shooting overrides walk/idle
+    if (this._bodyAnimMode === "shoot" && this._bodyShootImage) {
+      return this._bodyShootImage;
+    }
+    if (this._bodyAnimMode === "walk" && this._bodyWalkFrames && this._bodyWalkFrames.length > 0) {
+      const idx = Math.max(0, Math.min(this._bodyFrameIndex, this._bodyWalkFrames.length - 1));
+      return this._bodyWalkFrames[idx];
+    }
+    return this._bodyIdleImage || this.bodyImage;
   }
 }

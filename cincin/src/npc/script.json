@@ -1,19 +1,19 @@
 {
   "events": [
-    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0,  "speed": 350.0,  "shots": [ { "frac": 0.32, "perpSign": 1,  "angleDeg": 12,  "speed": 600.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0,  "speed": 363.5,  "shots": [ { "frac": 0.58, "perpSign": -1, "angleDeg": -18, "speed": 615.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0,  "speed": 377.0,  "shots": [ { "frac": 0.42, "perpSign": 1,  "angleDeg": -7,  "speed": 630.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 390.5,  "shots": [ { "frac": 0.70, "perpSign": -1, "angleDeg": 22,  "speed": 645.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0, "speed": 404.0,  "shots": [ { "frac": 0.85, "perpSign": 1,  "angleDeg": 5,   "speed": 660.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0,  "speed": 300.0,  "shots": [ { "frac": 0.32, "perpSign": 1,  "angleDeg": 12,  "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0,  "speed": 300.0,  "shots": [ { "frac": 0.58, "perpSign": -1, "angleDeg": -18, "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0,  "speed": 300.0,  "shots": [ { "frac": 0.42, "perpSign": 1,  "angleDeg": -7,  "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 300.0,  "shots": [ { "frac": 0.70, "perpSign": -1, "angleDeg": 22,  "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0, "speed": 300.0,  "shots": [ { "frac": 0.85, "perpSign": 1,  "angleDeg": 5,   "speed": 200.0 } ] },
 
-    { "type": "spawn", "npc": "boss",       "side": "B", "t": 2.0, "speed": 420.0,  "shots": [ { "frac": 0.40, "perpSign": -1, "angleDeg": -25, "speed": 660.0 } ] },
+    { "type": "spawn", "npc": "boss",       "side": "B", "t": 2.0, "speed": 300.0,  "shots": [ { "frac": 0.40, "perpSign": -1, "angleDeg": -25, "speed": 300.0 } ] },
 
-    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 445.5,  "shots": [ { "frac": 0.33, "perpSign": -1, "angleDeg": 15,  "speed": 690.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0, "speed": 461.4,  "shots": [ { "frac": 0.52, "perpSign": 1,  "angleDeg": -20, "speed": 705.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 477.3,  "shots": [ { "frac": 0.78, "perpSign": -1, "angleDeg": 9,   "speed": 720.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0, "speed": 493.2,  "shots": [ { "frac": 0.60, "perpSign": 1,  "angleDeg": 0,   "speed": 735.0 } ] },
-    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 509.1,  "shots": [ { "frac": 0.88, "perpSign": -1, "angleDeg": -12, "speed": 750.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 300.0,  "shots": [ { "frac": 0.33, "perpSign": -1, "angleDeg": 15,  "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0, "speed": 300.0,  "shots": [ { "frac": 0.52, "perpSign": 1,  "angleDeg": -20, "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 300.0,  "shots": [ { "frac": 0.78, "perpSign": -1, "angleDeg": 9,   "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "A", "t": 1.0, "speed": 300.0,  "shots": [ { "frac": 0.60, "perpSign": 1,  "angleDeg": 0,   "speed": 200.0 } ] },
+    { "type": "spawn", "npc": "lieutenant", "side": "B", "t": 1.0, "speed": 300.0,  "shots": [ { "frac": 0.88, "perpSign": -1, "angleDeg": -12, "speed": 200.0 } ] },
 
-    { "type": "spawn", "npc": "boss",       "side": "A", "t": 2.0, "speed": 630.0,  "shots": [ { "frac": 0.75, "perpSign": 1,  "angleDeg": 30,  "speed": 990.0 } ] }
+    { "type": "spawn", "npc": "boss",       "side": "A", "t": 2.0, "speed": 300.0,  "shots": [ { "frac": 0.75, "perpSign": 1,  "angleDeg": 30,  "speed": 300.0 } ] }
   ]
 }
