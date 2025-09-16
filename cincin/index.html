@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Game</title>
     
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark light">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="img/icon/icon-192.png">
+    <meta name="application-name" content="Endava Game">
+    <meta name="apple-mobile-web-app-title" content="Game">
+    
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -12,6 +22,27 @@
 
     <main id="app">
     </main>
+
+    <div id="splash-overlay" class="splash-overlay" hidden>
+      <div class="splash-inner">
+        <img src="img/icon/icon-192.png" alt="Game Icon" class="splash-icon" />
+        <div class="splash-title">учитавам…</div>
+      </div>
+    </div>
+
+    <div id="install-banner" class="install-banner" hidden>
+      <div class="install-content">
+        <img src="img/icon/icon-192.png" alt="Icon" class="install-icon" />
+        <div class="install-text">
+          <div class="install-title">Install Game</div>
+          <div class="install-subtitle">Play fullscreen from your home screen.</div>
+        </div>
+        <div class="install-actions">
+          <button id="install-btn" class="install-btn" type="button">Install</button>
+          <button id="install-dismiss" class="install-dismiss" type="button" aria-label="Dismiss">✕</button>
+        </div>
+      </div>
+    </div>
 
     <script src="main.js" type="module"></script>
   </body>

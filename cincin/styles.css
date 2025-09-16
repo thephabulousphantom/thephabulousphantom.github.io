@@ -1,0 +1,140 @@
+:root {
+    --banner-bg: rgba(18, 18, 18, 0.96);
+    --banner-fg: #ffffff;
+    --banner-accent: #00d084;
+    --banner-muted: #9aa0a6;
+    --splash-bg: #000000;
+  }
+  
+  /* Remove default scrollbars and overscroll glow on some browsers */
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000000;
+    color: #ffffff;
+    height: 100%;
+  }
+  
+  /* Splash overlay */
+  .splash-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--splash-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .splash-inner {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    transform: translateZ(0);
+  }
+  
+  .splash-icon {
+    width: min(22vh, 140px);
+    height: min(22vh, 140px);
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+  }
+  
+  .splash-title {
+    font: 500 16px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: #ffffff;
+    opacity: 0.85;
+  }
+  
+  /* Install banner */
+  .install-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9998;
+    padding: 8px 12px;
+    background: var(--banner-bg);
+    color: var(--banner-fg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .install-content {
+    max-width: 980px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .install-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .install-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .install-title {
+    font: 600 15px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  
+  .install-subtitle {
+    font: 400 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: var(--banner-muted);
+  }
+  
+  .install-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .install-btn {
+    appearance: none;
+    border: 0;
+    background: var(--banner-accent);
+    color: #08150f;
+    font: 600 13px/1 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .install-btn:active {
+    filter: brightness(0.95);
+  }
+  
+  .install-dismiss {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--banner-fg);
+    opacity: 0.8;
+    font: 700 16px/1 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .install-dismiss:hover {
+    opacity: 1;
+  }
+  
+  /* Ensure [hidden] actually hides components even if class sets display */
+  .splash-overlay[hidden] {
+    display: none !important;
+  }
+  
+  .install-banner[hidden] {
+    display: none !important;
+  }

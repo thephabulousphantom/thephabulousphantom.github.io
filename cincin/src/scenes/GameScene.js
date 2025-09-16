@@ -81,6 +81,10 @@ export class GameScene {
       p4: { body: null, bodyWalk: [], head: null }
     };
 
+    // Early readiness for UI and players so visuals are immediate
+    this._uiAssetsReady = false;
+    this._playerAssetsReady = false;
+
     this._pelletFrames = [];
     this._pelletFPS = 5;
 
@@ -127,28 +131,6 @@ export class GameScene {
       const ltHead = await this.loader.loadImage("./img/characters/npc2-head.png");
       const pelletImg1 = await this.loader.loadImage("./img/other/poo1.png");
       const pelletImg2 = await this.loader.loadImage("./img/other/poo2.png");
-      // Players (1-4) body/head and walk frames
-      const p1Body = await this.loader.loadImage("./img/characters/player1-body.png");
-      const p1Walk1 = await this.loader.loadImage("./img/characters/player1-body-walk1.png");
-      const p1Walk2 = await this.loader.loadImage("./img/characters/player1-body-walk2.png");
-      const p1Head = await this.loader.loadImage("./img/characters/player1-head.png");
-
-      const p2Body = await this.loader.loadImage("./img/characters/player2-body.png");
-      const p2Walk1 = await this.loader.loadImage("./img/characters/player2-body-walk1.png");
-      const p2Walk2 = await this.loader.loadImage("./img/characters/player2-body-walk2.png");
-      const p2Head = await this.loader.loadImage("./img/characters/player2-head.png");
-
-      const p3Body = await this.loader.loadImage("./img/characters/player3-body.png");
-      const p3Walk1 = await this.loader.loadImage("./img/characters/player3-body-walk1.png");
-      const p3Walk2 = await this.loader.loadImage("./img/characters/player3-body-walk2.png");
-      const p3Head = await this.loader.loadImage("./img/characters/player3-head.png");
-
-      const p4Body = await this.loader.loadImage("./img/characters/player4-body.png");
-      const p4Walk1 = await this.loader.loadImage("./img/characters/player4-body-walk1.png");
-      const p4Walk2 = await this.loader.loadImage("./img/characters/player4-body-walk2.png");
-      const p4Head = await this.loader.loadImage("./img/characters/player4-head.png");
-
-      const hpImg = await this.loader.loadImage("./img/ui/health.png");
 
       this._npcImages.boss.body = bossBody;
       this._npcImages.boss.bodyShoot = bossBodyShoot;
@@ -165,9 +147,48 @@ export class GameScene {
       this._pelletFrames = [];
       if (pelletImg1) { this._pelletFrames.push(pelletImg1); }
       if (pelletImg2) { this._pelletFrames.push(pelletImg2); }
-      this._healthImage = hpImg;
+    } catch (e) {
+    }
+    // Mark assets ready regardless; if some fail, placeholders/nulls render, but timing gate is lifted only after attempt
+    this._assetsReady = true;
+    this._updateReadyState();
+  }
 
-      // Store player images
+  async _loadUIAssets() {
+
+    try {
+      const hpImg = await this.loader.loadImage("./img/ui/health.png");
+      this._healthImage = hpImg;
+      this._uiAssetsReady = true;
+    } catch (e) {
+      this._uiAssetsReady = true;
+    }
+  }
+
+  async _loadPlayerAssets() {
+
+    try {
+      const results = await Promise.all([
+        this.loader.loadImage("./img/characters/player1-body.png"),
+        this.loader.loadImage("./img/characters/player1-body-walk1.png"),
+        this.loader.loadImage("./img/characters/player1-body-walk2.png"),
+        this.loader.loadImage("./img/characters/player1-head.png"),
+        this.loader.loadImage("./img/characters/player2-body.png"),
+        this.loader.loadImage("./img/characters/player2-body-walk1.png"),
+        this.loader.loadImage("./img/characters/player2-body-walk2.png"),
+        this.loader.loadImage("./img/characters/player2-head.png"),
+        this.loader.loadImage("./img/characters/player3-body.png"),
+        this.loader.loadImage("./img/characters/player3-body-walk1.png"),
+        this.loader.loadImage("./img/characters/player3-body-walk2.png"),
+        this.loader.loadImage("./img/characters/player3-head.png"),
+        this.loader.loadImage("./img/characters/player4-body.png"),
+        this.loader.loadImage("./img/characters/player4-body-walk1.png"),
+        this.loader.loadImage("./img/characters/player4-body-walk2.png"),
+        this.loader.loadImage("./img/characters/player4-head.png")
+      ]);
+
+      const [p1Body, p1Walk1, p1Walk2, p1Head, p2Body, p2Walk1, p2Walk2, p2Head, p3Body, p3Walk1, p3Walk2, p3Head, p4Body, p4Walk1, p4Walk2, p4Head] = results;
+
       this._playerImages.p1.body = p1Body; this._playerImages.p1.head = p1Head; this._playerImages.p1.bodyWalk = [];
       if (p1Walk1) { this._playerImages.p1.bodyWalk.push(p1Walk1); }
       if (p1Walk2) { this._playerImages.p1.bodyWalk.push(p1Walk2); }
@@ -184,7 +205,6 @@ export class GameScene {
       if (p4Walk1) { this._playerImages.p4.bodyWalk.push(p4Walk1); }
       if (p4Walk2) { this._playerImages.p4.bodyWalk.push(p4Walk2); }
 
-      // Apply to p1/p2 characters if available (players 3/4 reserved for future)
       if (this.p1) {
         if (this._playerImages.p1.head) { this.p1.setHeadImage(this._playerImages.p1.head); }
         this.p1.setBodyFrames({ idle: this._playerImages.p1.body || null, walk: (this._playerImages.p1.bodyWalk || []), shoot: null, fps: 5 });
@@ -193,11 +213,11 @@ export class GameScene {
         if (this._playerImages.p2.head) { this.p2.setHeadImage(this._playerImages.p2.head); }
         this.p2.setBodyFrames({ idle: this._playerImages.p2.body || null, walk: (this._playerImages.p2.bodyWalk || []), shoot: null, fps: 5 });
       }
+
+      this._playerAssetsReady = true;
     } catch (e) {
+      this._playerAssetsReady = true;
     }
-    // Mark assets ready regardless; if some fail, placeholders/nulls render, but timing gate is lifted only after attempt
-    this._assetsReady = true;
-    this._updateReadyState();
   }
 
   onEnter(ctx) {
@@ -215,6 +235,11 @@ export class GameScene {
 
     this._loadTiles();
 
+    // Load UI and player assets immediately so visuals are available before NPC/script readiness
+    this._loadUIAssets();
+    this._loadPlayerAssets();
+
+    // Load remaining NPC assets and pellets
     this._loadNPCAssets();
 
     // Load scripted NPC schedule from JSON (non-blocking)
@@ -567,11 +592,7 @@ export class GameScene {
   }
 
   _renderHealth(renderer, p1s, p2s) {
-
-    if (!this._healthImage) {
-      return;
-    }
-
+    // Always render health; use placeholder if image not ready yet
     // Compute screen-space positions and sizes anchored to the screen edges
     const sw = renderer.displayWidth;
     const sh = renderer.displayHeight;
@@ -594,7 +615,14 @@ export class GameScene {
       const x1 = margin;
       let y = margin;
       for (let i = 0; i < p1Icons; i++) {
-        renderer.drawImageScreen(this._healthImage, x1, y, iconW, iconH);
+        if (this._healthImage) {
+          renderer.drawImageScreen(this._healthImage, x1, y, iconW, iconH);
+        } else {
+          // placeholder: green square
+          const ctx = renderer.ctx;
+          ctx.fillStyle = "#00d084";
+          ctx.fillRect(Math.floor(x1), Math.floor(y), Math.floor(iconW), Math.floor(iconH));
+        }
         y += step;
       }
 
@@ -602,7 +630,13 @@ export class GameScene {
       const x2 = sw - iconW - margin;
       y = margin;
       for (let i = 0; i < p2Icons; i++) {
-        renderer.drawImageScreen(this._healthImage, x2, y, iconW, iconH);
+        if (this._healthImage) {
+          renderer.drawImageScreen(this._healthImage, x2, y, iconW, iconH);
+        } else {
+          const ctx = renderer.ctx;
+          ctx.fillStyle = "#00d084";
+          ctx.fillRect(Math.floor(x2), Math.floor(y), Math.floor(iconW), Math.floor(iconH));
+        }
         y += step;
       }
     } else {
@@ -619,7 +653,13 @@ export class GameScene {
         renderer.translate(cx, cy);
         renderer.rotate(Math.PI);
         renderer.translate(-cx, -cy);
-        renderer.drawImageScreen(this._healthImage, bx, by, iconW, iconH);
+        if (this._healthImage) {
+          renderer.drawImageScreen(this._healthImage, bx, by, iconW, iconH);
+        } else {
+          const ctx = renderer.ctx;
+          ctx.fillStyle = "#00d084";
+          ctx.fillRect(Math.floor(bx), Math.floor(by), Math.floor(iconW), Math.floor(iconH));
+        }
         renderer.screenPop();
       }
 
@@ -628,7 +668,13 @@ export class GameScene {
       x = margin;
       for (let i = 0; i < p2Icons; i++) {
         const bx = x + i * step;
-        renderer.drawImageScreen(this._healthImage, bx, yBot, iconW, iconH);
+        if (this._healthImage) {
+          renderer.drawImageScreen(this._healthImage, bx, yBot, iconW, iconH);
+        } else {
+          const ctx = renderer.ctx;
+          ctx.fillStyle = "#00d084";
+          ctx.fillRect(Math.floor(bx), Math.floor(yBot), Math.floor(iconW), Math.floor(iconH));
+        }
       }
     }
 
