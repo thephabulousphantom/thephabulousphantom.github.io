@@ -224,8 +224,8 @@ export class GameScene {
     this._layoutPlayers();
 
     // Initialize health
-    this.p1HP = 100;
-    this.p2HP = 100;
+    this.p1HP = 5;
+    this.p2HP = 5;
     this._ended = false;
 
     // Cursor to keep deferred spawns in chronological order
@@ -470,8 +470,9 @@ export class GameScene {
       p.update(dt);
       this._handlePelletBounds(p);
       this._handlePelletAbsorption(p);
-
-      // NPC can eat pellets after at least one bounce if overlapping head hot-zone, if allowed
+      
+      // NPC can eat pellets only after at least one bounce and if overlapping head hot-zone,
+      // and avoid immediate self-eat by the shooter in the same instant.
       if (p.alive && p.bounces >= 1) {
         const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
         const cx = rect.x + Math.floor(rect.w * 0.5);
@@ -479,20 +480,24 @@ export class GameScene {
         for (let n = 0; n < this.npcs.length && p.alive; n++) {
           const npc = this.npcs[n];
           if (this._pointInHeadHot(npc.character, cx, cy)) {
-            const eater = npc.kind === "boss" ? "boss" : "lieutenant";
-            if (eater === "lieutenant") {
-              const nextP1 = Math.max(0, this.p1HP - 100);
-              const nextP2 = Math.max(0, this.p2HP - 100);
-              if (nextP1 === 0 && nextP2 === 0) {
-                // skip eat to avoid both hitting 0
-                continue;
+            // Skip if this is the shooter within a short grace window after spawn
+            const recentlySpawned = (typeof p._spawnTime === "number") ? ((this._gameTime - p._spawnTime) < 0.25) : false;
+            if (npc === p._shooter && recentlySpawned) {
+              continue;
+            }
+            // Determine side: prefer last miss, else current position against screen center
+            let side = p._lastMiss;
+            if (side !== "p1" && side !== "p2") {
+              if (this.orientation === "landscape") {
+                side = (cx < this.width * 0.5) ? "p1" : "p2";
+              } else {
+                side = (cy < this.height * 0.5) ? "p1" : "p2";
               }
             }
-            // For boss, we always allow eating; HP adjustment is handled in _cullPellets with special rule
             npc.character.eat();
             p.alive = false;
             p._death = "npc";
-            p._npcEaterKind = eater;
+            p._npcTarget = side;
           }
         }
       }
@@ -580,9 +585,9 @@ export class GameScene {
 
     renderer.screenPush();
 
-    // Determine icon counts: one per 100 HP, rounded up; if hp > 0, show at least 1 icon
-    const p1Icons = this.p1HP > 0 ? Math.max(1, Math.ceil(this.p1HP / 100)) : 0;
-    const p2Icons = this.p2HP > 0 ? Math.max(1, Math.ceil(this.p2HP / 100)) : 0;
+    // Determine icon counts: one per health point
+    const p1Icons = Math.max(0, Math.floor(this.p1HP));
+    const p2Icons = Math.max(0, Math.floor(this.p2HP));
 
     if (this.orientation === "landscape") {
       // Left screen edge (P1): from top to bottom
@@ -1159,6 +1164,9 @@ export class GameScene {
 
       const pellet = new Pellet(null, { frames: this._pelletFrames, fps: this._pelletFPS, wx: np.x, wy: np.y, vx: vx, vy: vy, sizePx: sizePx });
       pellet.shooterKind = isLt ? "lieutenant" : "boss";
+      // Track the shooter NPC and spawn time to avoid immediate self-eat
+      pellet._shooter = sh.npc;
+      pellet._spawnTime = this._gameTime;
       pellet.setOrientation(this.orientation);
       this.pellets.push(pellet);
     }
@@ -1321,42 +1329,25 @@ export class GameScene {
       if (!p.alive) {
         // Apply health rules based on death reason
         if (p._death === "bounces") {
-          const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
-          const cx = rect.x + Math.floor(rect.w * 0.5);
-          const cy = rect.y + Math.floor(rect.h * 0.5);
-          if (this.orientation === "landscape") {
-            if (cx < this.width * 0.5) { this.p1HP = Math.max(0, this.p1HP - 100); }
-            else { this.p2HP = Math.max(0, this.p2HP - 100); }
-          } else {
-            if (cy < this.height * 0.5) { this.p1HP = Math.max(0, this.p1HP - 100); }
-            else { this.p2HP = Math.max(0, this.p2HP - 100); }
-          }
+          // No health change when pellets expire by bouncing.
         } else if (p._death === "npc") {
-          // HP effects depend on eater kind
-          const eater = p._npcEaterKind || "lieutenant";
-          if (eater === "boss") {
-            // Boss: only punish the player on whose side the pellet last bounced
-            let side = p._lastMiss;
-            if (side !== "p1" && side !== "p2") {
-              // Fallback: decide by current screen position
-              const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
-              const cx = rect.x + Math.floor(rect.w * 0.5);
-              const cy = rect.y + Math.floor(rect.h * 0.5);
-              if (this.orientation === "landscape") {
-                side = (cx < this.width * 0.5) ? "p1" : "p2";
-              } else {
-                side = (cy < this.height * 0.5) ? "p1" : "p2";
-              }
+          // Only the player from whose side the pellet was coming loses 1 HP
+          let side = p._npcTarget;
+          if (side !== "p1" && side !== "p2") {
+            // Fallback: decide by current screen position
+            const rect = this._screenRectForSize(p.wx, p.wy, p.sizePx, p.sizePx);
+            const cx = rect.x + Math.floor(rect.w * 0.5);
+            const cy = rect.y + Math.floor(rect.h * 0.5);
+            if (this.orientation === "landscape") {
+              side = (cx < this.width * 0.5) ? "p1" : "p2";
+            } else {
+              side = (cy < this.height * 0.5) ? "p1" : "p2";
             }
-            if (side === "p1") {
-              this.p1HP = Math.max(0, this.p1HP - 200);
-            } else if (side === "p2") {
-              this.p2HP = Math.max(0, this.p2HP - 200);
-            }
-          } else {
-            // Lieutenant: both lose one; skip case where both go 0 was already handled at eat time
-            this.p1HP = Math.max(0, this.p1HP - 100);
-            this.p2HP = Math.max(0, this.p2HP - 100);
+          }
+          if (side === "p1") {
+            this.p1HP = Math.max(0, this.p1HP - 1);
+          } else if (side === "p2") {
+            this.p2HP = Math.max(0, this.p2HP - 1);
           }
         }
         this.pellets.splice(i, 1);
@@ -1381,11 +1372,13 @@ export class GameScene {
 
       // Determine winner
       let winnerId = "p1";
-      if (this.p1HP <= 0 && this.p2HP > 0) { winnerId = "p2"; }
-      else if (this.p2HP <= 0 && this.p1HP > 0) { winnerId = "p1"; }
-      else if (this.p1HP <= 0 && this.p2HP <= 0) {
-        // If both reach 0, break tie by score
-        winnerId = (this.p2Score > this.p1Score) ? "p2" : "p1";
+      if (this.p1HP <= 0 && this.p2HP > 0) {
+        winnerId = "p2";
+      } else if (this.p2HP <= 0 && this.p1HP > 0) {
+        winnerId = "p1";
+      } else if (this.p1HP <= 0 && this.p2HP <= 0) {
+        // Edge case should not normally occur; default to P1
+        winnerId = "p1";
       }
 
       const params = {
@@ -1412,22 +1405,20 @@ export class GameScene {
     const cy = rect.y + Math.floor(rect.h * 0.5);
 
     if (this.p1 && this.p1.isEating() && this._pointInHeadHot(this.p1, cx, cy)) {
+      // P1 eats: +1 score, +1 HP to P1, -1 HP to P2
       p.alive = false;
-      const base = p.shooterKind === "boss" ? 500 : 100;
-      const b = Math.min(4, Math.max(0, p.valueBounces));
-      const mult = Math.max(0, 1 - 0.2 * b);
-      const points = Math.floor(base * mult);
-      this.p1Score += points;
+      this.p1Score += 1;
+      this.p1HP = this.p1HP + 1;
+      this.p2HP = Math.max(0, this.p2HP - 1);
       return;
     }
 
     if (this.p2 && this.p2.isEating() && this._pointInHeadHot(this.p2, cx, cy)) {
+      // P2 eats: +1 score, +1 HP to P2, -1 HP to P1
       p.alive = false;
-      const base = p.shooterKind === "boss" ? 500 : 100;
-      const b = Math.min(4, Math.max(0, p.valueBounces));
-      const mult = Math.max(0, 1 - 0.2 * b);
-      const points = Math.floor(base * mult);
-      this.p2Score += points;
+      this.p2Score += 1;
+      this.p2HP = this.p2HP + 1;
+      this.p1HP = Math.max(0, this.p1HP - 1);
       return;
     }
   }
