@@ -592,7 +592,9 @@ export class GameScene {
   }
 
   _renderHealth(renderer, p1s, p2s) {
-    // Always render health; use placeholder if image not ready yet
+    if (!this._healthImage) {
+      return;
+    }
     // Compute screen-space positions and sizes anchored to the screen edges
     const sw = renderer.displayWidth;
     const sh = renderer.displayHeight;
@@ -615,14 +617,7 @@ export class GameScene {
       const x1 = margin;
       let y = margin;
       for (let i = 0; i < p1Icons; i++) {
-        if (this._healthImage) {
-          renderer.drawImageScreen(this._healthImage, x1, y, iconW, iconH);
-        } else {
-          // placeholder: green square
-          const ctx = renderer.ctx;
-          ctx.fillStyle = "#00d084";
-          ctx.fillRect(Math.floor(x1), Math.floor(y), Math.floor(iconW), Math.floor(iconH));
-        }
+        renderer.drawImageScreen(this._healthImage, x1, y, iconW, iconH);
         y += step;
       }
 
@@ -630,13 +625,7 @@ export class GameScene {
       const x2 = sw - iconW - margin;
       y = margin;
       for (let i = 0; i < p2Icons; i++) {
-        if (this._healthImage) {
-          renderer.drawImageScreen(this._healthImage, x2, y, iconW, iconH);
-        } else {
-          const ctx = renderer.ctx;
-          ctx.fillStyle = "#00d084";
-          ctx.fillRect(Math.floor(x2), Math.floor(y), Math.floor(iconW), Math.floor(iconH));
-        }
+        renderer.drawImageScreen(this._healthImage, x2, y, iconW, iconH);
         y += step;
       }
     } else {
@@ -653,13 +642,7 @@ export class GameScene {
         renderer.translate(cx, cy);
         renderer.rotate(Math.PI);
         renderer.translate(-cx, -cy);
-        if (this._healthImage) {
-          renderer.drawImageScreen(this._healthImage, bx, by, iconW, iconH);
-        } else {
-          const ctx = renderer.ctx;
-          ctx.fillStyle = "#00d084";
-          ctx.fillRect(Math.floor(bx), Math.floor(by), Math.floor(iconW), Math.floor(iconH));
-        }
+        renderer.drawImageScreen(this._healthImage, bx, by, iconW, iconH);
         renderer.screenPop();
       }
 
@@ -668,13 +651,7 @@ export class GameScene {
       x = margin;
       for (let i = 0; i < p2Icons; i++) {
         const bx = x + i * step;
-        if (this._healthImage) {
-          renderer.drawImageScreen(this._healthImage, bx, yBot, iconW, iconH);
-        } else {
-          const ctx = renderer.ctx;
-          ctx.fillStyle = "#00d084";
-          ctx.fillRect(Math.floor(bx), Math.floor(yBot), Math.floor(iconW), Math.floor(iconH));
-        }
+        renderer.drawImageScreen(this._healthImage, bx, yBot, iconW, iconH);
       }
     }
 

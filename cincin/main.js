@@ -32,7 +32,7 @@ function boot() {
   const fs = new FullscreenManager(renderer.canvas);
   fs.init();
 
-  return { app: app, loader: loader };
+  return { app: app, loader: loader, fs: fs };
 }
 
 class ServiceWorkerManager {
@@ -104,6 +104,13 @@ async function onReady() {
 
   const ipm = new InstallPromptManager("install-banner", "install-btn", "install-dismiss");
   ipm.init();
+
+  if (started && started.fs && typeof started.fs.lockPortrait === "function") {
+    try {
+      started.fs.lockPortrait();
+    } catch (e) {
+    }
+  }
 
   // Give scenes a frame to kick off their async asset loads
   await new Promise(function(resolve) {

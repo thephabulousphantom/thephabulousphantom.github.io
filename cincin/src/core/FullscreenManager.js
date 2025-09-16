@@ -29,6 +29,7 @@ export class FullscreenManager {
 
   onFirstInteraction() {
     this.requestFullscreenSync();
+    this.lockPortrait();
   }
 
   requestFullscreenSync() {
@@ -58,11 +59,25 @@ export class FullscreenManager {
         window.dispatchEvent(new Event("resize"));
       }
     }
+
+    // Try to enforce portrait on change
+    this.lockPortrait();
   }
 
   onFullscreenError() {
     // Re-arm first interaction listeners if it failed so we can retry
     this.addFirstInteractionListeners();
+  }
+
+  lockPortrait() {
+    try {
+      const so = window.screen && window.screen.orientation;
+      if (so && typeof so.lock === "function") {
+        // Some browsers require fullscreen; this is a best-effort call
+        so.lock("portrait").catch(function() {});
+      }
+    } catch (e) {
+    }
   }
 
   destroy() {

@@ -1,4 +1,4 @@
-const CACHE_NAME = "game-runtime-v1";
+const CACHE_NAME = "game-runtime-v2";
 
 self.addEventListener("install", function onInstall(event) {
   // Online-first: do not precache. Activate immediately.
