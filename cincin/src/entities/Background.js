@@ -13,11 +13,11 @@ export class Background {
     if (this.image) {
       if (typeof renderer.tileImageScreen === "function") {
         renderer.tileImageScreen(this.image);
-      } else if (typeof renderer.tileImageViewport === "function") {
+      }/* else if (typeof renderer.tileImageViewport === "function") {
         renderer.tileImageViewport(this.image);
       } else {
         renderer.tileImageLogical(this.image, width, height);
-      }
+      }*/
       return;
     }
     // No image yet — avoid drawing placeholder tiles to prevent flicker

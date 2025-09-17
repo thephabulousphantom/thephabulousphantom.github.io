@@ -228,7 +228,7 @@ export class GameScene {
     this.app = ctx.app;
 
     if (this.renderer && typeof this.renderer.setActiveTileScale === "function") {
-      this.renderer.setActiveTileScale(0.1);
+      this.renderer.setActiveTileScale(0.3);
     }
 
     // Do not trigger initial laughs for players; laughs are event-driven

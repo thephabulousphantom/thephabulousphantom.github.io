@@ -27,12 +27,17 @@ export class Renderer {
     this.logicalScaleX = 1.0;
     this.logicalScaleY = 1.0;
 
+    // Cache for pre-scaled tile pattern to make tiling DPR-stable
+    this._tileOffCanvas = null;
+    this._tileOffKey = "";
+
     document.body.style.margin = "0";
     // Ensure page background doesn't show through any subpixel seams
     if (document.documentElement && document.documentElement.style) {
       document.documentElement.style.background = "#000";
       document.documentElement.style.overflow = "hidden";
     }
+
     document.body.style.background = "#000";
     document.body.style.overscrollBehavior = "none";
     document.body.style.touchAction = "none";
@@ -55,47 +60,32 @@ export class Renderer {
     c.addEventListener("wheel", function(e) { e.preventDefault(); }, { passive: false });
   }
 
-  tileImageViewport(img) {
-    if (!img) {
-      return;
-    }
-
-    const ctx = this.ctx;
-    const iw = img.naturalWidth || img.width;
-    const ih = img.naturalHeight || img.height;
-    if (!iw || !ih) {
-      return;
-    }
-
-    const pattern = ctx.createPattern(img, "repeat");
-    if (!pattern) {
-      return;
-    }
-
-    ctx.save();
-    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    if (typeof pattern.setTransform === "function") {
-      const s = this.activeTileScale;
-      const m = new DOMMatrix();
-      m.a = s;
-      m.d = s;
-      pattern.setTransform(m);
-    }
-    ctx.fillStyle = pattern;
-    ctx.beginPath();
-    ctx.rect(this.viewportX - 1, this.viewportY - 1, this.viewportWidth + 2, this.viewportHeight + 2);
-    ctx.clip();
-    ctx.fillRect(this.viewportX - 1, this.viewportY - 1, this.viewportWidth + 2, this.viewportHeight + 2);
-    ctx.restore();
-  }
-
   setActiveTileScale(scale) {
     this.activeTileScale = Math.max(0.01, scale || 1.0);
   }
 
+  _measureDisplaySize() {
+    // Prefer VisualViewport to account for dynamic browser UI (address bar) changes
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    try {
+      if (window.visualViewport) {
+        const vw = Math.floor(window.visualViewport.width);
+        const vh = Math.floor(window.visualViewport.height);
+        if (vw > 0 && vh > 0) {
+          w = vw;
+          h = vh;
+        }
+      }
+    } catch (e) {
+    }
+    return { w, h };
+  }
+
   resizeToDisplay() {
-    const clientWidth = window.innerWidth;
-    const clientHeight = window.innerHeight;
+    const size = this._measureDisplaySize();
+    const clientWidth = size.w;
+    const clientHeight = size.h;
 
     this.dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
 
@@ -123,7 +113,7 @@ export class Renderer {
       this.logicalHeight = Math.round(this.logicalWidth / this.targetAspect);
     }
 
-    const screenAspect = this.displayWidth / this.displayHeight;
+    const screenAspect = this.displayWidth / Math.max(1, this.displayHeight);
 
     if (screenAspect > this.targetAspect) {
       this.viewportHeight = this.displayHeight;
@@ -149,8 +139,30 @@ export class Renderer {
     ctx.imageSmoothingEnabled = false;
   }
 
+  _refreshIfWindowChanged() {
+    // Some browsers update devicePixelRatio and viewport asynchronously on rotation.
+    // Detect any divergence from window/visual viewport state and re-resize to avoid stale scales.
+    const size = this._measureDisplaySize();
+    const w = size.w;
+    const h = size.h;
+    const dNow = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+
+    const sizeChanged = (w !== this.displayWidth) || (h !== this.displayHeight);
+    const dprChanged = (dNow !== this.dpr);
+    const canvasW = Math.floor(w * dNow);
+    const canvasH = Math.floor(h * dNow);
+    const canvasChanged = (this.canvas.width !== canvasW) || (this.canvas.height !== canvasH);
+
+    if (sizeChanged || dprChanged || canvasChanged) {
+      this.resizeToDisplay();
+    }
+  }
+
   beginFrame() {
     const ctx = this.ctx;
+
+    // Ensure DPR, viewport and canvas match current window before drawing
+    this._refreshIfWindowChanged();
 
     ctx.save();
 
@@ -263,21 +275,42 @@ export class Renderer {
       return;
     }
 
-    const pattern = ctx.createPattern(img, "repeat");
+    // Create pattern and compensate for DPR so CSS-pixel tile size remains stable
+    let pattern = ctx.createPattern(img, "repeat");
     if (!pattern) {
       return;
     }
 
     ctx.save();
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    // Apply pattern scale in screen space (no logical compensation here)
+
+    const dpr = this.dpr || 1;
+    // In a DPR-scaled context, the context is already scaled by dpr, so neutralize it in the pattern.
+    // Keep CSS tile size = imageSize * activeTileScale by scaling pattern by activeTileScale/dpr.
+    const s = this.activeTileScale / dpr;
     if (typeof pattern.setTransform === "function") {
-      const s = this.activeTileScale;
       const m = new DOMMatrix();
       m.a = s;
       m.d = s;
       pattern.setTransform(m);
+    } else {
+      // Fallback for browsers without pattern.setTransform: pre-scale into offscreen
+      // Use CSS-scale directly (no extra DPR) so resulting tile size stays stable after ctx DPR scaling.
+      const tw = Math.max(1, Math.round(iw * this.activeTileScale));
+      const th = Math.max(1, Math.round(ih * this.activeTileScale));
+      const off = document.createElement("canvas");
+      off.width = tw;
+      off.height = th;
+      const octx = off.getContext("2d");
+      octx.imageSmoothingEnabled = true;
+      octx.drawImage(img, 0, 0, iw, ih, 0, 0, tw, th);
+      pattern = ctx.createPattern(off, "repeat");
+      if (!pattern) {
+        ctx.restore();
+        return;
+      }
     }
+
     ctx.fillStyle = pattern;
     // Draw with a small bleed to avoid 1px gaps due to rounding
     ctx.fillRect(-1, -1, this.displayWidth + 2, this.displayHeight + 2);
@@ -299,36 +332,5 @@ export class Renderer {
 
     // draw in screen space: assumes screenPush() is active
     ctx.drawImage(img, Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
-  }
-
-  tileImageLogical(img, width, height) {
-    if (!img) {
-      return;
-    }
-
-    const iw = img.naturalWidth || img.width;
-    const ih = img.naturalHeight || img.height;
-    if (!iw || !ih) {
-      return;
-    }
-
-    const ctx = this.ctx;
-    const pattern = ctx.createPattern(img, "repeat");
-    if (!pattern) {
-      return;
-    }
-
-    ctx.save();
-    // Apply pattern scale so tile size can be adjusted
-    if (typeof pattern.setTransform === "function") {
-      const s = this.activeTileScale;
-      const m = new DOMMatrix();
-      m.a = s;
-      m.d = s;
-      pattern.setTransform(m);
-    }
-    ctx.fillStyle = pattern;
-    ctx.fillRect(0, 0, width, height);
-    ctx.restore();
   }
 }

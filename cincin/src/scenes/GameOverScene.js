@@ -74,7 +74,7 @@ export class GameOverScene {
     this.loader = ctx.loader;
 
     if (this.renderer && typeof this.renderer.setActiveTileScale === "function") {
-      this.renderer.setActiveTileScale(0.1);
+      this.renderer.setActiveTileScale(0.3);
     }
 
     this._loadTiles();
